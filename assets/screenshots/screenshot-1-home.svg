@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1290 2796" width="1290" height="2796">
+  <defs>
+    <linearGradient id="bgGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8B6914"/>
+      <stop offset="100%" stop-color="#6B4F10"/>
+    </linearGradient>
+    <linearGradient id="cardShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow1" x="-5%" y="-5%" width="115%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+    <filter id="shadow2" x="-5%" y="-2%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+    <clipPath id="screenClip1">
+      <rect x="145" y="580" width="1000" height="1900" rx="20"/>
+    </clipPath>
+    <clipPath id="phoneClip1">
+      <rect x="120" y="520" width="1050" height="2020" rx="60"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1290" height="2796" fill="#FAF8F5"/>
+  <rect width="1290" height="460" fill="url(#bgGrad1)"/>
+  <rect y="400" width="1290" height="120" fill="url(#bgGrad1)" opacity="0.3"/>
+
+  <!-- Catchcopy -->
+  <text x="645" y="180" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="82" font-weight="800" fill="#FFFFFF" letter-spacing="4">
+    かんたん木材カット最適化
+  </text>
+  <text x="645" y="280" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="42" font-weight="400" fill="#FFFFFF" opacity="0.85">
+    プロジェクトを作成して、すぐに計算開始
+  </text>
+
+  <!-- App icon badge -->
+  <rect x="540" y="340" width="210" height="70" rx="35" fill="#2E7D32"/>
+  <text x="645" y="386" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="32" font-weight="700" fill="#FFF">
+    板取りくん
+  </text>
+
+  <!-- Phone Frame -->
+  <rect x="120" y="520" width="1050" height="2020" rx="60" fill="#1a1a1a" filter="url(#shadow1)"/>
+  <rect x="135" y="535" width="1020" height="1990" rx="52" fill="#2a2a2a"/>
+  <rect x="145" y="565" width="1000" height="1960" rx="44" fill="#FAF8F5"/>
+
+  <!-- Status bar -->
+  <g clip-path="url(#phoneClip1)">
+    <rect x="145" y="565" width="1000" height="88" fill="#8B6914"/>
+    <!-- Time -->
+    <text x="200" y="620" font-family="'SF Pro', 'Helvetica', sans-serif" font-size="32" font-weight="600" fill="#FFF">9:41</text>
+    <!-- Signal icons -->
+    <rect x="1000" y="598" width="28" height="28" rx="4" fill="#FFF" opacity="0.9"/>
+    <rect x="1035" y="602" width="28" height="24" rx="4" fill="#FFF" opacity="0.9"/>
+    <rect x="1070" y="606" width="28" height="20" rx="4" fill="#FFF" opacity="0.9"/>
+    <!-- Dynamic island -->
+    <rect x="520" y="575" width="250" height="36" rx="18" fill="#000"/>
+  </g>
+
+  <!-- App bar -->
+  <rect x="145" y="653" width="1000" height="110" fill="#8B6914"/>
+  <text x="645" y="724" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="44" font-weight="700" fill="#FFF">
+    板取りくん
+  </text>
+  <!-- Settings icon -->
+  <circle cx="1080" cy="708" r="22" fill="none" stroke="#FFF" stroke-width="3"/>
+  <circle cx="1080" cy="708" r="6" fill="#FFF"/>
+
+  <!-- Content area -->
+  <g clip-path="url(#screenClip1)">
+    <!-- Section header -->
+    <text x="200" y="830" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="36" font-weight="700" fill="#333">
+      プロジェクト一覧
+    </text>
+    <text x="1080" y="830" text-anchor="end" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="28" fill="#8B6914" font-weight="600">
+      3件
+    </text>
+
+    <!-- Project Card 1 -->
+    <rect x="185" y="870" width="920" height="200" rx="20" fill="#FFFFFF" filter="url(#shadow2)"/>
+    <rect x="185" y="870" width="12" height="200" rx="6" fill="#2E7D32"/>
+    <!-- Wood icon -->
+    <rect x="225" y="900" width="80" height="80" rx="16" fill="#F5E6C8"/>
+    <rect x="245" y="920" width="40" height="40" rx="4" fill="#8B6914" opacity="0.6"/>
+    <text x="330" y="935" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="36" font-weight="700" fill="#333">
+      本棚プロジェクト
+    </text>
+    <text x="330" y="980" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="28" fill="#777">
+      2x4 SPF材 x 3本 | 部材 8個
+    </text>
+    <!-- Utilization badge -->
+    <rect x="790" y="1000" width="280" height="50" rx="25" fill="#E8F5E9"/>
+    <text x="930" y="1034" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="700" fill="#2E7D32">
+      利用率 94.2%
+    </text>
+    <text x="330" y="1040" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#AAA">
+      2026/02/25 更新
+    </text>
+
+    <!-- Project Card 2 -->
+    <rect x="185" y="1100" width="920" height="200" rx="20" fill="#FFFFFF" filter="url(#shadow2)"/>
+    <rect x="185" y="1100" width="12" height="200" rx="6" fill="#FF9800"/>
+    <rect x="225" y="1130" width="80" height="80" rx="16" fill="#F5E6C8"/>
+    <rect x="245" y="1150" width="40" height="40" rx="4" fill="#8B6914" opacity="0.6"/>
+    <text x="330" y="1165" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="36" font-weight="700" fill="#333">
+      ウッドデッキ修理
+    </text>
+    <text x="330" y="1210" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="28" fill="#777">
+      1x6 SPF材 x 5本 | 部材 12個
+    </text>
+    <rect x="790" y="1230" width="280" height="50" rx="25" fill="#FFF3E0"/>
+    <text x="930" y="1264" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="700" fill="#E65100">
+      利用率 82.7%
+    </text>
+    <text x="330" y="1270" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#AAA">
+      2026/02/20 更新
+    </text>
+
+    <!-- Project Card 3 -->
+    <rect x="185" y="1330" width="920" height="200" rx="20" fill="#FFFFFF" filter="url(#shadow2)"/>
+    <rect x="185" y="1330" width="12" height="200" rx="6" fill="#2E7D32"/>
+    <rect x="225" y="1360" width="80" height="80" rx="16" fill="#F5E6C8"/>
+    <rect x="245" y="1380" width="40" height="40" rx="4" fill="#8B6914" opacity="0.6"/>
+    <text x="330" y="1395" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="36" font-weight="700" fill="#333">
+      猫用キャットタワー
+    </text>
+    <text x="330" y="1440" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="28" fill="#777">
+      2x4 SPF材 x 2本 | 部材 6個
+    </text>
+    <rect x="790" y="1460" width="280" height="50" rx="25" fill="#E8F5E9"/>
+    <text x="930" y="1494" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="700" fill="#2E7D32">
+      利用率 91.5%
+    </text>
+    <text x="330" y="1500" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#AAA">
+      2026/02/18 更新
+    </text>
+
+    <!-- Empty state hint -->
+    <rect x="185" y="1600" width="920" height="140" rx="20" fill="#F5F5F5" stroke="#DDD" stroke-width="2" stroke-dasharray="10,6"/>
+    <text x="645" y="1665" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="30" fill="#BBB">
+      + ボタンで新しいプロジェクトを作成
+    </text>
+    <text x="645" y="1710" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" fill="#CCC">
+      木材と部材を入力するだけ
+    </text>
+  </g>
+
+  <!-- FAB (Floating Action Button) -->
+  <circle cx="1050" cy="2350" r="65" fill="#2E7D32" filter="url(#shadow1)"/>
+  <rect x="1030" y="2320" width="40" height="60" rx="4" fill="#FFF"/>
+  <rect x="1020" y="2335" width="60" height="30" rx="4" fill="#FFF"/>
+  <!-- Plus icon on FAB -->
+  <line x1="1050" y1="2328" x2="1050" y2="2372" stroke="#2E7D32" stroke-width="6" stroke-linecap="round"/>
+  <line x1="1028" y1="2350" x2="1072" y2="2350" stroke="#2E7D32" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Bottom nav -->
+  <rect x="145" y="2405" width="1000" height="120" fill="#FFFFFF"/>
+  <line x1="145" y1="2405" x2="1145" y2="2405" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Home tab (active) -->
+  <rect x="245" y="2420" width="8" height="8" fill="#8B6914"/>
+  <rect x="230" y="2430" width="40" height="30" rx="4" fill="none" stroke="#8B6914" stroke-width="3"/>
+  <rect x="245" y="2440" width="10" height="16" fill="#8B6914"/>
+  <text x="250" y="2495" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" font-weight="700" fill="#8B6914">ホーム</text>
+  <!-- History tab -->
+  <circle cx="645" cy="2445" r="18" fill="none" stroke="#999" stroke-width="3"/>
+  <line x1="645" y1="2445" x2="645" y2="2432" stroke="#999" stroke-width="3"/>
+  <line x1="645" y1="2445" x2="656" y2="2445" stroke="#999" stroke-width="3"/>
+  <text x="645" y="2495" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#999">履歴</text>
+  <!-- Settings tab -->
+  <circle cx="1040" cy="2445" r="18" fill="none" stroke="#999" stroke-width="3"/>
+  <circle cx="1040" cy="2445" r="6" fill="#999"/>
+  <text x="1040" y="2495" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#999">設定</text>
+
+  <!-- Home indicator -->
+  <rect x="520" y="2490" width="250" height="8" rx="4" fill="#1a1a1a" opacity="0.2"/>
+</svg>

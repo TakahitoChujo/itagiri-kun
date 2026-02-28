@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Wood gradient background -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A07818"/>
+      <stop offset="50%" style="stop-color:#8B6914"/>
+      <stop offset="100%" style="stop-color:#6B4F10"/>
+    </linearGradient>
+    <!-- Subtle wood grain pattern -->
+    <pattern id="woodGrain" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <rect width="200" height="200" fill="none"/>
+      <path d="M0 30 Q50 25 100 32 Q150 38 200 30" stroke="#9A7216" stroke-width="1.5" fill="none" opacity="0.3"/>
+      <path d="M0 60 Q60 54 120 62 Q170 68 200 58" stroke="#7A5912" stroke-width="1" fill="none" opacity="0.25"/>
+      <path d="M0 95 Q40 90 90 97 Q150 103 200 93" stroke="#9A7216" stroke-width="1.5" fill="none" opacity="0.3"/>
+      <path d="M0 130 Q55 124 110 132 Q160 137 200 128" stroke="#7A5912" stroke-width="1" fill="none" opacity="0.2"/>
+      <path d="M0 160 Q45 155 100 163 Q155 168 200 158" stroke="#9A7216" stroke-width="1.2" fill="none" opacity="0.25"/>
+      <path d="M0 190 Q50 185 100 192 Q150 198 200 188" stroke="#7A5912" stroke-width="1" fill="none" opacity="0.2"/>
+    </pattern>
+    <!-- Shadow for depth -->
+    <filter id="innerShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feComposite in="SourceGraphic" in2="offsetBlur" operator="over"/>
+    </filter>
+    <filter id="dropShadow">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#3a2a00" flood-opacity="0.35"/>
+    </filter>
+    <!-- Board wood fill gradient -->
+    <linearGradient id="boardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5DEB3"/>
+      <stop offset="30%" style="stop-color:#DEB887"/>
+      <stop offset="70%" style="stop-color:#D2A96A"/>
+      <stop offset="100%" style="stop-color:#C49A5C"/>
+    </linearGradient>
+    <!-- Board side gradient -->
+    <linearGradient id="boardSide" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C49A5C"/>
+      <stop offset="100%" style="stop-color:#A07830"/>
+    </linearGradient>
+    <!-- Green accent gradient -->
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#388E3C"/>
+      <stop offset="100%" style="stop-color:#2E7D32"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#bgGrad)" rx="0" ry="0"/>
+  <rect width="1024" height="1024" fill="url(#woodGrain)" opacity="0.6"/>
+
+  <!-- Subtle vignette overlay -->
+  <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+    <stop offset="0%" style="stop-color:transparent"/>
+    <stop offset="100%" style="stop-color:#3a2000" stop-opacity="0.25"/>
+  </radialGradient>
+  <rect width="1024" height="1024" fill="url(#vignette)"/>
+
+  <!-- Main icon group - centered in safe zone -->
+  <g transform="translate(512, 480)" filter="url(#dropShadow)">
+
+    <!-- Large board (background board - slightly tilted) -->
+    <g transform="rotate(-5)">
+      <rect x="-180" y="-140" width="340" height="240" rx="8" ry="8" fill="url(#boardGrad)" stroke="#A07830" stroke-width="3"/>
+      <!-- Wood grain lines on board -->
+      <line x1="-170" y1="-90" x2="150" y2="-90" stroke="#C4A060" stroke-width="1.5" opacity="0.5"/>
+      <line x1="-170" y1="-40" x2="150" y2="-40" stroke="#C4A060" stroke-width="1.5" opacity="0.4"/>
+      <line x1="-170" y1="10" x2="150" y2="10" stroke="#C4A060" stroke-width="1.5" opacity="0.5"/>
+      <line x1="-170" y1="60" x2="150" y2="60" stroke="#C4A060" stroke-width="1.5" opacity="0.4"/>
+    </g>
+
+    <!-- Cut piece (front, separated) -->
+    <g transform="translate(55, 20) rotate(8)">
+      <rect x="0" y="-60" width="130" height="120" rx="6" ry="6" fill="url(#boardGrad)" stroke="#A07830" stroke-width="3"/>
+      <!-- Wood grain on cut piece -->
+      <line x1="10" y1="-30" x2="120" y2="-30" stroke="#C4A060" stroke-width="1.5" opacity="0.5"/>
+      <line x1="10" y1="10" x2="120" y2="10" stroke="#C4A060" stroke-width="1.5" opacity="0.4"/>
+      <line x1="10" y1="50" x2="120" y2="50" stroke="#C4A060" stroke-width="1.5" opacity="0.5"/>
+    </g>
+
+    <!-- Dashed cut line (showing where the cut happens) -->
+    <g transform="rotate(-5)">
+      <line x1="100" y1="-150" x2="100" y2="110" stroke="#E53935" stroke-width="4" stroke-dasharray="16,10" opacity="0.9"/>
+      <!-- Small scissors/saw indicator at the cut line -->
+    </g>
+
+    <!-- Dimension arrow (top) showing measurement -->
+    <g transform="translate(0, -175) rotate(-5)" opacity="0.9">
+      <!-- Arrow line -->
+      <line x1="-170" y1="0" x2="90" y2="0" stroke="#FFFFFF" stroke-width="3"/>
+      <!-- Left arrow head -->
+      <polygon points="-170,0 -155,-8 -155,8" fill="#FFFFFF"/>
+      <!-- Right arrow head -->
+      <polygon points="90,0 75,-8 75,8" fill="#FFFFFF"/>
+      <!-- Measurement text background -->
+      <rect x="-65" y="-18" width="80" height="30" rx="6" fill="url(#greenGrad)" opacity="0.95"/>
+      <text x="-25" y="5" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1820</text>
+    </g>
+
+    <!-- Small measurement on cut piece -->
+    <g transform="translate(118, -80) rotate(8)" opacity="0.95">
+      <line x1="5" y1="0" x2="125" y2="0" stroke="#FFFFFF" stroke-width="2.5"/>
+      <polygon points="5,0 15,-6 15,6" fill="#FFFFFF"/>
+      <polygon points="125,0 115,-6 115,6" fill="#FFFFFF"/>
+      <rect x="35" y="-16" width="60" height="26" rx="5" fill="url(#greenGrad)" opacity="0.95"/>
+      <text x="65" y="4" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">450</text>
+    </g>
+
+  </g>
+
+  <!-- Saw blade icon (bottom right corner accent) -->
+  <g transform="translate(700, 680)" opacity="0.35">
+    <circle cx="0" cy="0" r="60" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+    <circle cx="0" cy="0" r="8" fill="#FFFFFF"/>
+    <!-- Saw teeth -->
+    <g>
+      <line x1="0" y1="-60" x2="0" y2="-72" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+      <line x1="42" y1="-42" x2="50" y2="-50" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+      <line x1="60" y1="0" x2="72" y2="0" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+      <line x1="42" y1="42" x2="50" y2="50" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+      <line x1="0" y1="60" x2="0" y2="72" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+      <line x1="-42" y1="42" x2="-50" y2="50" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+      <line x1="-60" y1="0" x2="-72" y2="0" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+      <line x1="-42" y1="-42" x2="-50" y2="-50" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- App name text at bottom -->
+  <text x="512" y="720" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', 'Arial Rounded MT Bold', Arial, sans-serif" font-size="82" font-weight="bold" fill="#FFFFFF" text-anchor="middle" opacity="0.95" letter-spacing="4">
+    板取りくん
+  </text>
+
+  <!-- Subtle tagline -->
+  <text x="512" y="775" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', Arial, sans-serif" font-size="30" fill="#FFFFFF" text-anchor="middle" opacity="0.9" letter-spacing="2">
+    木材カット最適化
+  </text>
+
+</svg>

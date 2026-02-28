@@ -1,7 +1,8 @@
 # 板取りくん - 次のタスク一覧
 
 > 作成日: 2026-02-27
-> 現在のステータス: MVP v1.0 ソースコード完成、Flutter環境セットアップ待ち
+> 更新日: 2026-02-28
+> 現在のステータス: MVP v1.0 完成、Phase 0 マネタイズ基盤実装済み
 
 ---
 
@@ -100,7 +101,7 @@
 - [ ] ダークモード対応
 - [ ] cm単位系の実装（設定画面で無効化中）
 - [ ] Firebase Crashlytics 導入
-- [ ] AdMob SDK 導入準備（Phase 2 収益化）
+- [x] ~~AdMob SDK 導入準備（Phase 2 収益化）~~ → Phase 0 基盤として実装済み（下記参照）
 
 ---
 
@@ -116,6 +117,48 @@
 - [ ] スクリーンショット 5枚以上
 - [ ] カット計算の精度テスト（手計算と照合）
 - [ ] ストア掲載文の最終調整（仕様書 Section 8.2 参照）
+
+---
+
+---
+
+## 8. Phase 0 マネタイズ基盤（実装済み 2026-02-28）
+
+monetization-plan.md の Phase 0 に基づき、以下を実装完了。
+
+### 新規ファイル
+| ファイル | 内容 |
+|---------|------|
+| `lib/services/premium_service.dart` | PremiumNotifier + premiumProvider + isPremiumProvider。Hive キャッシュ対応。Phase 0 では isPremium=true ハードコード |
+| `lib/services/analytics_service.dart` | 11種の型安全なイベントメソッド（スタブ実装、debugPrint 出力）。Phase 1 で Firebase Analytics に差し替え |
+| `lib/widgets/ad_banner.dart` | AdMob バナー (320x50) プレースホルダー。プレミアム時は非表示 |
+| `lib/widgets/premium_banner.dart` | 設定画面のプレミアム導線バナー（ゴールデンロッド配色） |
+
+### 変更ファイル
+| ファイル | 変更内容 |
+|---------|---------|
+| `lib/main.dart` | PremiumNotifier.initPremiumBox() + AnalyticsService.init() 追加 |
+| `lib/screens/home_screen.dart` | 画面下部に AdBanner 配置 |
+| `lib/screens/result_screen.dart` | スクロール末尾に AdBanner 配置 |
+| `lib/screens/settings_screen.dart` | アプリ情報の上に PremiumBanner 配置 |
+
+### Phase 0 の動作
+- `_isPhase0 = true` → 広告バナー・プレミアムバナーともに非表示（全機能開放）
+- Phase 1 で `_isPhase0 = false` に変更するだけで制限開始・広告表示
+
+### QA結果
+- 静的解析: エラー 0 / 警告 0（info 20件は全て既存コードの deprecated 系）
+- Phase 0 動作検証: 全テスト項目 PASS
+
+### Phase 1 で必要な作業
+- [ ] `google_mobile_ads` パッケージ導入 + 実広告差し替え
+- [ ] `in_app_purchase` or RevenueCat 導入
+- [ ] プレミアム購入画面の実装
+- [ ] `_isPhase0 = false` に切り替え
+- [ ] Firebase Analytics 実導入（`firebase_core` + `firebase_analytics`）
+- [ ] プロジェクト保存3件制限の実装
+- [ ] 2Dカットのプレビュー/ブラー表示
+- [ ] PDF出力の透かし制御
 
 ---
 

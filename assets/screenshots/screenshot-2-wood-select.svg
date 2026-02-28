@@ -1,0 +1,213 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1290 2796" width="1290" height="2796">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2E7D32"/>
+      <stop offset="100%" stop-color="#1B5E20"/>
+    </linearGradient>
+    <filter id="shadowA" x="-5%" y="-5%" width="115%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+    <filter id="shadowB" x="-5%" y="-2%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#000" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowC" x="-3%" y="-3%" width="106%" height="108%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.08"/>
+    </filter>
+    <clipPath id="screenClip2">
+      <rect x="145" y="580" width="1000" height="1900" rx="20"/>
+    </clipPath>
+    <clipPath id="phoneClip2">
+      <rect x="120" y="520" width="1050" height="2020" rx="60"/>
+    </clipPath>
+    <pattern id="woodGrain" patternUnits="userSpaceOnUse" width="200" height="20">
+      <rect width="200" height="20" fill="#D4A853"/>
+      <line x1="0" y1="5" x2="200" y2="5" stroke="#C49A45" stroke-width="1" opacity="0.4"/>
+      <line x1="0" y1="12" x2="200" y2="12" stroke="#C49A45" stroke-width="0.5" opacity="0.3"/>
+      <line x1="0" y1="18" x2="200" y2="18" stroke="#C49A45" stroke-width="0.8" opacity="0.2"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1290" height="2796" fill="#FAF8F5"/>
+  <rect width="1290" height="460" fill="url(#bgGrad2)"/>
+  <rect y="400" width="1290" height="120" fill="url(#bgGrad2)" opacity="0.3"/>
+
+  <!-- Catchcopy -->
+  <text x="645" y="150" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="72" font-weight="800" fill="#FFFFFF" letter-spacing="2">
+    ホームセンターの木材を
+  </text>
+  <text x="645" y="260" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="72" font-weight="800" fill="#FFFFFF" letter-spacing="2">
+    ワンタップで選択
+  </text>
+  <text x="645" y="340" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="38" font-weight="400" fill="#FFFFFF" opacity="0.85">
+    SPF材8種のプリセット + カスタムサイズ対応
+  </text>
+
+  <!-- App badge -->
+  <rect x="540" y="380" width="210" height="60" rx="30" fill="#8B6914"/>
+  <text x="645" y="420" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="28" font-weight="700" fill="#FFF">
+    板取りくん
+  </text>
+
+  <!-- Phone Frame -->
+  <rect x="120" y="520" width="1050" height="2020" rx="60" fill="#1a1a1a" filter="url(#shadowA)"/>
+  <rect x="135" y="535" width="1020" height="1990" rx="52" fill="#2a2a2a"/>
+  <rect x="145" y="565" width="1000" height="1960" rx="44" fill="#FAF8F5"/>
+
+  <!-- Status bar -->
+  <g clip-path="url(#phoneClip2)">
+    <rect x="145" y="565" width="1000" height="88" fill="#8B6914"/>
+    <text x="200" y="620" font-family="'SF Pro', 'Helvetica', sans-serif" font-size="32" font-weight="600" fill="#FFF">9:41</text>
+    <rect x="1000" y="598" width="28" height="28" rx="4" fill="#FFF" opacity="0.9"/>
+    <rect x="1035" y="602" width="28" height="24" rx="4" fill="#FFF" opacity="0.9"/>
+    <rect x="1070" y="606" width="28" height="20" rx="4" fill="#FFF" opacity="0.9"/>
+    <rect x="520" y="575" width="250" height="36" rx="18" fill="#000"/>
+  </g>
+
+  <!-- App bar -->
+  <rect x="145" y="653" width="1000" height="110" fill="#8B6914"/>
+  <!-- Back arrow -->
+  <line x1="210" y1="708" x2="230" y2="688" stroke="#FFF" stroke-width="4" stroke-linecap="round"/>
+  <line x1="210" y1="708" x2="230" y2="728" stroke="#FFF" stroke-width="4" stroke-linecap="round"/>
+  <text x="645" y="724" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="40" font-weight="700" fill="#FFF">
+    木材を選択
+  </text>
+
+  <!-- Content area -->
+  <g clip-path="url(#screenClip2)">
+    <!-- Section label -->
+    <text x="200" y="830" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="32" font-weight="700" fill="#555">
+      SPF材プリセット
+    </text>
+    <rect x="200" y="845" width="80" height="4" rx="2" fill="#8B6914"/>
+
+    <!-- Grid of preset cards (2 columns x 4 rows) -->
+    <!-- Row 1 -->
+    <!-- 1x4 Card -->
+    <rect x="185" y="880" width="435" height="230" rx="20" fill="#FFFFFF" filter="url(#shadowC)"/>
+    <rect x="205" y="900" width="395" height="80" rx="12" fill="url(#woodGrain)"/>
+    <rect x="205" y="900" width="395" height="80" rx="12" fill="#D4A853" opacity="0.3"/>
+    <!-- Thin lumber representation for 1x4 -->
+    <rect x="225" y="915" width="355" height="50" rx="6" fill="#C49A45" opacity="0.7"/>
+    <text x="402" y="1035" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="42" font-weight="800" fill="#333">
+      1 x 4
+    </text>
+    <text x="402" y="1080" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#888">
+      19 x 89mm / 1820mm
+    </text>
+
+    <!-- 2x4 Card (highlighted as popular) -->
+    <rect x="670" y="880" width="435" height="230" rx="20" fill="#FFFFFF" filter="url(#shadowC)" stroke="#2E7D32" stroke-width="3"/>
+    <rect x="790" y="870" width="100" height="36" rx="18" fill="#2E7D32"/>
+    <text x="840" y="894" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">人気</text>
+    <rect x="690" y="900" width="395" height="80" rx="12" fill="url(#woodGrain)"/>
+    <rect x="690" y="900" width="395" height="80" rx="12" fill="#C49A45" opacity="0.3"/>
+    <rect x="710" y="910" width="355" height="60" rx="6" fill="#B8893A" opacity="0.7"/>
+    <text x="887" y="1035" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="42" font-weight="800" fill="#333">
+      2 x 4
+    </text>
+    <text x="887" y="1080" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#888">
+      38 x 89mm / 1820mm
+    </text>
+
+    <!-- Row 2 -->
+    <!-- 1x6 Card -->
+    <rect x="185" y="1140" width="435" height="230" rx="20" fill="#FFFFFF" filter="url(#shadowC)"/>
+    <rect x="205" y="1160" width="395" height="80" rx="12" fill="url(#woodGrain)"/>
+    <rect x="205" y="1160" width="395" height="80" rx="12" fill="#D4A853" opacity="0.3"/>
+    <rect x="225" y="1170" width="355" height="60" rx="6" fill="#C49A45" opacity="0.7"/>
+    <text x="402" y="1295" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="42" font-weight="800" fill="#333">
+      1 x 6
+    </text>
+    <text x="402" y="1340" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#888">
+      19 x 140mm / 1820mm
+    </text>
+
+    <!-- 2x6 Card -->
+    <rect x="670" y="1140" width="435" height="230" rx="20" fill="#FFFFFF" filter="url(#shadowC)"/>
+    <rect x="690" y="1160" width="395" height="80" rx="12" fill="url(#woodGrain)"/>
+    <rect x="690" y="1160" width="395" height="80" rx="12" fill="#C49A45" opacity="0.3"/>
+    <rect x="710" y="1165" width="355" height="70" rx="6" fill="#B8893A" opacity="0.7"/>
+    <text x="887" y="1295" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="42" font-weight="800" fill="#333">
+      2 x 6
+    </text>
+    <text x="887" y="1340" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#888">
+      38 x 140mm / 1820mm
+    </text>
+
+    <!-- Row 3 -->
+    <!-- 1x8 Card -->
+    <rect x="185" y="1400" width="435" height="230" rx="20" fill="#FFFFFF" filter="url(#shadowC)"/>
+    <rect x="205" y="1420" width="395" height="80" rx="12" fill="url(#woodGrain)"/>
+    <rect x="205" y="1420" width="395" height="80" rx="12" fill="#D4A853" opacity="0.3"/>
+    <rect x="225" y="1425" width="355" height="70" rx="6" fill="#C49A45" opacity="0.7"/>
+    <text x="402" y="1555" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="42" font-weight="800" fill="#333">
+      1 x 8
+    </text>
+    <text x="402" y="1600" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#888">
+      19 x 184mm / 1820mm
+    </text>
+
+    <!-- 2x8 Card -->
+    <rect x="670" y="1400" width="435" height="230" rx="20" fill="#FFFFFF" filter="url(#shadowC)"/>
+    <rect x="690" y="1420" width="395" height="80" rx="12" fill="url(#woodGrain)"/>
+    <rect x="690" y="1420" width="395" height="80" rx="12" fill="#C49A45" opacity="0.3"/>
+    <rect x="710" y="1422" width="355" height="76" rx="6" fill="#B8893A" opacity="0.7"/>
+    <text x="887" y="1555" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="42" font-weight="800" fill="#333">
+      2 x 8
+    </text>
+    <text x="887" y="1600" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#888">
+      38 x 184mm / 1820mm
+    </text>
+
+    <!-- Row 4 -->
+    <!-- 1x10 Card -->
+    <rect x="185" y="1660" width="435" height="230" rx="20" fill="#FFFFFF" filter="url(#shadowC)"/>
+    <rect x="205" y="1680" width="395" height="80" rx="12" fill="url(#woodGrain)"/>
+    <rect x="205" y="1680" width="395" height="80" rx="12" fill="#D4A853" opacity="0.3"/>
+    <rect x="225" y="1682" width="355" height="76" rx="6" fill="#C49A45" opacity="0.7"/>
+    <text x="402" y="1815" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="42" font-weight="800" fill="#333">
+      1 x 10
+    </text>
+    <text x="402" y="1860" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#888">
+      19 x 235mm / 1820mm
+    </text>
+
+    <!-- 2x10 Card -->
+    <rect x="670" y="1660" width="435" height="230" rx="20" fill="#FFFFFF" filter="url(#shadowC)"/>
+    <rect x="690" y="1680" width="395" height="80" rx="12" fill="url(#woodGrain)"/>
+    <rect x="690" y="1680" width="395" height="80" rx="12" fill="#C49A45" opacity="0.3"/>
+    <rect x="710" y="1680" width="355" height="80" rx="6" fill="#B8893A" opacity="0.7"/>
+    <text x="887" y="1815" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="42" font-weight="800" fill="#333">
+      2 x 10
+    </text>
+    <text x="887" y="1860" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#888">
+      38 x 235mm / 1820mm
+    </text>
+
+    <!-- Custom size button -->
+    <rect x="185" y="1930" width="920" height="120" rx="20" fill="#FFF" filter="url(#shadowC)" stroke="#8B6914" stroke-width="3" stroke-dasharray="12,6"/>
+    <text x="645" y="2005" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="36" font-weight="700" fill="#8B6914">
+      + カスタムサイズを入力
+    </text>
+
+    <!-- Length selector -->
+    <rect x="185" y="2090" width="920" height="140" rx="20" fill="#F5F0E6"/>
+    <text x="220" y="2140" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="28" font-weight="600" fill="#555">
+      原板の長さ
+    </text>
+    <!-- Toggle buttons -->
+    <rect x="480" y="2110" width="180" height="60" rx="30" fill="#8B6914"/>
+    <text x="570" y="2150" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="700" fill="#FFF">6F (1820)</text>
+    <rect x="680" y="2110" width="180" height="60" rx="30" fill="#FFF" stroke="#CCC" stroke-width="2"/>
+    <text x="770" y="2150" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="600" fill="#777">8F (2438)</text>
+    <rect x="880" y="2110" width="180" height="60" rx="30" fill="#FFF" stroke="#CCC" stroke-width="2"/>
+    <text x="970" y="2150" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="600" fill="#777">12F (3650)</text>
+    <text x="220" y="2205" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#999">
+      ホームセンターで一般的な長さから選択
+    </text>
+  </g>
+
+  <!-- Home indicator -->
+  <rect x="520" y="2490" width="250" height="8" rx="4" fill="#1a1a1a" opacity="0.2"/>
+</svg>

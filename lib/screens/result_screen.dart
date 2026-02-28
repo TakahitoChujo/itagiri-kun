@@ -9,6 +9,7 @@ import '../models/project.dart';
 import '../providers/project_provider.dart';
 import '../services/storage_service.dart';
 import '../widgets/cut_diagram.dart';
+import '../widgets/ad_banner.dart';
 
 /// 計算結果画面
 ///
@@ -148,6 +149,11 @@ class ResultScreen extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(height: 16),
+
+          // 広告バナー（スクロール末尾、プレミアムユーザーには非表示）
+          const AdBanner(),
+
           const SizedBox(height: 32),
         ],
       ),

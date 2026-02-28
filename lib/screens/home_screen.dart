@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../models/project.dart';
 import '../providers/project_provider.dart';
 import '../services/storage_service.dart';
+import '../widgets/ad_banner.dart';
 import 'settings_screen.dart';
 import 'wood_select_screen.dart';
 import 'pieces_input_screen.dart';
@@ -37,32 +38,40 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: projectsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.error_outline, size: 48, color: colorScheme.error),
-              const SizedBox(height: 16),
-              Text(
-                'エラーが発生しました',
-                style: TextStyle(color: colorScheme.error),
+      body: Column(
+        children: [
+          Expanded(
+            child: projectsAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+                    const SizedBox(height: 16),
+                    Text(
+                      'エラーが発生しました',
+                      style: TextStyle(color: colorScheme.error),
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: () => ref.invalidate(projectsProvider),
+                      child: const Text('再読み込み'),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => ref.invalidate(projectsProvider),
-                child: const Text('再読み込み'),
-              ),
-            ],
+              data: (projects) {
+                if (projects.isEmpty) {
+                  return _buildEmptyState(context);
+                }
+                return _buildProjectList(context, ref, projects);
+              },
+            ),
           ),
-        ),
-        data: (projects) {
-          if (projects.isEmpty) {
-            return _buildEmptyState(context);
-          }
-          return _buildProjectList(context, ref, projects);
-        },
+          // 広告バナー（プレミアムユーザーには非表示）
+          const AdBanner(),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {

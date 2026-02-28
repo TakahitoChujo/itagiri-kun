@@ -5,6 +5,8 @@ import 'constants/colors.dart';
 import 'constants/dimensions.dart';
 import 'providers/settings_provider.dart';
 import 'services/storage_service.dart';
+import 'services/premium_service.dart';
+import 'services/analytics_service.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
@@ -13,6 +15,10 @@ void main() async {
   // Hive ストレージの初期化
   await StorageService.initStorage();
   await SettingsNotifier.initSettingsBox();
+  await PremiumNotifier.initPremiumBox();
+
+  // Analytics の初期化（Phase 0: スタブ）
+  await AnalyticsService.init();
 
   runApp(
     const ProviderScope(
@@ -47,7 +53,7 @@ class ItagiriKunApp extends StatelessWidget {
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.textOnPrimary,
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: AppDimensions.elevationLow,
           color: AppColors.surface,
           shape: RoundedRectangleBorder(

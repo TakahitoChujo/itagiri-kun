@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" width="400" height="800">
+  <defs>
+    <!-- Board wood fill gradient -->
+    <linearGradient id="splBoardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5DEB3"/>
+      <stop offset="35%" style="stop-color:#DEB887"/>
+      <stop offset="75%" style="stop-color:#D2A96A"/>
+      <stop offset="100%" style="stop-color:#C49A5C"/>
+    </linearGradient>
+    <!-- Green accent -->
+    <linearGradient id="splGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#388E3C"/>
+      <stop offset="100%" style="stop-color:#2E7D32"/>
+    </linearGradient>
+    <!-- Drop shadow -->
+    <filter id="splShadow">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#8B6914" flood-opacity="0.2"/>
+    </filter>
+    <filter id="splTextShadow">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#8B6914" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background - off-white/cream -->
+  <rect width="400" height="800" fill="#FAF8F5"/>
+
+  <!-- Subtle decorative circles in background -->
+  <circle cx="200" cy="350" r="180" fill="none" stroke="#8B6914" stroke-width="0.5" opacity="0.08"/>
+  <circle cx="200" cy="350" r="220" fill="none" stroke="#8B6914" stroke-width="0.5" opacity="0.05"/>
+  <circle cx="200" cy="350" r="260" fill="none" stroke="#8B6914" stroke-width="0.3" opacity="0.03"/>
+
+  <!-- Central logo group -->
+  <g transform="translate(200, 320)" filter="url(#splShadow)">
+
+    <!-- Simplified board icon -->
+    <!-- Main board -->
+    <rect x="-70" y="-55" width="130" height="95" rx="6" ry="6" fill="url(#splBoardGrad)" stroke="#A07830" stroke-width="2.5"/>
+    <!-- Wood grain on main board -->
+    <line x1="-60" y1="-30" x2="50" y2="-30" stroke="#C4A060" stroke-width="1.2" opacity="0.45"/>
+    <line x1="-60" y1="-5" x2="50" y2="-5" stroke="#C4A060" stroke-width="1.2" opacity="0.35"/>
+    <line x1="-60" y1="20" x2="50" y2="20" stroke="#C4A060" stroke-width="1.2" opacity="0.45"/>
+
+    <!-- Cut piece (separated, offset) -->
+    <g transform="translate(25, 8) rotate(6)">
+      <rect x="0" y="-28" width="55" height="56" rx="4" ry="4" fill="url(#splBoardGrad)" stroke="#A07830" stroke-width="2.5"/>
+      <!-- Wood grain on cut piece -->
+      <line x1="6" y1="-10" x2="48" y2="-10" stroke="#C4A060" stroke-width="1.2" opacity="0.45"/>
+      <line x1="6" y1="12" x2="48" y2="12" stroke="#C4A060" stroke-width="1.2" opacity="0.35"/>
+    </g>
+
+    <!-- Cut line -->
+    <line x1="38" y1="-62" x2="38" y2="47" stroke="#E53935" stroke-width="2.5" stroke-dasharray="8,6" opacity="0.85"/>
+
+    <!-- Dimension measurement -->
+    <g transform="translate(-5, -72)" opacity="0.85">
+      <line x1="-60" y1="0" x2="30" y2="0" stroke="#8B6914" stroke-width="2"/>
+      <polygon points="-60,0 -50,-5 -50,5" fill="#8B6914"/>
+      <polygon points="30,0 20,-5 20,5" fill="#8B6914"/>
+      <rect x="-30" y="-12" width="40" height="20" rx="4" fill="url(#splGreen)"/>
+      <text x="-10" y="4" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1820</text>
+    </g>
+
+  </g>
+
+  <!-- App name -->
+  <text x="200" y="445" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', 'Arial Rounded MT Bold', Arial, sans-serif" font-size="48" font-weight="bold" fill="#8B6914" text-anchor="middle" filter="url(#splTextShadow)" letter-spacing="3">
+    板取りくん
+  </text>
+
+  <!-- Tagline -->
+  <text x="200" y="485" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', Arial, sans-serif" font-size="16" fill="#8B6914" text-anchor="middle" opacity="0.85" letter-spacing="1.5">
+    木材カット最適化アプリ
+  </text>
+
+  <!-- Loading dots at bottom -->
+  <g transform="translate(200, 650)" opacity="0.3">
+    <circle cx="-20" cy="0" r="4" fill="#8B6914">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" begin="0s"/>
+    </circle>
+    <circle cx="0" cy="0" r="4" fill="#8B6914">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" begin="0.3s"/>
+    </circle>
+    <circle cx="20" cy="0" r="4" fill="#8B6914">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" begin="0.6s"/>
+    </circle>
+  </g>
+
+</svg>

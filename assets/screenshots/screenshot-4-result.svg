@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1290 2796" width="1290" height="2796">
+  <defs>
+    <linearGradient id="bgGrad4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2E7D32"/>
+      <stop offset="60%" stop-color="#1B5E20"/>
+      <stop offset="100%" stop-color="#8B6914"/>
+    </linearGradient>
+    <linearGradient id="utilGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#43A047"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+    <linearGradient id="woodPiece" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D4A853"/>
+      <stop offset="50%" stop-color="#C49A45"/>
+      <stop offset="100%" stop-color="#B8893A"/>
+    </linearGradient>
+    <filter id="shdA4" x="-5%" y="-5%" width="115%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+    <filter id="shdB4" x="-5%" y="-2%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+    <filter id="shdC4" x="-3%" y="-3%" width="106%" height="108%">
+      <feDropShadow dx="0" dy="1" stdDeviation="3" flood-color="#000" flood-opacity="0.06"/>
+    </filter>
+    <clipPath id="screenClip4">
+      <rect x="145" y="580" width="1000" height="1900" rx="20"/>
+    </clipPath>
+    <clipPath id="phoneClip4">
+      <rect x="120" y="520" width="1050" height="2020" rx="60"/>
+    </clipPath>
+    <pattern id="woodTex" patternUnits="userSpaceOnUse" width="100" height="10">
+      <rect width="100" height="10" fill="#C49A45"/>
+      <line x1="0" y1="3" x2="100" y2="3" stroke="#B8893A" stroke-width="0.5" opacity="0.5"/>
+      <line x1="0" y1="7" x2="100" y2="7" stroke="#B8893A" stroke-width="0.3" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1290" height="2796" fill="#FAF8F5"/>
+  <rect width="1290" height="460" fill="url(#bgGrad4)"/>
+  <rect y="400" width="1290" height="120" fill="url(#bgGrad4)" opacity="0.25"/>
+
+  <!-- Catchcopy -->
+  <text x="645" y="160" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="76" font-weight="800" fill="#FFFFFF" letter-spacing="3">
+    最適なカット配置を
+  </text>
+  <text x="645" y="270" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="76" font-weight="800" fill="#FFFFFF" letter-spacing="3">
+    自動計算
+  </text>
+  <text x="645" y="350" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="38" font-weight="400" fill="#FFFFFF" opacity="0.85">
+    木材のムダを最小限に、コストを節約
+  </text>
+
+  <!-- App badge -->
+  <rect x="540" y="390" width="210" height="55" rx="28" fill="rgba(255,255,255,0.2)"/>
+  <text x="645" y="427" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="700" fill="#FFF">
+    板取りくん
+  </text>
+
+  <!-- Phone Frame -->
+  <rect x="120" y="520" width="1050" height="2020" rx="60" fill="#1a1a1a" filter="url(#shdA4)"/>
+  <rect x="135" y="535" width="1020" height="1990" rx="52" fill="#2a2a2a"/>
+  <rect x="145" y="565" width="1000" height="1960" rx="44" fill="#FAF8F5"/>
+
+  <!-- Status bar -->
+  <g clip-path="url(#phoneClip4)">
+    <rect x="145" y="565" width="1000" height="88" fill="#8B6914"/>
+    <text x="200" y="620" font-family="'SF Pro', 'Helvetica', sans-serif" font-size="32" font-weight="600" fill="#FFF">9:41</text>
+    <rect x="1000" y="598" width="28" height="28" rx="4" fill="#FFF" opacity="0.9"/>
+    <rect x="1035" y="602" width="28" height="24" rx="4" fill="#FFF" opacity="0.9"/>
+    <rect x="1070" y="606" width="28" height="20" rx="4" fill="#FFF" opacity="0.9"/>
+    <rect x="520" y="575" width="250" height="36" rx="18" fill="#000"/>
+  </g>
+
+  <!-- App bar -->
+  <rect x="145" y="653" width="1000" height="110" fill="#8B6914"/>
+  <line x1="210" y1="708" x2="230" y2="688" stroke="#FFF" stroke-width="4" stroke-linecap="round"/>
+  <line x1="210" y1="708" x2="230" y2="728" stroke="#FFF" stroke-width="4" stroke-linecap="round"/>
+  <text x="645" y="724" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="40" font-weight="700" fill="#FFF">
+    計算結果
+  </text>
+  <!-- Share icon -->
+  <rect x="1040" y="690" width="28" height="28" rx="4" fill="none" stroke="#FFF" stroke-width="3"/>
+  <line x1="1054" y1="690" x2="1054" y2="680" stroke="#FFF" stroke-width="3"/>
+  <line x1="1044" y1="688" x2="1054" y2="678" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
+  <line x1="1064" y1="688" x2="1054" y2="678" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Content area -->
+  <g clip-path="url(#screenClip4)">
+    <!-- Utilization rate hero section -->
+    <rect x="185" y="800" width="920" height="260" rx="24" fill="#E8F5E9" filter="url(#shdC4)"/>
+    <text x="400" y="870" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="30" font-weight="600" fill="#2E7D32">
+      総合利用率
+    </text>
+    <!-- Big percentage -->
+    <text x="400" y="980" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="110" font-weight="900" fill="#2E7D32">
+      94.2
+    </text>
+    <text x="680" y="980" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="50" font-weight="700" fill="#2E7D32">
+      %
+    </text>
+    <!-- Progress bar -->
+    <rect x="220" y="1010" width="600" height="20" rx="10" fill="#C8E6C9"/>
+    <rect x="220" y="1010" width="565" height="20" rx="10" fill="url(#utilGrad)"/>
+    <!-- Stats -->
+    <text x="870" y="870" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#666">必要本数</text>
+    <text x="870" y="930" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="60" font-weight="800" fill="#8B6914">3</text>
+    <text x="870" y="965" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" fill="#666">本</text>
+    <text x="870" y="1020" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#999">端材: 316mm</text>
+
+    <!-- Cut diagram section -->
+    <text x="200" y="1120" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="32" font-weight="700" fill="#333">
+      カット図
+    </text>
+    <rect x="200" y="1135" width="80" height="4" rx="2" fill="#8B6914"/>
+
+    <!-- Board 1 -->
+    <rect x="185" y="1170" width="920" height="210" rx="16" fill="#FFF" filter="url(#shdC4)"/>
+    <text x="210" y="1205" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="700" fill="#555">
+      1本目 (2x4 SPF材 1820mm)
+    </text>
+    <rect x="850" y="1183" width="220" height="34" rx="17" fill="#E8F5E9"/>
+    <text x="960" y="1208" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" font-weight="700" fill="#2E7D32">利用率 98.9%</text>
+
+    <!-- Cut visualization - Board 1 -->
+    <rect x="210" y="1225" width="870" height="80" rx="8" fill="#F5F0E6" stroke="#D0C8B8" stroke-width="1"/>
+    <!-- Piece A: 450mm -->
+    <rect x="212" y="1227" width="214" height="76" rx="6" fill="#4CAF50" opacity="0.85"/>
+    <text x="319" y="1270" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">棚板</text>
+    <text x="319" y="1293" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#FFF" opacity="0.9">450mm</text>
+    <!-- Kerf -->
+    <rect x="426" y="1227" width="3" height="76" fill="#E53935" opacity="0.5"/>
+    <!-- Piece B: 450mm -->
+    <rect x="429" y="1227" width="214" height="76" rx="6" fill="#4CAF50" opacity="0.85"/>
+    <text x="536" y="1270" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">棚板</text>
+    <text x="536" y="1293" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#FFF" opacity="0.9">450mm</text>
+    <!-- Kerf -->
+    <rect x="643" y="1227" width="3" height="76" fill="#E53935" opacity="0.5"/>
+    <!-- Piece C: 450mm -->
+    <rect x="646" y="1227" width="214" height="76" rx="6" fill="#4CAF50" opacity="0.85"/>
+    <text x="753" y="1270" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">棚板</text>
+    <text x="753" y="1293" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#FFF" opacity="0.9">450mm</text>
+    <!-- Kerf -->
+    <rect x="860" y="1227" width="3" height="76" fill="#E53935" opacity="0.5"/>
+    <!-- Piece D: 450mm (partial) -->
+    <rect x="863" y="1227" width="214" height="76" rx="6" fill="#4CAF50" opacity="0.85"/>
+    <text x="960" y="1270" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">棚板</text>
+    <text x="960" y="1293" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#FFF" opacity="0.9">450mm</text>
+
+    <!-- Dimension line for board 1 -->
+    <text x="210" y="1345" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" fill="#AAA">0</text>
+    <text x="1065" y="1345" text-anchor="end" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" fill="#AAA">1820mm</text>
+    <line x1="245" y1="1340" x2="1030" y2="1340" stroke="#DDD" stroke-width="1"/>
+
+    <!-- Board 2 -->
+    <rect x="185" y="1380" width="920" height="210" rx="16" fill="#FFF" filter="url(#shdC4)"/>
+    <text x="210" y="1415" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="700" fill="#555">
+      2本目 (2x4 SPF材 1820mm)
+    </text>
+    <rect x="850" y="1393" width="220" height="34" rx="17" fill="#E8F5E9"/>
+    <text x="960" y="1418" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" font-weight="700" fill="#2E7D32">利用率 99.0%</text>
+
+    <!-- Cut visualization - Board 2 -->
+    <rect x="210" y="1435" width="870" height="80" rx="8" fill="#F5F0E6" stroke="#D0C8B8" stroke-width="1"/>
+    <!-- Piece: 900mm -->
+    <rect x="212" y="1437" width="429" height="76" rx="6" fill="#FF9800" opacity="0.85"/>
+    <text x="427" y="1480" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">側板</text>
+    <text x="427" y="1503" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#FFF" opacity="0.9">900mm</text>
+    <!-- Kerf -->
+    <rect x="641" y="1437" width="3" height="76" fill="#E53935" opacity="0.5"/>
+    <!-- Piece: 900mm -->
+    <rect x="644" y="1437" width="429" height="76" rx="6" fill="#FF9800" opacity="0.85"/>
+    <text x="858" y="1480" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">側板</text>
+    <text x="858" y="1503" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#FFF" opacity="0.9">900mm</text>
+
+    <text x="210" y="1555" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" fill="#AAA">0</text>
+    <text x="1065" y="1555" text-anchor="end" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" fill="#AAA">1820mm</text>
+    <line x1="245" y1="1550" x2="1030" y2="1550" stroke="#DDD" stroke-width="1"/>
+
+    <!-- Board 3 -->
+    <rect x="185" y="1590" width="920" height="210" rx="16" fill="#FFF" filter="url(#shdC4)"/>
+    <text x="210" y="1625" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="26" font-weight="700" fill="#555">
+      3本目 (2x4 SPF材 1820mm)
+    </text>
+    <rect x="850" y="1603" width="220" height="34" rx="17" fill="#FFF3E0"/>
+    <text x="960" y="1628" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" font-weight="700" fill="#E65100">利用率 82.7%</text>
+
+    <!-- Cut visualization - Board 3 -->
+    <rect x="210" y="1645" width="870" height="80" rx="8" fill="#F5F0E6" stroke="#D0C8B8" stroke-width="1"/>
+    <!-- Piece: 600mm -->
+    <rect x="212" y="1647" width="286" height="76" rx="6" fill="#7B1FA2" opacity="0.75"/>
+    <text x="355" y="1690" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">天板</text>
+    <text x="355" y="1713" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#FFF" opacity="0.9">600mm</text>
+    <!-- Kerf -->
+    <rect x="498" y="1647" width="3" height="76" fill="#E53935" opacity="0.5"/>
+    <!-- Piece: 400mm -->
+    <rect x="501" y="1647" width="191" height="76" rx="6" fill="#1976D2" opacity="0.75"/>
+    <text x="596" y="1690" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">背板受け</text>
+    <text x="596" y="1713" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#FFF" opacity="0.9">400mm</text>
+    <!-- Kerf -->
+    <rect x="692" y="1647" width="3" height="76" fill="#E53935" opacity="0.5"/>
+    <!-- Piece: 400mm -->
+    <rect x="695" y="1647" width="191" height="76" rx="6" fill="#1976D2" opacity="0.75"/>
+    <text x="790" y="1690" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" font-weight="700" fill="#FFF">背板受け</text>
+    <text x="790" y="1713" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#FFF" opacity="0.9">400mm</text>
+    <!-- Waste -->
+    <rect x="886" y="1647" width="191" height="76" rx="6" fill="#EEEEEE" stroke="#DDD" stroke-width="1" stroke-dasharray="6,3"/>
+    <text x="981" y="1693" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" fill="#BBB">端材</text>
+    <text x="981" y="1713" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="18" fill="#CCC">316mm</text>
+
+    <text x="210" y="1765" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" fill="#AAA">0</text>
+    <text x="1065" y="1765" text-anchor="end" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="20" fill="#AAA">1820mm</text>
+    <line x1="245" y1="1760" x2="1030" y2="1760" stroke="#DDD" stroke-width="1"/>
+
+    <!-- Legend -->
+    <rect x="185" y="1800" width="920" height="90" rx="16" fill="#F5F0E6"/>
+    <text x="230" y="1855" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#888">凡例:</text>
+    <rect x="300" y="1835" width="30" height="24" rx="4" fill="#4CAF50"/>
+    <text x="340" y="1855" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#666">棚板</text>
+    <rect x="420" y="1835" width="30" height="24" rx="4" fill="#FF9800"/>
+    <text x="460" y="1855" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#666">側板</text>
+    <rect x="540" y="1835" width="30" height="24" rx="4" fill="#7B1FA2"/>
+    <text x="580" y="1855" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#666">天板</text>
+    <rect x="660" y="1835" width="30" height="24" rx="4" fill="#1976D2"/>
+    <text x="700" y="1855" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#666">背板受け</text>
+    <rect x="835" y="1835" width="30" height="24" rx="4" fill="#EEE" stroke="#CCC" stroke-width="1"/>
+    <text x="875" y="1855" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#666">端材</text>
+    <rect x="940" y="1835" width="30" height="24" rx="4" fill="#E53935" opacity="0.5"/>
+    <text x="980" y="1855" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="22" fill="#666">カーフ</text>
+
+    <!-- Action buttons -->
+    <rect x="185" y="1920" width="445" height="100" rx="20" fill="#8B6914" filter="url(#shdB4)"/>
+    <text x="407" y="1982" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="32" font-weight="700" fill="#FFF">
+      保存する
+    </text>
+
+    <rect x="660" y="1920" width="445" height="100" rx="20" fill="#FFF" stroke="#8B6914" stroke-width="3"/>
+    <text x="882" y="1982" text-anchor="middle" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="32" font-weight="700" fill="#8B6914">
+      共有する
+    </text>
+  </g>
+
+  <!-- Home indicator -->
+  <rect x="520" y="2490" width="250" height="8" rx="4" fill="#1a1a1a" opacity="0.2"/>
+</svg>

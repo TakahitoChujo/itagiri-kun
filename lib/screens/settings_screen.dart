@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/settings_provider.dart';
+import '../widgets/premium_banner.dart';
 
 /// 設定画面
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -184,6 +185,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
 
+          const SizedBox(height: 16),
+
+          // プレミアム導線バナー（プレミアムユーザーには非表示）
+          const PremiumBanner(),
           const SizedBox(height: 16),
 
           // アプリ情報セクション

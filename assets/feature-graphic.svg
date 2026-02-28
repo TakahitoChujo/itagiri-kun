@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 500" width="1024" height="500">
+  <defs>
+    <!-- Main background gradient -->
+    <linearGradient id="fgBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A07818"/>
+      <stop offset="40%" style="stop-color:#8B6914"/>
+      <stop offset="100%" style="stop-color:#6B4F10"/>
+    </linearGradient>
+    <!-- Wood grain pattern -->
+    <pattern id="fgWoodGrain" x="0" y="0" width="300" height="300" patternUnits="userSpaceOnUse">
+      <rect width="300" height="300" fill="none"/>
+      <path d="M0 20 Q75 15 150 22 Q225 28 300 20" stroke="#9A7216" stroke-width="1.5" fill="none" opacity="0.2"/>
+      <path d="M0 55 Q80 48 160 56 Q240 62 300 53" stroke="#7A5912" stroke-width="1" fill="none" opacity="0.15"/>
+      <path d="M0 85 Q60 80 130 88 Q210 94 300 84" stroke="#9A7216" stroke-width="1.5" fill="none" opacity="0.2"/>
+      <path d="M0 120 Q70 114 140 122 Q220 128 300 118" stroke="#7A5912" stroke-width="1" fill="none" opacity="0.15"/>
+      <path d="M0 155 Q65 150 140 158 Q215 163 300 153" stroke="#9A7216" stroke-width="1.2" fill="none" opacity="0.18"/>
+      <path d="M0 190 Q80 184 160 192 Q230 197 300 188" stroke="#7A5912" stroke-width="1" fill="none" opacity="0.15"/>
+      <path d="M0 225 Q55 220 120 228 Q200 234 300 224" stroke="#9A7216" stroke-width="1.2" fill="none" opacity="0.18"/>
+      <path d="M0 260 Q70 254 150 262 Q220 267 300 258" stroke="#7A5912" stroke-width="1" fill="none" opacity="0.12"/>
+      <path d="M0 290 Q60 285 130 293 Q200 298 300 290" stroke="#9A7216" stroke-width="1" fill="none" opacity="0.15"/>
+    </pattern>
+    <!-- Board gradient -->
+    <linearGradient id="fgBoardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5DEB3"/>
+      <stop offset="40%" style="stop-color:#DEB887"/>
+      <stop offset="80%" style="stop-color:#D2A96A"/>
+      <stop offset="100%" style="stop-color:#C49A5C"/>
+    </linearGradient>
+    <linearGradient id="fgBoardGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#EDD9A3"/>
+      <stop offset="50%" style="stop-color:#D4B57A"/>
+      <stop offset="100%" style="stop-color:#BFA060"/>
+    </linearGradient>
+    <!-- Green gradient -->
+    <linearGradient id="fgGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#43A047"/>
+      <stop offset="100%" style="stop-color:#2E7D32"/>
+    </linearGradient>
+    <!-- Shadows -->
+    <filter id="fgShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#3a2a00" flood-opacity="0.3"/>
+    </filter>
+    <filter id="fgTextShadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+    <!-- Glow for green elements -->
+    <filter id="greenGlow">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#2E7D32" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="500" fill="url(#fgBg)"/>
+  <rect width="1024" height="500" fill="url(#fgWoodGrain)"/>
+
+  <!-- Vignette -->
+  <radialGradient id="fgVignette" cx="40%" cy="50%" r="75%">
+    <stop offset="0%" style="stop-color:transparent"/>
+    <stop offset="100%" style="stop-color:#2a1500" stop-opacity="0.35"/>
+  </radialGradient>
+  <rect width="1024" height="500" fill="url(#fgVignette)"/>
+
+  <!-- Decorative cut layout diagram (right side, background) -->
+  <g transform="translate(680, 100)" opacity="0.15">
+    <!-- Large board outline -->
+    <rect x="0" y="0" width="300" height="300" rx="4" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <!-- Cut sections -->
+    <rect x="5" y="5" width="140" height="90" rx="2" fill="#FFFFFF" opacity="0.3"/>
+    <rect x="150" y="5" width="145" height="90" rx="2" fill="#FFFFFF" opacity="0.2"/>
+    <rect x="5" y="100" width="90" height="90" rx="2" fill="#FFFFFF" opacity="0.25"/>
+    <rect x="100" y="100" width="90" height="90" rx="2" fill="#FFFFFF" opacity="0.2"/>
+    <rect x="195" y="100" width="100" height="195" rx="2" fill="#FFFFFF" opacity="0.3"/>
+    <rect x="5" y="195" width="185" height="60" rx="2" fill="#FFFFFF" opacity="0.2"/>
+    <rect x="5" y="260" width="120" height="35" rx="2" fill="#FFFFFF" opacity="0.25"/>
+    <!-- Dimension lines -->
+    <line x1="5" y1="-10" x2="145" y2="-10" stroke="#FFFFFF" stroke-width="1.5"/>
+    <line x1="150" y1="-10" x2="295" y2="-10" stroke="#FFFFFF" stroke-width="1.5"/>
+    <line x1="-10" y1="5" x2="-10" y2="95" stroke="#FFFFFF" stroke-width="1.5"/>
+    <line x1="-10" y1="100" x2="-10" y2="190" stroke="#FFFFFF" stroke-width="1.5"/>
+  </g>
+
+  <!-- Another subtle cut diagram (far right) -->
+  <g transform="translate(850, 250) rotate(15)" opacity="0.08">
+    <rect x="0" y="0" width="180" height="200" rx="4" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <rect x="5" y="5" width="80" height="60" rx="2" fill="#FFFFFF" opacity="0.4"/>
+    <rect x="90" y="5" width="85" height="60" rx="2" fill="#FFFFFF" opacity="0.3"/>
+    <rect x="5" y="70" width="170" height="50" rx="2" fill="#FFFFFF" opacity="0.35"/>
+    <rect x="5" y="125" width="110" height="70" rx="2" fill="#FFFFFF" opacity="0.3"/>
+  </g>
+
+  <!-- Main content area with boards illustration (left side) -->
+  <g filter="url(#fgShadow)">
+    <!-- Board 1 - large -->
+    <g transform="translate(60, 160) rotate(-3)">
+      <rect x="0" y="0" width="200" height="55" rx="5" fill="url(#fgBoardGrad)" stroke="#A07830" stroke-width="2"/>
+      <line x1="10" y1="18" x2="190" y2="18" stroke="#C4A060" stroke-width="1" opacity="0.4"/>
+      <line x1="10" y1="36" x2="190" y2="36" stroke="#C4A060" stroke-width="1" opacity="0.3"/>
+      <!-- Cut line -->
+      <line x1="130" y1="-5" x2="130" y2="60" stroke="#E53935" stroke-width="2.5" stroke-dasharray="6,4" opacity="0.8"/>
+      <!-- Measurement -->
+      <rect x="40" y="-18" width="50" height="18" rx="4" fill="url(#fgGreen)" filter="url(#greenGlow)"/>
+      <text x="65" y="-4" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1820</text>
+    </g>
+
+    <!-- Board 2 - medium -->
+    <g transform="translate(80, 240) rotate(2)">
+      <rect x="0" y="0" width="160" height="45" rx="4" fill="url(#fgBoardGrad2)" stroke="#A07830" stroke-width="2"/>
+      <line x1="8" y1="15" x2="152" y2="15" stroke="#C4A060" stroke-width="1" opacity="0.4"/>
+      <line x1="8" y1="30" x2="152" y2="30" stroke="#C4A060" stroke-width="1" opacity="0.3"/>
+      <!-- Cut line -->
+      <line x1="90" y1="-4" x2="90" y2="49" stroke="#E53935" stroke-width="2.5" stroke-dasharray="6,4" opacity="0.8"/>
+      <line x1="130" y1="-4" x2="130" y2="49" stroke="#E53935" stroke-width="2" stroke-dasharray="5,4" opacity="0.6"/>
+      <!-- Measurements -->
+      <rect x="25" y="-16" width="40" height="16" rx="3" fill="url(#fgGreen)" filter="url(#greenGlow)"/>
+      <text x="45" y="-3" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">910</text>
+    </g>
+
+    <!-- Board 3 - small cut piece -->
+    <g transform="translate(110, 310) rotate(-1)">
+      <rect x="0" y="0" width="100" height="35" rx="4" fill="url(#fgBoardGrad)" stroke="#A07830" stroke-width="2"/>
+      <line x1="8" y1="12" x2="92" y2="12" stroke="#C4A060" stroke-width="1" opacity="0.4"/>
+      <line x1="8" y1="24" x2="92" y2="24" stroke="#C4A060" stroke-width="1" opacity="0.3"/>
+      <rect x="20" y="-14" width="40" height="14" rx="3" fill="url(#fgGreen)" filter="url(#greenGlow)"/>
+      <text x="40" y="-3" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">450</text>
+    </g>
+  </g>
+
+  <!-- Saw blade decorative element (between boards and text) -->
+  <g transform="translate(310, 350)" opacity="0.12">
+    <circle cx="0" cy="0" r="35" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
+    <circle cx="0" cy="0" r="5" fill="#FFFFFF"/>
+    <line x1="0" y1="-35" x2="0" y2="-44" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+    <line x1="25" y1="-25" x2="31" y2="-31" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+    <line x1="35" y1="0" x2="44" y2="0" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+    <line x1="25" y1="25" x2="31" y2="31" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+    <line x1="0" y1="35" x2="0" y2="44" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-25" y1="25" x2="-31" y2="31" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-35" y1="0" x2="-44" y2="0" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-25" y1="-25" x2="-31" y2="-31" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Main text area (right-center) -->
+  <g filter="url(#fgTextShadow)">
+    <!-- App name -->
+    <text x="580" y="195" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', 'Arial Rounded MT Bold', Arial, sans-serif" font-size="80" font-weight="bold" fill="#FFFFFF" text-anchor="middle" letter-spacing="6">
+      板取りくん
+    </text>
+  </g>
+
+  <!-- Green underline accent -->
+  <rect x="390" y="215" width="380" height="5" rx="2.5" fill="url(#fgGreen)" opacity="0.8"/>
+
+  <!-- Catchphrase -->
+  <text x="580" y="270" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', Arial, sans-serif" font-size="28" fill="#FFFFFF" text-anchor="middle" opacity="0.9" letter-spacing="2">
+    DIYの木取り計算を、
+  </text>
+  <text x="580" y="310" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', Arial, sans-serif" font-size="28" fill="#FFFFFF" text-anchor="middle" opacity="0.9" letter-spacing="2">
+    もっとかんたんに。
+  </text>
+
+  <!-- Feature badges -->
+  <g transform="translate(580, 370)">
+    <!-- Badge 1 -->
+    <g transform="translate(-140, 0)">
+      <rect x="-55" y="-16" width="110" height="32" rx="16" fill="#FFFFFF" opacity="0.25"/>
+      <text x="0" y="5" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', Arial, sans-serif" font-size="15" fill="#FFFFFF" text-anchor="middle" opacity="0.95" font-weight="bold">
+        無料
+      </text>
+    </g>
+    <!-- Badge 2 -->
+    <g transform="translate(0, 0)">
+      <rect x="-55" y="-16" width="110" height="32" rx="16" fill="#FFFFFF" opacity="0.25"/>
+      <text x="0" y="5" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', Arial, sans-serif" font-size="15" fill="#FFFFFF" text-anchor="middle" opacity="0.95" font-weight="bold">
+        かんたん操作
+      </text>
+    </g>
+    <!-- Badge 3 -->
+    <g transform="translate(140, 0)">
+      <rect x="-55" y="-16" width="110" height="32" rx="16" fill="#FFFFFF" opacity="0.25"/>
+      <text x="0" y="5" font-family="'Rounded Mplus 1c', 'Hiragino Maru Gothic ProN', Arial, sans-serif" font-size="15" fill="#FFFFFF" text-anchor="middle" opacity="0.95" font-weight="bold">
+        端材削減
+      </text>
+    </g>
+  </g>
+
+  <!-- Top-left leaf/nature accent -->
+  <g transform="translate(30, 30)" opacity="0.1">
+    <path d="M0 40 Q10 20 30 10 Q50 0 60 20 Q50 30 30 35 Q10 40 0 40 Z" fill="#2E7D32"/>
+    <path d="M5 35 Q20 25 35 18" stroke="#2E7D32" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- Bottom-right leaf accent -->
+  <g transform="translate(970, 460) rotate(180)" opacity="0.08">
+    <path d="M0 40 Q10 20 30 10 Q50 0 60 20 Q50 30 30 35 Q10 40 0 40 Z" fill="#2E7D32"/>
+  </g>
+
+</svg>
