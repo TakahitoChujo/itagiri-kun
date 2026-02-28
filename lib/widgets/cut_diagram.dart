@@ -137,7 +137,7 @@ class _CutDiagramPainter extends CustomPainter {
       // ピースの長さテキスト
       final labelText = piece.label != null && piece.label!.isNotEmpty
           ? '${piece.label}\n${piece.length.toStringAsFixed(0)}'
-          : '${piece.length.toStringAsFixed(0)}';
+          : piece.length.toStringAsFixed(0);
 
       if (pieceWidth > 30) {
         _drawText(
@@ -204,7 +204,7 @@ class _CutDiagramPainter extends CustomPainter {
         if (wasteWidth > 25) {
           _drawText(
             canvas,
-            '${bin.waste.toStringAsFixed(0)}',
+            bin.waste.toStringAsFixed(0),
             Offset(wasteStartX + wasteWidth / 2, barY + barHeight / 2),
             math.min(10, math.max(7, wasteWidth / 5)),
             colorScheme.error,

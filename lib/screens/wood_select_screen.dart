@@ -218,7 +218,7 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
         ),
       ),
       color: _isCustom
-          ? colorScheme.primaryContainer.withOpacity(0.3)
+          ? colorScheme.primaryContainer.withValues(alpha: 0.3)
           : colorScheme.surface,
       child: InkWell(
         onTap: () => _showCustomInputDialog(context),
@@ -256,7 +256,8 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
   /// 長さドロップダウン
   Widget _buildLengthDropdown(BuildContext context) {
     return DropdownButtonFormField<int>(
-      value: _selectedLength,
+      key: ValueKey(_selectedWood),
+      initialValue: _selectedLength,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

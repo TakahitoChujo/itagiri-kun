@@ -65,7 +65,7 @@ class PremiumBanner extends ConsumerWidget {
               border: Border.all(color: _borderColor, width: 1.5),
               boxShadow: [
                 BoxShadow(
-                  color: _goldenrod.withOpacity(0.15),
+                  color: _goldenrod.withValues(alpha: 0.15),
                   blurRadius: 8.0,
                   offset: const Offset(0, 2),
                 ),

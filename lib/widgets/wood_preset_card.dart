@@ -32,7 +32,7 @@ class WoodPresetCard extends StatelessWidget {
         ),
       ),
       color: isSelected
-          ? colorScheme.primaryContainer.withOpacity(0.3)
+          ? colorScheme.primaryContainer.withValues(alpha: 0.3)
           : colorScheme.surface,
       child: InkWell(
         onTap: onTap,

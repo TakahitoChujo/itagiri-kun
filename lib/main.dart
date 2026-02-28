@@ -47,7 +47,7 @@ class ItagiriKunApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: AppColors.background,
         useMaterial3: true,
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           centerTitle: true,
           elevation: AppDimensions.elevationNone,
           backgroundColor: AppColors.primary,

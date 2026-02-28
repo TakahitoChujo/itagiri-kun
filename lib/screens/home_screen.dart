@@ -103,13 +103,13 @@ class HomeScreen extends ConsumerWidget {
             Icon(
               Icons.carpenter_outlined,
               size: 80,
-              color: colorScheme.primary.withOpacity(0.4),
+              color: colorScheme.primary.withValues(alpha: 0.4),
             ),
             const SizedBox(height: 24),
             Text(
               '新しいプロジェクトを作成しましょう',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withValues(alpha:0.6),
                   ),
               textAlign: TextAlign.center,
             ),
@@ -117,7 +117,7 @@ class HomeScreen extends ConsumerWidget {
             Text(
               '右下の「新規プロジェクト」ボタンから\n木材のカット計算を始められます',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface.withOpacity(0.4),
+                    color: colorScheme.onSurface.withValues(alpha:0.4),
                   ),
               textAlign: TextAlign.center,
             ),
@@ -234,7 +234,7 @@ class _ProjectCard extends StatelessWidget {
                     Text(
                       dateFormat.format(project.updatedAt),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurface.withOpacity(0.4),
+                            color: colorScheme.onSurface.withValues(alpha:0.4),
                             fontSize: 11,
                           ),
                     ),
@@ -262,7 +262,7 @@ class _ProjectCard extends StatelessWidget {
               const SizedBox(width: 4),
               Icon(
                 Icons.chevron_right,
-                color: colorScheme.onSurface.withOpacity(0.3),
+                color: colorScheme.onSurface.withValues(alpha:0.3),
               ),
             ],
           ),

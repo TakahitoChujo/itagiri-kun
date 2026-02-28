@@ -119,7 +119,7 @@ class PieceInputRow extends StatelessWidget {
                 Icons.close,
                 color: canDelete
                     ? colorScheme.error
-                    : colorScheme.onSurface.withOpacity(0.3),
+                    : colorScheme.onSurface.withValues(alpha: 0.3),
               ),
               tooltip: '削除',
               padding: EdgeInsets.zero,

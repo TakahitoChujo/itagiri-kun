@@ -152,33 +152,40 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  RadioListTile<MeasurementUnit>(
-                    value: MeasurementUnit.mm,
+                  RadioGroup<MeasurementUnit>(
                     groupValue: settings.unit,
                     onChanged: (value) {
                       if (value != null) {
                         notifier.setUnit(value);
                       }
                     },
-                    title: const Text('ミリメートル (mm)'),
-                    subtitle: const Text('推奨'),
-                    dense: true,
-                  ),
-                  RadioListTile<MeasurementUnit>(
-                    value: MeasurementUnit.cm,
-                    groupValue: settings.unit,
-                    onChanged: null, // v1.0ではmmのみ
-                    title: Text(
-                      'センチメートル (cm)',
-                      style: TextStyle(
-                          color: colorScheme.onSurface.withOpacity(0.4)),
+                    child: Column(
+                      children: [
+                        const RadioListTile<MeasurementUnit>(
+                          value: MeasurementUnit.mm,
+                          title: Text('ミリメートル (mm)'),
+                          subtitle: Text('推奨'),
+                          dense: true,
+                        ),
+                        IgnorePointer(
+                          child: RadioListTile<MeasurementUnit>(
+                          value: MeasurementUnit.cm,
+                          // v1.0ではmmのみ（IgnorePointerで無効化）
+                          title: Text(
+                            'センチメートル (cm)',
+                            style: TextStyle(
+                                color: colorScheme.onSurface.withValues(alpha: 0.4)),
+                          ),
+                          subtitle: Text(
+                            'v1.1で対応予定',
+                            style: TextStyle(
+                                color: colorScheme.onSurface.withValues(alpha: 0.3)),
+                          ),
+                          dense: true,
+                        ),
+                        ),
+                      ],
                     ),
-                    subtitle: Text(
-                      'v1.1で対応予定',
-                      style: TextStyle(
-                          color: colorScheme.onSurface.withOpacity(0.3)),
-                    ),
-                    dense: true,
                   ),
                 ],
               ),
