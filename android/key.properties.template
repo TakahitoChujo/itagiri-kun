@@ -1,0 +1,14 @@
+# リリース用署名設定テンプレート
+# このファイルを key.properties にコピーして値を埋めてください
+# key.properties は .gitignore 済みなので Git にはコミットされません
+#
+# keystore 生成コマンド:
+#   keytool -genkey -v \
+#     -keystore itagirikun-release.keystore \
+#     -alias itagirikun \
+#     -keyalg RSA -keysize 2048 -validity 10000
+
+storePassword=YOUR_STORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=itagirikun
+storeFile=../itagirikun-release.keystore

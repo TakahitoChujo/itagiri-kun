@@ -34,6 +34,9 @@ class Project extends HiveObject {
   /// 更新日時
   DateTime updatedAt;
 
+  /// 素材1本あたりの単価 (円)。null = 未設定
+  double? unitPrice;
+
   Project({
     required this.id,
     required this.name,
@@ -42,6 +45,7 @@ class Project extends HiveObject {
     required this.pieces,
     this.kerfWidth = 3.0,
     this.result,
+    this.unitPrice,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -55,6 +59,12 @@ class Project extends HiveObject {
   double get totalPieceLength =>
       pieces.fold(0.0, (sum, p) => sum + p.length * p.quantity);
 
+  /// 合計コスト (円)。単価未設定 or 結果未計算なら null
+  double? get totalCost {
+    if (unitPrice == null || result == null) return null;
+    return unitPrice! * result!.totalStock;
+  }
+
   Project copyWith({
     String? id,
     String? name,
@@ -63,6 +73,7 @@ class Project extends HiveObject {
     List<CutPiece>? pieces,
     double? kerfWidth,
     CutResult? result,
+    double? unitPrice,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -74,6 +85,7 @@ class Project extends HiveObject {
       pieces: pieces ?? List<CutPiece>.from(this.pieces),
       kerfWidth: kerfWidth ?? this.kerfWidth,
       result: result ?? this.result,
+      unitPrice: unitPrice ?? this.unitPrice,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -109,13 +121,14 @@ class ProjectAdapter extends TypeAdapter<Project> {
       result: fields[6] as CutResult?,
       createdAt: fields[7] as DateTime,
       updatedAt: fields[8] as DateTime,
+      unitPrice: fields[9] as double?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Project obj) {
     writer
-      ..writeByte(9) // number of fields
+      ..writeByte(10) // number of fields
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -133,6 +146,8 @@ class ProjectAdapter extends TypeAdapter<Project> {
       ..writeByte(7)
       ..write(obj.createdAt)
       ..writeByte(8)
-      ..write(obj.updatedAt);
+      ..write(obj.updatedAt)
+      ..writeByte(9)
+      ..write(obj.unitPrice);
   }
 }

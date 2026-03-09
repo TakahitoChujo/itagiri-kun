@@ -1,22 +1,70 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../models/wood_stock.dart';
 import '../models/cut_piece.dart';
 import '../models/cut_result.dart';
 import '../models/project.dart';
+import '../models/sheet_models.dart';
 
 /// Hive を使ったローカルストレージサービス
 ///
-/// プロジェクトの CRUD 操作を提供する。
-/// アプリ起動時に [initStorage] を呼び出してから使用すること。
+/// - 全データを AES-256 で暗号化して保存する。
+/// - 暗号化キーは OS のセキュアストレージ（Android Keystore / iOS Keychain）に保存する。
+/// - プロジェクトの CRUD 操作を提供する。
+/// - アプリ起動時に [initStorage] を呼び出してから使用すること。
 class StorageService {
   static const String _projectBoxName = 'projects';
+  static const String _settingsBoxName = 'settings';
+  static const String _premiumBoxName = 'premium';
 
-  /// Hive の初期化とすべての TypeAdapter の登録を行う。
+  /// flutter_secure_storage に保存する暗号化キーのエイリアス
+  static const String _encryptionKeyAlias = 'hive_enc_key_v1';
+
+  static const _secureStorage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
+
+  // ---------------------------------------------------------------------------
+  // 暗号化キー管理
+  // ---------------------------------------------------------------------------
+
+  /// セキュアストレージから暗号化キーを取得する。
+  ///
+  /// 初回起動時は 32 バイトのランダムキーを生成して保存する。
+  /// 以降の起動では保存済みのキーを読み込む。
+  static Future<HiveAesCipher> _getOrCreateCipher() async {
+    String? keyBase64 = await _secureStorage.read(key: _encryptionKeyAlias);
+
+    if (keyBase64 == null) {
+      final key =
+          List<int>.generate(32, (_) => Random.secure().nextInt(256));
+      keyBase64 = base64Url.encode(key);
+      await _secureStorage.write(
+        key: _encryptionKeyAlias,
+        value: keyBase64,
+      );
+    }
+
+    final keyBytes = base64Url.decode(keyBase64);
+    return HiveAesCipher(keyBytes);
+  }
+
+  // ---------------------------------------------------------------------------
+  // 初期化
+  // ---------------------------------------------------------------------------
+
+  /// Hive の初期化・TypeAdapter 登録・全 Box のオープンを行う。
   ///
   /// アプリの main() で最初に呼び出す必要がある。
+  /// 全 Box は AES-256 で暗号化される。
   static Future<void> initStorage() async {
     await Hive.initFlutter();
+
+    final cipher = await _getOrCreateCipher();
 
     // TypeAdapter の登録（重複登録を避けるためチェック付き）
     if (!Hive.isAdapterRegistered(0)) {
@@ -37,10 +85,37 @@ class StorageService {
     if (!Hive.isAdapterRegistered(5)) {
       Hive.registerAdapter(ProjectAdapter());
     }
+    if (!Hive.isAdapterRegistered(6)) {
+      Hive.registerAdapter(SheetStockAdapter());
+    }
+    if (!Hive.isAdapterRegistered(7)) {
+      Hive.registerAdapter(SheetPlacedPieceAdapter());
+    }
+    if (!Hive.isAdapterRegistered(8)) {
+      Hive.registerAdapter(SheetCutBinAdapter());
+    }
+    if (!Hive.isAdapterRegistered(9)) {
+      Hive.registerAdapter(SheetCutResultAdapter());
+    }
 
-    // プロジェクト用ボックスを開く
-    await Hive.openBox<Project>(_projectBoxName);
+    // 全 Box を暗号化して開く
+    await Hive.openBox<Project>(
+      _projectBoxName,
+      encryptionCipher: cipher,
+    );
+    await Hive.openBox(
+      _settingsBoxName,
+      encryptionCipher: cipher,
+    );
+    await Hive.openBox(
+      _premiumBoxName,
+      encryptionCipher: cipher,
+    );
   }
+
+  // ---------------------------------------------------------------------------
+  // プロジェクト CRUD
+  // ---------------------------------------------------------------------------
 
   /// プロジェクト用の Hive Box を取得する。
   static Box<Project> get _projectBox =>

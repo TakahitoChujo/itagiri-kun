@@ -80,10 +80,6 @@ class SettingsNotifier extends StateNotifier<Settings> {
     }
   }
 
-  /// Hive Box の初期化（main で呼ぶ）
-  static Future<void> initSettingsBox() async {
-    await Hive.openBox(_boxName);
-  }
 }
 
 /// 設定プロバイダー

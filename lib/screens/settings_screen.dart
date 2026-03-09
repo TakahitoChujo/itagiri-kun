@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/settings_provider.dart';
 import '../widgets/premium_banner.dart';
@@ -15,6 +17,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late TextEditingController _kerfController;
+  String _version = '';
 
   @override
   void initState() {
@@ -22,6 +25,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final settings = ref.read(settingsProvider);
     _kerfController =
         TextEditingController(text: settings.kerfWidth.toStringAsFixed(1));
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        _version = info.version;
+      });
+    }
   }
 
   @override
@@ -152,24 +165,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  RadioGroup<MeasurementUnit>(
-                    groupValue: settings.unit,
-                    onChanged: (value) {
-                      if (value != null) {
-                        notifier.setUnit(value);
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        const RadioListTile<MeasurementUnit>(
-                          value: MeasurementUnit.mm,
-                          title: Text('ミリメートル (mm)'),
-                          subtitle: Text('推奨'),
-                          dense: true,
-                        ),
-                        IgnorePointer(
-                          child: RadioListTile<MeasurementUnit>(
+                  Column(
+                    children: [
+                      RadioListTile<MeasurementUnit>(
+                        value: MeasurementUnit.mm,
+                        groupValue: settings.unit,
+                        onChanged: (value) {
+                          if (value != null) {
+                            notifier.setUnit(value);
+                          }
+                        },
+                        title: const Text('ミリメートル (mm)'),
+                        subtitle: const Text('推奨'),
+                        dense: true,
+                      ),
+                      IgnorePointer(
+                        child: RadioListTile<MeasurementUnit>(
                           value: MeasurementUnit.cm,
+                          groupValue: settings.unit,
+                          onChanged: null,
                           // v1.0ではmmのみ（IgnorePointerで無効化）
                           title: Text(
                             'センチメートル (cm)',
@@ -183,9 +197,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                           dense: true,
                         ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -221,7 +234,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   const SizedBox(height: 16),
                   _buildInfoRow(context, 'アプリ名', '板取りくん'),
                   const SizedBox(height: 8),
-                  _buildInfoRow(context, 'バージョン', '1.0.0'),
+                  _buildInfoRow(context, 'バージョン', _version),
                   const SizedBox(height: 8),
                   _buildInfoRow(context, '説明',
                       'DIY木材カット計算アプリ\n端材を最小にする最適カット配置を自動計算します'),
@@ -230,10 +243,62 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
 
+          const SizedBox(height: 16),
+
+          // 法的情報セクション
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading:
+                      Icon(Icons.privacy_tip_outlined, color: colorScheme.primary),
+                  title: const Text('プライバシーポリシー'),
+                  trailing: const Icon(Icons.open_in_new, size: 16),
+                  onTap: () => _launchUrl(
+                    'https://jyojorian.github.io/itagiri-kun/privacy-policy',
+                  ),
+                ),
+                const Divider(height: 1, indent: 56),
+                ListTile(
+                  leading: Icon(Icons.description_outlined,
+                      color: colorScheme.primary),
+                  title: const Text('利用規約'),
+                  trailing: const Icon(Icons.open_in_new, size: 16),
+                  onTap: () => _launchUrl(
+                    'https://jyojorian.github.io/itagiri-kun/terms-of-service',
+                  ),
+                ),
+                const Divider(height: 1, indent: 56),
+                ListTile(
+                  leading:
+                      Icon(Icons.source_outlined, color: colorScheme.primary),
+                  title: const Text('オープンソースライセンス'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => showLicensePage(
+                    context: context,
+                    applicationName: '板取りくん',
+                    applicationVersion: _version,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           const SizedBox(height: 32),
         ],
       ),
     );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('URLを開けませんでした')),
+        );
+      }
+    }
   }
 
   Widget _buildInfoRow(BuildContext context, String label, String value) {

@@ -136,20 +136,6 @@ class PremiumNotifier extends StateNotifier<PremiumState> {
   }
 
   // -----------------------------------------------------------------------
-  // Hive Box の初期化（main で呼ぶ）
-  // -----------------------------------------------------------------------
-
-  /// Hive の premium Box を開く。
-  ///
-  /// アプリの main() で StorageService.initStorage() の後に呼び出す。
-  /// ```dart
-  /// await PremiumNotifier.initPremiumBox();
-  /// ```
-  static Future<void> initPremiumBox() async {
-    await Hive.openBox(boxName);
-  }
-
-  // -----------------------------------------------------------------------
   // 公開メソッド
   // -----------------------------------------------------------------------
 

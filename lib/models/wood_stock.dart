@@ -15,15 +15,31 @@ class WoodStock extends HiveObject {
   /// 選択可能な長さ一覧 (mm)
   List<int> lengths;
 
+  /// カテゴリ (例: 'SPF', '合板', '集成材')
+  String? category;
+
+  /// 長さごとの参考価格 (円) — lengths と同じインデックス
+  List<int>? prices;
+
   WoodStock({
     required this.name,
     required this.width,
     required this.height,
     required this.lengths,
+    this.category,
+    this.prices,
   });
 
   /// 断面サイズの表示用文字列 (例: '38 x 89 mm')
   String get sectionLabel => '${width.toStringAsFixed(0)} x ${height.toStringAsFixed(0)} mm';
+
+  /// 指定長さの参考価格を取得する (null = 未設定)
+  int? priceForLength(int length) {
+    if (prices == null) return null;
+    final idx = lengths.indexOf(length);
+    if (idx < 0 || idx >= prices!.length) return null;
+    return prices![idx];
+  }
 
   /// コピーを作成する
   WoodStock copyWith({
@@ -31,12 +47,16 @@ class WoodStock extends HiveObject {
     double? width,
     double? height,
     List<int>? lengths,
+    String? category,
+    List<int>? prices,
   }) {
     return WoodStock(
       name: name ?? this.name,
       width: width ?? this.width,
       height: height ?? this.height,
       lengths: lengths ?? List<int>.from(this.lengths),
+      category: category ?? this.category,
+      prices: prices ?? (this.prices != null ? List<int>.from(this.prices!) : null),
     );
   }
 
@@ -48,11 +68,12 @@ class WoodStock extends HiveObject {
           name == other.name &&
           width == other.width &&
           height == other.height &&
-          _listEquals(lengths, other.lengths);
+          _listEquals(lengths, other.lengths) &&
+          category == other.category;
 
   @override
   int get hashCode =>
-      name.hashCode ^ width.hashCode ^ height.hashCode ^ lengths.hashCode;
+      name.hashCode ^ width.hashCode ^ height.hashCode ^ lengths.hashCode ^ category.hashCode;
 
   @override
   String toString() =>
@@ -86,13 +107,15 @@ class WoodStockAdapter extends TypeAdapter<WoodStock> {
       width: fields[1] as double,
       height: fields[2] as double,
       lengths: (fields[3] as List).cast<int>(),
+      category: fields[4] as String?,
+      prices: (fields[5] as List?)?.cast<int>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, WoodStock obj) {
     writer
-      ..writeByte(4) // number of fields
+      ..writeByte(6) // number of fields
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -100,6 +123,10 @@ class WoodStockAdapter extends TypeAdapter<WoodStock> {
       ..writeByte(2)
       ..write(obj.height)
       ..writeByte(3)
-      ..write(obj.lengths);
+      ..write(obj.lengths)
+      ..writeByte(4)
+      ..write(obj.category)
+      ..writeByte(5)
+      ..write(obj.prices);
   }
 }

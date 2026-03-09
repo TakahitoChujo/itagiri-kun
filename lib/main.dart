@@ -3,19 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'constants/colors.dart';
 import 'constants/dimensions.dart';
-import 'providers/settings_provider.dart';
 import 'services/storage_service.dart';
-import 'services/premium_service.dart';
 import 'services/analytics_service.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Hive ストレージの初期化
+  // Hive ストレージの初期化（全 Box を AES-256 暗号化して開く）
   await StorageService.initStorage();
-  await SettingsNotifier.initSettingsBox();
-  await PremiumNotifier.initPremiumBox();
 
   // Analytics の初期化（Phase 0: スタブ）
   await AnalyticsService.init();
