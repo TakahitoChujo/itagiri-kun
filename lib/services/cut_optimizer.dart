@@ -10,15 +10,15 @@ class CutOptimizerException implements Exception {
   String toString() => 'CutOptimizerException: $message';
 }
 
-/// 1Dビンパッキング（First Fit Decreasing）による
-/// 木材カット最適化サービス。
+/// 1Dビンパッキングによる木材カット最適化サービス。
 ///
-/// 与えられた部材リストを、できるだけ少ない本数の素材に
-/// 効率よく配置する。鋸刃の幅（カーフ）も考慮する。
+/// 単一材料長: First Fit Decreasing (FFD)
+/// 複数材料長: Best Fit Decreasing with heterogeneous bins
 class CutOptimizer {
   /// カット最適化を実行する。
   ///
-  /// [stockLength] 素材1本の長さ (mm)
+  /// [stockLength] 素材1本の長さ (mm)（単一長さの場合）
+  /// [stockLengths] 利用可能な素材長リスト (mm)（複数長さの場合、優先）
   /// [kerfWidth] 鋸刃の幅 (mm)。各ピース間に加算される。
   /// [pieces] カットしたい部材リスト
   ///
@@ -27,11 +27,17 @@ class CutOptimizer {
   /// Throws [CutOptimizerException] 素材より長い部材がある場合
   static CutResult optimize({
     required double stockLength,
+    List<double>? stockLengths,
     required double kerfWidth,
     required List<CutPiece> pieces,
   }) {
+    // 実効素材長リストを決定（昇順ソート）
+    final effectiveLengths = stockLengths != null && stockLengths.isNotEmpty
+        ? (List<double>.from(stockLengths)..sort())
+        : [stockLength];
+
     // バリデーション
-    if (stockLength <= 0) {
+    if (effectiveLengths.any((l) => l <= 0)) {
       throw const CutOptimizerException('素材の長さは正の値でなければなりません。');
     }
     if (kerfWidth < 0) {
@@ -59,40 +65,30 @@ class CutOptimizer {
       }
     }
 
+    final maxStockLength = effectiveLengths.last;
+
     // 素材より長い部材がないかチェック
     for (final piece in expandedPieces) {
-      if (piece.length > stockLength) {
+      if (piece.length > maxStockLength) {
         throw CutOptimizerException(
-          '部材 (${piece.length}mm) が素材の長さ (${stockLength}mm) を超えています。'
+          '部材 (${piece.length}mm) が最大素材長 (${maxStockLength}mm) を超えています。'
           '${piece.label != null ? " ラベル: ${piece.label}" : ""}',
         );
       }
     }
 
-    // 2. 長い順にソート（降順） -- First Fit Decreasing
+    // 2. 長い順にソート（降順） -- Decreasing
     expandedPieces.sort((a, b) => b.length.compareTo(a.length));
 
     // 3. ビンパッキング
     final bins = <_WorkingBin>[];
 
-    for (final piece in expandedPieces) {
-      var placed = false;
-
-      // 既存のビンに入るか試す（First Fit）
-      for (final bin in bins) {
-        if (bin.canFit(piece.length, kerfWidth)) {
-          bin.addPiece(piece, kerfWidth);
-          placed = true;
-          break;
-        }
-      }
-
-      // 入らなければ新しいビンを追加
-      if (!placed) {
-        final newBin = _WorkingBin(stockLength: stockLength);
-        newBin.addPiece(piece, kerfWidth);
-        bins.add(newBin);
-      }
+    if (effectiveLengths.length == 1) {
+      // 単一長さ: First Fit Decreasing（従来の挙動）
+      _firstFitDecreasing(expandedPieces, effectiveLengths[0], kerfWidth, bins);
+    } else {
+      // 複数長さ: Best Fit Decreasing with heterogeneous bins
+      _bestFitDecreasingMulti(expandedPieces, effectiveLengths, kerfWidth, bins);
     }
 
     // 4. 結果を構築
@@ -103,16 +99,17 @@ class CutOptimizer {
       return CutBin(
         pieces: resultPieces,
         waste: bin.remainingLength,
-        stockLength: stockLength,
+        stockLength: bin.stockLength,
       );
     }).toList();
 
     final totalStock = resultBins.length;
-    final totalWaste =
-        resultBins.fold(0.0, (sum, bin) => sum + bin.waste);
-    final totalStockLength = stockLength * totalStock;
-    final utilizationRate =
-        totalStockLength > 0 ? (totalStockLength - totalWaste) / totalStockLength : 0.0;
+    final totalWaste = resultBins.fold(0.0, (sum, bin) => sum + bin.waste);
+    final totalStockLength =
+        resultBins.fold(0.0, (sum, bin) => sum + bin.stockLength);
+    final utilizationRate = totalStockLength > 0
+        ? (totalStockLength - totalWaste) / totalStockLength
+        : 0.0;
 
     return CutResult(
       bins: resultBins,
@@ -120,6 +117,80 @@ class CutOptimizer {
       totalWaste: totalWaste,
       utilizationRate: utilizationRate,
     );
+  }
+
+  /// First Fit Decreasing（単一材料長）
+  static void _firstFitDecreasing(
+    List<_ExpandedPiece> pieces,
+    double stockLength,
+    double kerfWidth,
+    List<_WorkingBin> bins,
+  ) {
+    for (final piece in pieces) {
+      var placed = false;
+      for (final bin in bins) {
+        if (bin.canFit(piece.length, kerfWidth)) {
+          bin.addPiece(piece, kerfWidth);
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) {
+        final newBin = _WorkingBin(stockLength: stockLength);
+        newBin.addPiece(piece, kerfWidth);
+        bins.add(newBin);
+      }
+    }
+  }
+
+  /// Best Fit Decreasing（複数材料長）
+  ///
+  /// 各ピースを「残りスペースが最小で収まるビン」に配置する。
+  /// 既存ビンに入らない場合は、ピースが収まる最小の材料長で新規ビンを作成する。
+  static void _bestFitDecreasingMulti(
+    List<_ExpandedPiece> pieces,
+    List<double> sortedLengths, // 昇順ソート済み
+    double kerfWidth,
+    List<_WorkingBin> bins,
+  ) {
+    for (final piece in pieces) {
+      // Best Fit: 残りスペースが最小で piece が入るビンを探す
+      _WorkingBin? bestBin;
+      double bestRemaining = double.infinity;
+
+      for (final bin in bins) {
+        if (bin.canFit(piece.length, kerfWidth)) {
+          final remaining = bin.remainingLength -
+              (bin.pieces.isEmpty ? piece.length : kerfWidth + piece.length);
+          if (remaining < bestRemaining) {
+            bestRemaining = remaining;
+            bestBin = bin;
+          }
+        }
+      }
+
+      if (bestBin != null) {
+        bestBin.addPiece(piece, kerfWidth);
+      } else {
+        // 新規ビン: ピースが収まる最小の材料長を選ぶ
+        double? chosenLength;
+        for (final len in sortedLengths) {
+          if (piece.length <= len) {
+            chosenLength = len;
+            break;
+          }
+        }
+        if (chosenLength == null) {
+          throw CutOptimizerException(
+            '部材 (${piece.length}mm) がどの素材長にも収まりません。'
+            '${piece.label != null ? " ラベル: ${piece.label}" : ""}',
+          );
+        }
+        final newBin = _WorkingBin(stockLength: chosenLength);
+        newBin.addPiece(piece, kerfWidth);
+        bins.add(newBin);
+      }
+    }
   }
 }
 
@@ -145,21 +216,16 @@ class _WorkingBin {
   double get remainingLength => stockLength - _usedLength;
 
   /// 指定した長さのピースが入るかどうか判定する。
-  ///
-  /// ビンにすでにピースがある場合は、カーフ幅分も必要になる。
   bool canFit(double pieceLength, double kerfWidth) {
     if (pieces.isEmpty) {
-      // 最初のピース: カーフ不要
       return pieceLength <= stockLength;
     }
-    // 既存のピースがある場合: カーフ + ピース分のスペースが必要
     return _usedLength + kerfWidth + pieceLength <= stockLength;
   }
 
   /// ピースをビンに追加する。
   void addPiece(_ExpandedPiece piece, double kerfWidth) {
     if (pieces.isNotEmpty) {
-      // 既存ピースとの間にカーフを追加
       _usedLength += kerfWidth;
     }
     _usedLength += piece.length;

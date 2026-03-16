@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../gen_l10n/app_localizations.dart';
 import '../models/sheet_models.dart';
 import '../providers/settings_provider.dart';
 import '../services/sheet_cut_optimizer.dart';
@@ -27,10 +28,11 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final settings = ref.watch(settingsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('部材を入力 (2D)'),
+        title: Text(l10n.enterPieces2D),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8),
@@ -52,36 +54,34 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
               padding: const EdgeInsets.all(16),
               children: [
                 Text(
-                  '切り出したいサイズ (2D)',
+                  l10n.sizesToCut2D,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '鋸刃の幅: ${settings.kerfWidth.toStringAsFixed(1)} mm',
+                  l10n.kerfWidthLabel(settings.kerfWidth.toStringAsFixed(1)),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                 ),
                 const SizedBox(height: 16),
 
-                // 列ヘッダー
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Row(
                     children: [
-                      _headerLabel(context, '幅(mm)', flex: 2),
+                      _headerLabel(context, l10n.columnWidth, flex: 2),
                       const SizedBox(width: 6),
-                      _headerLabel(context, '高さ(mm)', flex: 2),
+                      _headerLabel(context, l10n.columnHeight, flex: 2),
                       const SizedBox(width: 6),
-                      _headerLabel(context, '数量', flex: 1),
+                      _headerLabel(context, l10n.columnQuantity, flex: 1),
                       const SizedBox(width: 44),
                     ],
                   ),
                 ),
 
-                // 入力行
                 ...List.generate(_pieces.length, (index) {
                   return _buildInputRow(index);
                 }),
@@ -95,7 +95,7 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
                     });
                   },
                   icon: const Icon(Icons.add),
-                  label: const Text('サイズを追加'),
+                  label: Text(l10n.addSize),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -121,7 +121,7 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
                 child: FilledButton.icon(
                   onPressed: _onCalculate,
                   icon: const Icon(Icons.calculate),
-                  label: const Text('計算する'),
+                  label: Text(l10n.calculate),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     textStyle: const TextStyle(fontSize: 16),
@@ -235,17 +235,18 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
   }
 
   void _onCalculate() {
+    final l10n = AppLocalizations.of(context);
     final validPieces = <SheetPiece>[];
     final errors = <String>[];
 
     for (var i = 0; i < _pieces.length; i++) {
       final piece = _pieces[i];
       if (piece.width <= 0 || piece.height <= 0) {
-        errors.add('${i + 1}行目: 幅と高さを入力してください');
+        errors.add('${i + 1}行目: ${l10n.width}と${l10n.height}を入力してください');
         continue;
       }
       if (piece.quantity <= 0) {
-        errors.add('${i + 1}行目: 数量を1以上にしてください');
+        errors.add(l10n.errorQuantityRequired(i + 1));
         continue;
       }
       final fitsNormal = piece.width <= widget.sheetStock.width &&
@@ -265,7 +266,7 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
       return;
     }
     if (validPieces.isEmpty) {
-      _showErrorDialog(['部材を1つ以上入力してください']);
+      _showErrorDialog([l10n.errorNoPieces]);
       return;
     }
 
@@ -293,10 +294,11 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
   }
 
   void _showErrorDialog(List<String> errors) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('入力エラー'),
+        title: Text(l10n.inputError),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,7 +320,7 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
         actions: [
           FilledButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text(l10n.ok),
           ),
         ],
       ),

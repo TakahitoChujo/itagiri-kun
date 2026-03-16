@@ -1,47 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../services/premium_service.dart'; // isPremiumProvider
+import '../gen_l10n/app_localizations.dart';
+import '../services/premium_service.dart';
 
 /// 設定画面に表示するプレミアムアップグレード導線バナー。
-///
-/// プレミアムユーザーの場合は何も表示しない（[SizedBox.shrink]）。
-/// 無料ユーザーの場合はプレミアムの訴求バナーを表示し、
-/// タップで将来のプレミアム購入画面に遷移する。
-///
-/// Phase 0 では購入画面の代わりに [SnackBar] でメッセージを表示する。
-///
-/// デザイン:
-/// ```
-/// ┌──────────────────────────────────┐
-/// │  ⭐ 板取りくん プレミアム         │
-/// │                                  │
-/// │  広告なし・PDF出力・2D合板対応    │
-/// │  木材1本分の価格で永久に使える    │
-/// │                                  │
-/// │  [詳しく見る →]                  │
-/// └──────────────────────────────────┘
-/// ```
 class PremiumBanner extends ConsumerWidget {
   const PremiumBanner({super.key});
 
-  /// プレミアムバッジのゴールデンロッド色（monetization-plan.md より）
   static const _goldenrod = Color(0xFFDAA520);
-
-  /// バナーの背景グラデーション開始色（クリームベージュ系）
   static const _backgroundStart = Color(0xFFFFF8E7);
-
-  /// バナーの背景グラデーション終了色（ゴールド薄め）
   static const _backgroundEnd = Color(0xFFFFF0C8);
-
-  /// バナーのボーダー色
   static const _borderColor = Color(0xFFE8D5A0);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isPremium = ref.watch(isPremiumProvider);
 
-    // プレミアムユーザーなら非表示
     if (isPremium) {
       return const SizedBox.shrink();
     }
@@ -75,19 +50,12 @@ class PremiumBanner extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // タイトル行: スターアイコン + 「板取りくん プレミアム」
                 _buildTitle(context),
                 const SizedBox(height: 12.0),
-
-                // 訴求テキスト: 機能紹介
                 _buildDescription(context),
                 const SizedBox(height: 4.0),
-
-                // 訴求テキスト: 価格訴求
                 _buildPriceAppeal(context),
                 const SizedBox(height: 16.0),
-
-                // CTA: 「詳しく見る →」
                 _buildCta(context),
               ],
             ),
@@ -97,66 +65,58 @@ class PremiumBanner extends ConsumerWidget {
     );
   }
 
-  /// タイトル行を構築する
   Widget _buildTitle(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
-        // ゴールデンロッドのスターアイコン
-        const Icon(
-          Icons.star_rounded,
-          color: _goldenrod,
-          size: 24.0,
-        ),
+        const Icon(Icons.star_rounded, color: _goldenrod, size: 24.0),
         const SizedBox(width: 8.0),
         Text(
-          '板取りくん プレミアム',
+          l10n.premiumTitle,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF5A4200), // ディープウッド
+                color: const Color(0xFF5A4200),
               ),
         ),
       ],
     );
   }
 
-  /// 機能紹介テキストを構築する
   Widget _buildDescription(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Text(
-      '広告なし・PDF出力・2D合板対応',
+      l10n.premiumDescription,
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: const Color(0xFF5A4200), // ディープウッド
+            color: const Color(0xFF5A4200),
             height: 1.4,
           ),
     );
   }
 
-  /// 価格訴求テキストを構築する
   Widget _buildPriceAppeal(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Text(
-      '木材1本分の価格で永久に使える',
+      l10n.premiumPriceAppeal,
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: const Color(0xFF757575), // グレー（控えめに）
+            color: const Color(0xFF757575),
             height: 1.4,
           ),
     );
   }
 
-  /// CTA（「詳しく見る →」）を構築する
   Widget _buildCta(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 8.0,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         decoration: BoxDecoration(
-          color: const Color(0xFF2E7D32), // フォレストグリーン
+          color: const Color(0xFF2E7D32),
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: const Text(
-          '詳しく見る →',
-          style: TextStyle(
+        child: Text(
+          l10n.premiumCta,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 14.0,
             fontWeight: FontWeight.w600,
@@ -166,23 +126,14 @@ class PremiumBanner extends ConsumerWidget {
     );
   }
 
-  /// バナータップ時の処理。
-  ///
-  /// Phase 0 では SnackBar でメッセージを表示する。
-  /// Phase 1 以降ではプレミアム購入画面に遷移する。
   void _onBannerTapped(BuildContext context) {
-    // Phase 0: SnackBar でメッセージを表示
+    final l10n = AppLocalizations.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('プレミアム購入画面は今後のアップデートで追加されます'),
+      SnackBar(
+        content: Text(l10n.premiumComingSoon),
         behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
-
-    // TODO: Phase 1 でプレミアム購入画面に遷移する
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(builder: (_) => const PremiumScreen()),
-    // );
   }
 }

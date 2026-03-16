@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:file_picker/file_picker.dart';
 
+import '../constants/responsive.dart';
+import '../gen_l10n/app_localizations.dart';
 import '../models/project.dart';
 import '../providers/project_provider.dart';
 import '../services/storage_service.dart';
@@ -15,27 +17,42 @@ import 'pieces_input_screen.dart';
 import 'sheet_select_screen.dart';
 
 /// ホーム画面（プロジェクト一覧）
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  String _searchQuery = '';
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final projectsAsync = ref.watch(projectsProvider);
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('板取りくん'),
+        title: Text(l10n.appName),
         centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.file_upload_outlined),
-            tooltip: 'プロジェクトを読み込み',
+            tooltip: l10n.importProject,
             onPressed: () => _onImportJson(context, ref),
           ),
           IconButton(
             icon: const Icon(Icons.settings),
-            tooltip: '設定',
+            tooltip: l10n.settings,
             onPressed: () {
               Navigator.push(
                 context,
@@ -56,18 +73,18 @@ class HomeScreen extends ConsumerWidget {
                   children: [
                     Icon(Icons.error_outline, size: 48, color: colorScheme.error),
                     const SizedBox(height: 16),
-                    Text('エラーが発生しました', style: TextStyle(color: colorScheme.error)),
+                    Text(l10n.errorOccurred, style: TextStyle(color: colorScheme.error)),
                     const SizedBox(height: 8),
                     TextButton(
                       onPressed: () => ref.invalidate(projectsProvider),
-                      child: const Text('再読み込み'),
+                      child: Text(l10n.reload),
                     ),
                   ],
                 ),
               ),
               data: (projects) {
                 if (projects.isEmpty) return _buildEmptyState(context);
-                return _buildProjectList(context, ref, projects);
+                return _buildProjectListWithSearch(context, ref, projects);
               },
             ),
           ),
@@ -77,12 +94,79 @@ class HomeScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showNewProjectDialog(context, ref),
         icon: const Icon(Icons.add),
-        label: const Text('新規プロジェクト'),
+        label: Text(l10n.newProject),
       ),
     );
   }
 
+  Widget _buildProjectListWithSearch(BuildContext context, WidgetRef ref, List<Project> projects) {
+    final l10n = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final filtered = _searchQuery.isEmpty
+        ? projects
+        : projects
+            .where((p) => p.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+            .toList();
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: l10n.searchProjects,
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: _searchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() => _searchQuery = '');
+                      },
+                    )
+                  : null,
+              isDense: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            ),
+            onChanged: (value) => setState(() => _searchQuery = value),
+          ),
+        ),
+        Expanded(
+          child: filtered.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.search_off,
+                            size: context.emptyIconSize,
+                            color: colorScheme.primary.withValues(alpha: 0.4)),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.searchNoResults(_searchQuery),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurface.withValues(alpha: 0.5),
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : _buildProjectList(context, ref, filtered),
+        ),
+      ],
+    );
+  }
+
   void _showNewProjectDialog(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       builder: (context) => SafeArea(
@@ -93,7 +177,7 @@ class HomeScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'プロジェクトの種類を選択',
+                l10n.selectProjectType,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -101,8 +185,8 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               ListTile(
                 leading: const Icon(Icons.straighten),
-                title: const Text('1D カット（角材・板材）'),
-                subtitle: const Text('長さ方向のカット最適化'),
+                title: Text(l10n.cut1DTitle),
+                subtitle: Text(l10n.cut1DSubtitle),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 onTap: () {
                   Navigator.pop(context);
@@ -115,8 +199,8 @@ class HomeScreen extends ConsumerWidget {
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.crop_square),
-                title: const Text('2D カット（合板）'),
-                subtitle: const Text('板材の面積最適化'),
+                title: Text(l10n.cut2DTitle),
+                subtitle: Text(l10n.cut2DSubtitle),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 onTap: () {
                   Navigator.pop(context);
@@ -134,6 +218,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Future<void> _onImportJson(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -147,7 +232,7 @@ class HomeScreen extends ConsumerWidget {
       if (project == null) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('ファイルの読み込みに失敗しました')),
+            SnackBar(content: Text(l10n.importFailed)),
           );
         }
         return;
@@ -162,13 +247,13 @@ class HomeScreen extends ConsumerWidget {
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('「${imported.name}」を読み込みました')),
+          SnackBar(content: Text(l10n.importSuccess(imported.name))),
         );
       }
     } catch (_) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ファイルの読み込みに失敗しました')),
+          SnackBar(content: Text(l10n.importFailed)),
         );
       }
     }
@@ -176,17 +261,18 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildEmptyState(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.carpenter_outlined, size: 80,
+            Icon(Icons.carpenter_outlined, size: context.emptyIconSize,
                 color: colorScheme.primary.withValues(alpha: 0.4)),
             const SizedBox(height: 24),
             Text(
-              '新しいプロジェクトを作成しましょう',
+              l10n.emptyProjectTitle,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
@@ -194,7 +280,7 @@ class HomeScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '右下の「新規プロジェクト」ボタンから\n木材のカット計算を始められます',
+              l10n.emptyProjectSubtitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface.withValues(alpha: 0.4),
                   ),
@@ -221,12 +307,14 @@ class HomeScreen extends ConsumerWidget {
                 builder: (_) => PiecesInputScreen(
                   woodStock: project.woodStock,
                   stockLength: project.stockLength,
+                  stockLengths: project.stockLengths,
                   existingProject: project,
                 ),
               ),
             ).then((_) => ref.invalidate(projectsProvider));
           },
           onDuplicate: () async {
+            final l10n = AppLocalizations.of(context);
             final duplicate = project.copyWith(
               id: const Uuid().v4(),
               name: '${project.name} (コピー)',
@@ -237,7 +325,7 @@ class HomeScreen extends ConsumerWidget {
             ref.invalidate(projectsProvider);
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('「${duplicate.name}」を作成しました')),
+                SnackBar(content: Text(l10n.duplicateCreated(duplicate.name))),
               );
             }
           },
@@ -296,8 +384,10 @@ class _ProjectCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                         maxLines: 1, overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 4),
-                    Text('${project.woodStock.name} (${project.stockLength}mm) - ${project.pieces.length}種類',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
+                    Text(
+                      _buildSubtitle(),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                    ),
                     const SizedBox(height: 2),
                     Text(dateFormat.format(project.updatedAt),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -324,7 +414,16 @@ class _ProjectCard extends StatelessWidget {
     );
   }
 
+  String _buildSubtitle() {
+    final lengths = project.effectiveStockLengths;
+    final lengthStr = lengths.length == 1
+        ? '${lengths.first}mm'
+        : lengths.map((l) => '${l}mm').join('+');
+    return '${project.woodStock.name} ($lengthStr) - ${project.pieces.length}種類';
+  }
+
   Future<void> _showActionsDialog(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
     final action = await showModalBottomSheet<String>(
       context: context,
       builder: (context) => SafeArea(
@@ -335,12 +434,12 @@ class _ProjectCard extends StatelessWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.copy),
-                title: const Text('プロジェクトを複製'),
+                title: Text(l10n.duplicateProject),
                 onTap: () => Navigator.pop(context, 'duplicate'),
               ),
               ListTile(
                 leading: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
-                title: Text('削除', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                title: Text(l10n.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                 onTap: () => Navigator.pop(context, 'delete'),
               ),
             ],
@@ -355,18 +454,21 @@ class _ProjectCard extends StatelessWidget {
       if (!context.mounted) return;
       final confirmed = await showDialog<bool>(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('プロジェクトの削除'),
-          content: Text('「${project.name}」を削除しますか？\nこの操作は取り消せません。'),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('キャンセル')),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
-              child: const Text('削除'),
-            ),
-          ],
-        ),
+        builder: (context) {
+          final l10n = AppLocalizations.of(context);
+          return AlertDialog(
+            title: Text(l10n.deleteProject),
+            content: Text(l10n.deleteProjectConfirm(project.name)),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+                child: Text(l10n.delete),
+              ),
+            ],
+          );
+        },
       );
       if (confirmed == true) onDeleteConfirmed();
     }

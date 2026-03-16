@@ -37,33 +37,42 @@ class WoodPresetCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                woodStock.name,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: isSelected
-                      ? colorScheme.primary
-                      : colorScheme.onSurface,
-                ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // カード幅が狭い場合（小画面・列数増加時）フォントを縮小
+            final nameFontSize = constraints.maxWidth < 100 ? 14.0 : 18.0;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    woodStock.name,
+                    style: TextStyle(
+                      fontSize: nameFontSize,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected
+                          ? colorScheme.primary
+                          : colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${woodStock.width.toStringAsFixed(0)}x${woodStock.height.toStringAsFixed(0)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isSelected
+                          ? colorScheme.primary
+                          : colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 4),
-              Text(
-                '${woodStock.width.toStringAsFixed(0)}x${woodStock.height.toStringAsFixed(0)}',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isSelected
-                      ? colorScheme.primary
-                      : colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

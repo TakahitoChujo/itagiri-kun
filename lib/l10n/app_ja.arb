@@ -1,0 +1,503 @@
+{
+  "@@locale": "ja",
+
+  "appName": "板取りくん",
+  "@appName": { "description": "Application name" },
+
+  "settings": "設定",
+  "@settings": { "description": "Settings screen title" },
+
+  "errorOccurred": "エラーが発生しました",
+  "@errorOccurred": { "description": "Generic error message" },
+
+  "reload": "再読み込み",
+  "@reload": { "description": "Reload button" },
+
+  "cancel": "キャンセル",
+  "@cancel": { "description": "Cancel button" },
+
+  "save": "保存",
+  "@save": { "description": "Save button" },
+
+  "delete": "削除",
+  "@delete": { "description": "Delete button" },
+
+  "ok": "OK",
+  "@ok": { "description": "OK button" },
+
+  "duplicate": "複製",
+  "@duplicate": { "description": "Duplicate action" },
+
+  "close": "閉じる",
+  "@close": { "description": "Close button" },
+
+  "importProject": "プロジェクトを読み込み",
+  "@importProject": { "description": "Import project tooltip" },
+
+  "newProject": "新規プロジェクト",
+  "@newProject": { "description": "New project button" },
+
+  "emptyProjectTitle": "新しいプロジェクトを作成しましょう",
+  "@emptyProjectTitle": { "description": "Empty state title" },
+
+  "emptyProjectSubtitle": "右下の「新規プロジェクト」ボタンから\n木材のカット計算を始められます",
+  "@emptyProjectSubtitle": { "description": "Empty state subtitle" },
+
+  "selectProjectType": "プロジェクトの種類を選択",
+  "@selectProjectType": { "description": "Project type selection sheet title" },
+
+  "cut1DTitle": "1D カット（角材・板材）",
+  "@cut1DTitle": { "description": "1D cut project type title" },
+
+  "cut1DSubtitle": "長さ方向のカット最適化",
+  "@cut1DSubtitle": { "description": "1D cut project type subtitle" },
+
+  "cut2DTitle": "2D カット（合板）",
+  "@cut2DTitle": { "description": "2D cut project type title" },
+
+  "cut2DSubtitle": "板材の面積最適化",
+  "@cut2DSubtitle": { "description": "2D cut project type subtitle" },
+
+  "duplicateProject": "プロジェクトを複製",
+  "@duplicateProject": { "description": "Duplicate project action" },
+
+  "deleteProject": "プロジェクトの削除",
+  "@deleteProject": { "description": "Delete project dialog title" },
+
+  "deleteProjectConfirm": "「{name}」を削除しますか？\nこの操作は取り消せません。",
+  "@deleteProjectConfirm": {
+    "description": "Delete project confirmation message",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "importFailed": "ファイルの読み込みに失敗しました",
+  "@importFailed": { "description": "Import failed error message" },
+
+  "importSuccess": "「{name}」を読み込みました",
+  "@importSuccess": {
+    "description": "Import success message",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "duplicateCreated": "「{name}」を作成しました",
+  "@duplicateCreated": {
+    "description": "Duplicate created message",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "selectMaterial": "素材を選択",
+  "@selectMaterial": { "description": "Material selection heading" },
+
+  "allCategories": "すべて",
+  "@allCategories": { "description": "All categories filter chip" },
+
+  "custom": "カスタム",
+  "@custom": { "description": "Custom option" },
+
+  "customSettings": "カスタム設定",
+  "@customSettings": { "description": "Custom settings heading" },
+
+  "materialName": "素材名",
+  "@materialName": { "description": "Material name field label" },
+
+  "width": "幅",
+  "@width": { "description": "Width label" },
+
+  "height": "高さ",
+  "@height": { "description": "Height label" },
+
+  "length": "長さ",
+  "@length": { "description": "Length label" },
+
+  "startCutting": "カットを開始",
+  "@startCutting": { "description": "Start cutting button" },
+
+  "pleaseSelectMaterial": "素材を選択してください",
+  "@pleaseSelectMaterial": { "description": "Validation: no material selected" },
+
+  "pleaseEnterLength": "長さを入力してください",
+  "@pleaseEnterLength": { "description": "Validation: length not entered" },
+
+  "enterPieces": "部材を入力",
+  "@enterPieces": { "description": "Pieces input screen title (no existing project)" },
+
+  "sizesToCut": "切り出したいサイズ",
+  "@sizesToCut": { "description": "Pieces input header" },
+
+  "sizesToCut2D": "切り出したいサイズ (2D)",
+  "@sizesToCut2D": { "description": "2D pieces input header" },
+
+  "kerfWidthLabel": "鋸刃の幅: {width} mm",
+  "@kerfWidthLabel": {
+    "description": "Kerf width info label",
+    "placeholders": { "width": { "type": "String" } }
+  },
+
+  "columnLength": "長さ(mm)",
+  "@columnLength": { "description": "Length column header" },
+
+  "columnQuantity": "数量",
+  "@columnQuantity": { "description": "Quantity column header" },
+
+  "columnWidth": "幅(mm)",
+  "@columnWidth": { "description": "Width column header" },
+
+  "columnHeight": "高さ(mm)",
+  "@columnHeight": { "description": "Height column header" },
+
+  "columnLabel": "ラベル",
+  "@columnLabel": { "description": "Label column header" },
+
+  "addSize": "サイズを追加",
+  "@addSize": { "description": "Add size button" },
+
+  "calculate": "計算する",
+  "@calculate": { "description": "Calculate button" },
+
+  "inputError": "入力エラー",
+  "@inputError": { "description": "Input error dialog title" },
+
+  "errorLengthRequired": "{row}行目: 長さを入力してください",
+  "@errorLengthRequired": {
+    "description": "Validation error: length required",
+    "placeholders": { "row": { "type": "int" } }
+  },
+
+  "errorQuantityRequired": "{row}行目: 数量を1以上にしてください",
+  "@errorQuantityRequired": {
+    "description": "Validation error: quantity required",
+    "placeholders": { "row": { "type": "int" } }
+  },
+
+  "errorLengthExceeds": "{row}行目: 長さ({length}mm)が素材長({stockLength}mm)を超えています",
+  "@errorLengthExceeds": {
+    "description": "Validation error: length exceeds stock",
+    "placeholders": {
+      "row": { "type": "int" },
+      "length": { "type": "String" },
+      "stockLength": { "type": "String" }
+    }
+  },
+
+  "errorNoPieces": "部材を1つ以上入力してください",
+  "@errorNoPieces": { "description": "Validation error: no pieces" },
+
+  "resultTitle": "計算結果",
+  "@resultTitle": { "description": "Result screen title" },
+
+  "resultTitle2D": "計算結果 (2D)",
+  "@resultTitle2D": { "description": "2D result screen title" },
+
+  "checklistTooltip": "カットチェックリスト",
+  "@checklistTooltip": { "description": "Checklist icon tooltip" },
+
+  "exportTooltip": "エクスポート",
+  "@exportTooltip": { "description": "Export icon tooltip" },
+
+  "cutLayout": "カット配置",
+  "@cutLayout": { "description": "Cut layout section header" },
+
+  "stockNumber": "{n}本目",
+  "@stockNumber": {
+    "description": "nth stock label (1D)",
+    "placeholders": { "n": { "type": "int" } }
+  },
+
+  "sheetNumber": "{n}枚目",
+  "@sheetNumber": {
+    "description": "nth sheet label (2D)",
+    "placeholders": { "n": { "type": "int" } }
+  },
+
+  "piecesWaste1D": "{pieces}ピース / 端材: {waste}mm",
+  "@piecesWaste1D": {
+    "description": "Pieces and waste label for 1D bin",
+    "placeholders": {
+      "pieces": { "type": "int" },
+      "waste": { "type": "String" }
+    }
+  },
+
+  "piecesWaste2D": "{pieces}ピース / 端材: {waste}mm²",
+  "@piecesWaste2D": {
+    "description": "Pieces and waste label for 2D bin",
+    "placeholders": {
+      "pieces": { "type": "int" },
+      "waste": { "type": "String" }
+    }
+  },
+
+  "purchase": "購入",
+  "@purchase": { "description": "Purchase label in summary card" },
+
+  "totalWaste": "端材合計",
+  "@totalWaste": { "description": "Total waste label" },
+
+  "utilizationRate": "利用率",
+  "@utilizationRate": { "description": "Utilization rate label" },
+
+  "costEstimate": "材料費の見積もり",
+  "@costEstimate": { "description": "Cost estimate card title" },
+
+  "unitPriceLabel": "素材1本あたりの単価:",
+  "@unitPriceLabel": { "description": "Unit price label" },
+
+  "totalCostLabel": "合計金額",
+  "@totalCostLabel": { "description": "Total cost label" },
+
+  "costFormula": "{count}本 x ¥{price} = ¥{total}",
+  "@costFormula": {
+    "description": "Cost formula breakdown",
+    "placeholders": {
+      "count": { "type": "int" },
+      "price": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+
+  "saveProject": "プロジェクトを保存",
+  "@saveProject": { "description": "Save project button" },
+
+  "projectUpdated": "プロジェクトを更新しました",
+  "@projectUpdated": { "description": "Project updated snackbar" },
+
+  "projectSaved": "「{name}」を保存しました",
+  "@projectSaved": {
+    "description": "Project saved snackbar",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "exportFailed": "エクスポートに失敗しました: {error}",
+  "@exportFailed": {
+    "description": "Export failed error message",
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "projectNameDialogTitle": "プロジェクト名",
+  "@projectNameDialogTitle": { "description": "Project name dialog title" },
+
+  "projectNameHint": "例: 本棚用カット",
+  "@projectNameHint": { "description": "Project name hint text" },
+
+  "defaultProjectName": "{woodName} カットプラン",
+  "@defaultProjectName": {
+    "description": "Default project name",
+    "placeholders": { "woodName": { "type": "String" } }
+  },
+
+  "checklistTitle": "カットチェックリスト",
+  "@checklistTitle": { "description": "Checklist screen title" },
+
+  "checklistComplete": "カット完了です！",
+  "@checklistComplete": { "description": "All cuts done message" },
+
+  "checklistReset": "リセット",
+  "@checklistReset": { "description": "Reset checklist button" },
+
+  "checklistProgress": "{done}/{total} 完了",
+  "@checklistProgress": {
+    "description": "Checklist progress label",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "selectSheet": "合板を選択",
+  "@selectSheet": { "description": "Sheet selection screen title and heading" },
+
+  "customSheet": "カスタム合板",
+  "@customSheet": { "description": "Custom sheet option name" },
+
+  "customSheetSettings": "カスタム合板設定",
+  "@customSheetSettings": { "description": "Custom sheet settings heading" },
+
+  "thickness": "厚さ",
+  "@thickness": { "description": "Thickness label" },
+
+  "thicknessLabel": "厚さ {thickness}mm",
+  "@thicknessLabel": {
+    "description": "Thickness label with value",
+    "placeholders": { "thickness": { "type": "String" } }
+  },
+
+  "enterPieces2D": "部材を入力 (2D)",
+  "@enterPieces2D": { "description": "2D pieces input screen title" },
+
+  "kerfWidthSetting": "鋸刃の幅（カーフ）",
+  "@kerfWidthSetting": { "description": "Kerf width setting card title" },
+
+  "kerfWidthDescription": "カットごとに失われる木材の幅です。\n一般的な鋸刃は約3mmです。",
+  "@kerfWidthDescription": { "description": "Kerf width description" },
+
+  "unitSystem": "単位系",
+  "@unitSystem": { "description": "Unit system setting card title" },
+
+  "unitMm": "ミリメートル (mm)",
+  "@unitMm": { "description": "Millimeter unit option" },
+
+  "unitCm": "センチメートル (cm)",
+  "@unitCm": { "description": "Centimeter unit option" },
+
+  "recommended": "推奨",
+  "@recommended": { "description": "Recommended badge" },
+
+  "language": "言語",
+  "@language": { "description": "Language setting card title" },
+
+  "languageJa": "日本語",
+  "@languageJa": { "description": "Japanese language option" },
+
+  "languageEn": "English",
+  "@languageEn": { "description": "English language option" },
+
+  "languageSystem": "端末に合わせる",
+  "@languageSystem": { "description": "System language option" },
+
+  "appInfo": "アプリ情報",
+  "@appInfo": { "description": "App info section title" },
+
+  "appInfoName": "アプリ名",
+  "@appInfoName": { "description": "App name label" },
+
+  "appInfoVersion": "バージョン",
+  "@appInfoVersion": { "description": "Version label" },
+
+  "appInfoDescription": "説明",
+  "@appInfoDescription": { "description": "Description label" },
+
+  "appInfoDescriptionValue": "DIY木材カット計算アプリ\n端材を最小にする最適カット配置を自動計算します",
+  "@appInfoDescriptionValue": { "description": "App description text" },
+
+  "privacyPolicy": "プライバシーポリシー",
+  "@privacyPolicy": { "description": "Privacy policy link" },
+
+  "termsOfService": "利用規約",
+  "@termsOfService": { "description": "Terms of service link" },
+
+  "openSourceLicenses": "オープンソースライセンス",
+  "@openSourceLicenses": { "description": "Open source licenses link" },
+
+  "urlOpenFailed": "URLを開けませんでした",
+  "@urlOpenFailed": { "description": "URL open failed snackbar" },
+
+  "premiumTitle": "板取りくん プレミアム",
+  "@premiumTitle": { "description": "Premium banner title" },
+
+  "premiumDescription": "広告なし・PDF出力・2D合板対応",
+  "@premiumDescription": { "description": "Premium features description" },
+
+  "premiumPriceAppeal": "木材1本分の価格で永久に使える",
+  "@premiumPriceAppeal": { "description": "Premium price appeal text" },
+
+  "premiumCta": "詳しく見る →",
+  "@premiumCta": { "description": "Premium CTA button" },
+
+  "premiumComingSoon": "プレミアム購入画面は今後のアップデートで追加されます",
+  "@premiumComingSoon": { "description": "Premium coming soon message" },
+
+  "onboardingTitle1": "木材カットを\n賢く最適化",
+  "@onboardingTitle1": { "description": "Onboarding page 1 title" },
+
+  "onboardingBody1": "角材・合板の必要なサイズを入力するだけで、端材を最小にする最適なカット配置を自動計算します。",
+  "@onboardingBody1": { "description": "Onboarding page 1 body" },
+
+  "onboardingTitle2": "1D・2D どちらも対応",
+  "@onboardingTitle2": { "description": "Onboarding page 2 title" },
+
+  "onboardingBody2": "角材・板材の長さカット（1D）と、合板の面カット（2D）の両方に対応。DIYのあらゆるシーンで活躍します。",
+  "@onboardingBody2": { "description": "Onboarding page 2 body" },
+
+  "onboardingTitle3": "カットチェックリストで\n作業をサポート",
+  "@onboardingTitle3": { "description": "Onboarding page 3 title" },
+
+  "onboardingBody3": "計算結果からカットチェックリストを生成。1本ずつチェックしながら作業できるので、切り間違いを防げます。",
+  "@onboardingBody3": { "description": "Onboarding page 3 body" },
+
+  "onboardingSkip": "スキップ",
+  "@onboardingSkip": { "description": "Onboarding skip button" },
+
+  "onboardingNext": "次へ",
+  "@onboardingNext": { "description": "Onboarding next button" },
+
+  "onboardingStart": "はじめる",
+  "@onboardingStart": { "description": "Onboarding start button" },
+
+  "commonLengths": "よく使う長さ",
+  "@commonLengths": { "description": "Common lengths quick-select label" },
+
+  "selectionSummaryLength": "長さ: {length} mm",
+  "@selectionSummaryLength": {
+    "description": "Selection summary: length only",
+    "placeholders": { "length": { "type": "int" } }
+  },
+
+  "selectionSummaryWithPrice": "長さ: {length} mm / 参考価格: ¥{price}",
+  "@selectionSummaryWithPrice": {
+    "description": "Selection summary: length + reference price",
+    "placeholders": {
+      "length": { "type": "int" },
+      "price": { "type": "int" }
+    }
+  },
+
+  "themeSetting": "テーマ",
+  "@themeSetting": { "description": "Theme setting card title" },
+
+  "themeSystem": "端末に合わせる",
+  "@themeSystem": { "description": "System theme option" },
+
+  "themeLight": "ライト",
+  "@themeLight": { "description": "Light theme option" },
+
+  "themeDark": "ダーク",
+  "@themeDark": { "description": "Dark theme option" },
+
+  "searchProjects": "プロジェクトを検索",
+  "@searchProjects": { "description": "Search projects hint text" },
+
+  "searchNoResults": "「{query}」に一致するプロジェクトはありません",
+  "@searchNoResults": {
+    "description": "No search results message",
+    "placeholders": { "query": { "type": "String" } }
+  },
+
+  "multipleStockLengths": "複数の長さを選択（最適化で混在）",
+  "@multipleStockLengths": { "description": "Multiple stock lengths hint" },
+
+  "stockLengthSummary": "{count}種類の長さ",
+  "@stockLengthSummary": {
+    "description": "Summary when multiple stock lengths selected",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "offcutSaved": "端材を保存しました ({length}mm)",
+  "@offcutSaved": {
+    "description": "Offcut saved snackbar",
+    "placeholders": { "length": { "type": "String" } }
+  },
+
+  "saveOffcut": "端材を保存",
+  "@saveOffcut": { "description": "Save offcut button" },
+
+  "savedOffcuts": "保存済みの端材",
+  "@savedOffcuts": { "description": "Saved offcuts section title" },
+
+  "useOffcut": "端材を使用",
+  "@useOffcut": { "description": "Use offcut button" },
+
+  "offcutLength": "{length}mm の端材",
+  "@offcutLength": {
+    "description": "Offcut length label",
+    "placeholders": { "length": { "type": "String" } }
+  },
+
+  "noOffcuts": "保存された端材はありません",
+  "@noOffcuts": { "description": "No offcuts available message" },
+
+  "offcutAdded": "{length}mm の端材を追加しました",
+  "@offcutAdded": {
+    "description": "Offcut added to project message",
+    "placeholders": { "length": { "type": "String" } }
+  }
+}

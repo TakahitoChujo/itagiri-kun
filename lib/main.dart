@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'constants/colors.dart';
 import 'constants/dimensions.dart';
+import 'gen_l10n/app_localizations.dart';
+import 'providers/settings_provider.dart';
 import 'services/storage_service.dart';
 import 'services/analytics_service.dart';
 import 'screens/home_screen.dart';
+import 'screens/onboarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,14 +28,27 @@ void main() async {
 }
 
 /// 板取りくん アプリのルートウィジェット
-class ItagiriKunApp extends StatelessWidget {
+class ItagiriKunApp extends ConsumerWidget {
   const ItagiriKunApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final locale = settings.language.toLocale();
+    final showOnboarding = StorageService.isFirstLaunch;
+
     return MaterialApp(
-      title: '板取りくん',
+      onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       debugShowCheckedModeBanner: false,
+      locale: locale,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      themeMode: settings.theme.toThemeMode(),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
@@ -94,7 +111,18 @@ class ItagiriKunApp extends StatelessWidget {
           thickness: 1,
         ),
       ),
-      home: const HomeScreen(),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.primary,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: AppDimensions.elevationNone,
+        ),
+      ),
+      home: showOnboarding ? const OnboardingScreen() : const HomeScreen(),
     );
   }
 }

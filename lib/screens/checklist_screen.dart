@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../gen_l10n/app_localizations.dart';
 import '../models/cut_result.dart';
 import '../models/wood_stock.dart';
 
@@ -52,13 +53,14 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
 
   void _checkCompletion() {
     if (_checkedCount == _totalPieces && _totalPieces > 0) {
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Row(
+          content: Row(
             children: [
-              Icon(Icons.celebration, color: Colors.white),
-              SizedBox(width: 12),
-              Expanded(child: Text('すべてのカットが完了しました！')),
+              const Icon(Icons.celebration, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(child: Text(l10n.checklistComplete)),
             ],
           ),
           backgroundColor: Colors.green,
@@ -72,10 +74,11 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('カットチェックリスト'),
+        title: Text(l10n.checklistTitle),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -88,7 +91,7 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                     : colorScheme.onSurfaceVariant,
               ),
               label: Text(
-                '$_checkedCount/$_totalPieces 完了',
+                l10n.checklistProgress(_checkedCount, _totalPieces),
                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
               visualDensity: VisualDensity.compact,
@@ -140,6 +143,7 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
 
   Widget _buildBinSection(BuildContext context, int binIndex) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final bin = widget.result.bins[binIndex];
     final binChecked = _binCheckedCount(binIndex);
     final binTotal = bin.pieces.length;
@@ -165,7 +169,7 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      '${binIndex + 1}本目',
+                      l10n.stockNumber(binIndex + 1),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -204,7 +208,7 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
               final isChecked = _checkedItems[key] ?? false;
               final label = piece.label != null && piece.label!.isNotEmpty
                   ? piece.label!
-                  : 'ピース ${pieceIndex + 1}';
+                  : 'Piece ${pieceIndex + 1}';
 
               return CheckboxListTile(
                 value: isChecked,

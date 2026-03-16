@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../constants/responsive.dart';
 import '../data/wood_presets.dart';
+import '../gen_l10n/app_localizations.dart';
+import '../models/offcut.dart';
 import '../models/wood_stock.dart';
+import '../services/storage_service.dart';
 import '../widgets/wood_preset_card.dart';
 import 'pieces_input_screen.dart';
 
@@ -16,7 +20,7 @@ class WoodSelectScreen extends StatefulWidget {
 
 class _WoodSelectScreenState extends State<WoodSelectScreen> {
   WoodStock? _selectedWood;
-  int? _selectedLength;
+  Set<int> _selectedLengths = {};
   bool _isCustom = false;
   String? _selectedCategory;
 
@@ -25,13 +29,27 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
   double _customHeight = 0;
   int _customLength = 1820;
 
+  /// 選択された端材リスト（長さを整数で保持）
+  List<Offcut> _availableOffcuts = [];
+  Set<String> _selectedOffcutIds = {};
+
   @override
   void initState() {
     super.initState();
     if (woodPresets.isNotEmpty) {
       _selectedWood = woodPresets[0];
-      _selectedLength = woodPresets[0].lengths.first;
+      _selectedLengths = {woodPresets[0].lengths.first};
+      _loadOffcuts();
     }
+  }
+
+  void _loadOffcuts() {
+    final wood = _currentWood;
+    if (wood == null) return;
+    setState(() {
+      _availableOffcuts = StorageService.loadOffcutsForWood(wood.name);
+      _selectedOffcutIds = {};
+    });
   }
 
   List<WoodStock> get _filteredPresets => woodPresetsForCategory(_selectedCategory);
@@ -39,15 +57,16 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('新規プロジェクト')),
+      appBar: AppBar(title: Text(l10n.newProject)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('素材を選択',
+            Text(l10n.selectMaterial,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
             const SizedBox(height: 12),
 
@@ -60,7 +79,7 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
-                      label: const Text('すべて'),
+                      label: Text(l10n.allCategories),
                       selected: _selectedCategory == null,
                       onSelected: (_) => setState(() => _selectedCategory = null),
                     ),
@@ -82,8 +101,8 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: context.gridColumnCount,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
                 childAspectRatio: 1.2,
@@ -102,48 +121,48 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
                     setState(() {
                       _isCustom = false;
                       _selectedWood = wood;
-                      if (_selectedLength == null || !wood.lengths.contains(_selectedLength)) {
-                        _selectedLength = wood.lengths.first;
-                      }
+                      // 木材変更時は選択長さをリセット（最初の長さを選択）
+                      _selectedLengths = {wood.lengths.first};
+                      _selectedOffcutIds = {};
                     });
+                    _loadOffcuts();
                   },
                 );
               },
             ),
             const SizedBox(height: 24),
 
-            Text('素材の長さ',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+            Row(
+              children: [
+                Text(l10n.length,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+                const SizedBox(width: 8),
+                if (!_isCustom && _selectedWood != null && _selectedWood!.lengths.length > 1)
+                  Expanded(
+                    child: Text(
+                      l10n.multipleStockLengths,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: colorScheme.primary,
+                          ),
+                    ),
+                  ),
+              ],
+            ),
             const SizedBox(height: 12),
 
-            if (!_isCustom && _selectedWood != null) _buildLengthDropdown(context) else if (_isCustom) _buildCustomLengthInput(context),
+            if (!_isCustom && _selectedWood != null)
+              _buildLengthMultiSelect(context)
+            else if (_isCustom)
+              _buildCustomLengthInput(context),
 
-            const SizedBox(height: 12),
-
-            if (!_isCustom && _selectedWood != null) ...[
-              Text('よく使う長さ',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: _selectedWood!.lengths.map((length) {
-                  final isSelected = _selectedLength == length;
-                  final price = _selectedWood!.priceForLength(length);
-                  return ChoiceChip(
-                    label: Text(price != null ? '$length (¥$price)' : '$length'),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      if (selected) setState(() => _selectedLength = length);
-                    },
-                  );
-                }).toList(),
-              ),
+            if (!_isCustom && _availableOffcuts.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              _buildOffcutSection(context),
             ],
 
             const SizedBox(height: 32),
 
-            if (_currentWood != null && _currentLength != null) _buildSelectionSummary(context),
+            if (_currentWood != null && _selectedLengths.isNotEmpty) _buildSelectionSummary(context),
 
             const SizedBox(height: 24),
 
@@ -152,7 +171,7 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
               child: FilledButton.icon(
                 onPressed: _canProceed ? _onNext : null,
                 icon: const Icon(Icons.arrow_forward),
-                label: const Text('次へ'),
+                label: Text(l10n.onboardingNext),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   textStyle: const TextStyle(fontSize: 16),
@@ -176,15 +195,108 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
     return _selectedWood;
   }
 
-  int? get _currentLength {
-    if (_isCustom) return _customLength > 0 ? _customLength : null;
-    return _selectedLength;
+  bool get _canProceed {
+    if (_isCustom) return _customWidth > 0 && _customHeight > 0 && _customLength > 0;
+    return _selectedWood != null && _selectedLengths.isNotEmpty;
   }
 
-  bool get _canProceed => _currentWood != null && _currentLength != null;
+  /// マルチセレクト対応の長さ選択UI
+  Widget _buildLengthMultiSelect(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: _selectedWood!.lengths.map((length) {
+        final isSelected = _selectedLengths.contains(length);
+        final price = _selectedWood!.priceForLength(length);
+        return FilterChip(
+          label: Text(price != null ? '$length (¥$price)' : '$length mm'),
+          selected: isSelected,
+          checkmarkColor: colorScheme.onPrimary,
+          selectedColor: colorScheme.primary,
+          labelStyle: TextStyle(
+            color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
+          ),
+          onSelected: (selected) {
+            setState(() {
+              if (selected) {
+                _selectedLengths.add(length);
+              } else {
+                // 最低1つは選択を維持
+                if (_selectedLengths.length > 1) {
+                  _selectedLengths.remove(length);
+                }
+              }
+            });
+          },
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildOffcutSection(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.recycling, size: 16, color: colorScheme.tertiary),
+            const SizedBox(width: 6),
+            Text(
+              l10n.savedOffcuts,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.tertiary,
+                  ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          children: _availableOffcuts.map((offcut) {
+            final isSelected = _selectedOffcutIds.contains(offcut.id);
+            return FilterChip(
+              avatar: Icon(Icons.recycling,
+                  size: 14,
+                  color: isSelected ? colorScheme.onTertiary : colorScheme.tertiary),
+              label: Text(l10n.offcutLength(offcut.length.toStringAsFixed(0))),
+              selected: isSelected,
+              checkmarkColor: colorScheme.onTertiary,
+              selectedColor: colorScheme.tertiary,
+              labelStyle: TextStyle(
+                color: isSelected ? colorScheme.onTertiary : colorScheme.onSurface,
+                fontSize: 12,
+              ),
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    _selectedOffcutIds.add(offcut.id);
+                  } else {
+                    _selectedOffcutIds.remove(offcut.id);
+                  }
+                });
+              },
+              onDeleted: () async {
+                await StorageService.deleteOffcut(offcut.id);
+                _loadOffcuts();
+              },
+              deleteIcon: const Icon(Icons.close, size: 14),
+              deleteIconColor: colorScheme.onSurfaceVariant,
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
 
   Widget _buildCustomCard(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Card(
       elevation: _isCustom ? 4 : 1,
       shape: RoundedRectangleBorder(
@@ -202,7 +314,7 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
             children: [
               Icon(Icons.add, size: 28, color: _isCustom ? colorScheme.primary : colorScheme.onSurfaceVariant),
               const SizedBox(height: 4),
-              Text('カスタム',
+              Text(l10n.custom,
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
                       color: _isCustom ? colorScheme.primary : colorScheme.onSurfaceVariant)),
             ],
@@ -212,40 +324,37 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
     );
   }
 
-  Widget _buildLengthDropdown(BuildContext context) {
-    return DropdownButtonFormField<int>(
-      key: ValueKey(_selectedWood),
-      value: _selectedLength,
-      decoration: const InputDecoration(border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12), suffixText: 'mm'),
-      items: _selectedWood!.lengths.map((length) {
-        final price = _selectedWood!.priceForLength(length);
-        return DropdownMenuItem<int>(
-          value: length,
-          child: Text(price != null ? '$length mm (¥$price)' : '$length mm'),
-        );
-      }).toList(),
-      onChanged: (value) {
-        if (value != null) setState(() => _selectedLength = value);
-      },
-    );
-  }
-
   Widget _buildCustomLengthInput(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return TextFormField(
       initialValue: _customLength > 0 ? _customLength.toString() : '',
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      decoration: const InputDecoration(labelText: '長さ', border: OutlineInputBorder(), suffixText: 'mm',
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
+      decoration: InputDecoration(labelText: l10n.length, border: const OutlineInputBorder(), suffixText: 'mm',
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
       onChanged: (value) => setState(() => _customLength = int.tryParse(value) ?? 0),
     );
   }
 
   Widget _buildSelectionSummary(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final wood = _currentWood!;
-    final length = _currentLength!;
-    final price = wood.priceForLength(length);
+    final sortedLengths = _selectedLengths.toList()..sort();
+
+    String lengthText;
+    if (_isCustom) {
+      lengthText = l10n.selectionSummaryLength(_customLength);
+    } else if (sortedLengths.length == 1) {
+      final price = wood.priceForLength(sortedLengths.first);
+      lengthText = price != null
+          ? l10n.selectionSummaryWithPrice(sortedLengths.first, price)
+          : l10n.selectionSummaryLength(sortedLengths.first);
+    } else {
+      lengthText = l10n.stockLengthSummary(sortedLengths.length) +
+          ': ' +
+          sortedLengths.map((l) => '${l}mm').join(' + ');
+    }
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -264,7 +373,7 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
               children: [
                 Text('${wood.name} (${wood.sectionLabel})',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                Text(price != null ? '長さ: $length mm / 参考価格: ¥$price' : '長さ: $length mm',
+                Text(lengthText,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
               ],
             ),
@@ -275,48 +384,53 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
   }
 
   Future<void> _showCustomInputDialog(BuildContext context) async {
-    final nameController = TextEditingController(text: _isCustom ? _customName : 'カスタム');
+    final l10n = AppLocalizations.of(context);
+    final nameController = TextEditingController(text: _isCustom ? _customName : l10n.custom);
     final widthController = TextEditingController(text: _isCustom && _customWidth > 0 ? _customWidth.toStringAsFixed(0) : '');
     final heightController = TextEditingController(text: _isCustom && _customHeight > 0 ? _customHeight.toStringAsFixed(0) : '');
 
     final result = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('カスタム素材'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(controller: nameController, decoration: const InputDecoration(labelText: '名前', border: OutlineInputBorder(), hintText: '例: カスタム材')),
-              const SizedBox(height: 16),
-              TextField(controller: widthController, keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(labelText: '厚み (mm)', border: OutlineInputBorder(), hintText: '例: 38')),
-              const SizedBox(height: 16),
-              TextField(controller: heightController, keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(labelText: '幅 (mm)', border: OutlineInputBorder(), hintText: '例: 89')),
-            ],
+      builder: (context) {
+        final l10n = AppLocalizations.of(context);
+        return AlertDialog(
+          title: Text(l10n.customSettings),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(controller: nameController, decoration: InputDecoration(labelText: l10n.materialName, border: const OutlineInputBorder(), hintText: 'e.g. カスタム材')),
+                const SizedBox(height: 16),
+                TextField(controller: widthController, keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(labelText: '${l10n.thickness} (mm)', border: const OutlineInputBorder())),
+                const SizedBox(height: 16),
+                TextField(controller: heightController, keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(labelText: '${l10n.width} (mm)', border: const OutlineInputBorder(), hintText: '例: 89')),
+              ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('キャンセル')),
-          FilledButton(
-            onPressed: () {
-              final w = double.tryParse(widthController.text);
-              final h = double.tryParse(heightController.text);
-              if (w != null && w > 0 && h != null && h > 0) Navigator.pop(context, true);
-            },
-            child: const Text('決定'),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+            FilledButton(
+              onPressed: () {
+                final w = double.tryParse(widthController.text);
+                final h = double.tryParse(heightController.text);
+                if (w != null && w > 0 && h != null && h > 0) Navigator.pop(context, true);
+              },
+              child: Text(l10n.ok),
+            ),
+          ],
+        );
+      },
     );
 
     if (result == true) {
       setState(() {
         _isCustom = true;
         _selectedWood = null;
+        _selectedLengths = {_customLength};
         _customName = nameController.text.isNotEmpty ? nameController.text : 'カスタム';
         _customWidth = double.tryParse(widthController.text) ?? 0;
         _customHeight = double.tryParse(heightController.text) ?? 0;
@@ -330,8 +444,27 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
 
   void _onNext() {
     final wood = _currentWood;
-    final length = _currentLength;
-    if (wood == null || length == null) return;
-    Navigator.push(context, MaterialPageRoute(builder: (_) => PiecesInputScreen(woodStock: wood, stockLength: length)));
+    if (wood == null || _selectedLengths.isEmpty) return;
+    final sortedLengths = _selectedLengths.toList()..sort();
+
+    // 選択された端材の長さを追加（整数化）
+    final offcutLengths = _availableOffcuts
+        .where((o) => _selectedOffcutIds.contains(o.id))
+        .map((o) => o.length.round())
+        .toList();
+
+    final allLengths = [...sortedLengths, ...offcutLengths]..sort();
+    final uniqueLengths = allLengths.toSet().toList()..sort();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PiecesInputScreen(
+          woodStock: wood,
+          stockLength: uniqueLengths.first,
+          stockLengths: uniqueLengths.length > 1 ? uniqueLengths : null,
+        ),
+      ),
+    );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../gen_l10n/app_localizations.dart';
 import '../models/wood_stock.dart';
 import '../models/cut_piece.dart';
 import '../models/project.dart';
@@ -10,17 +11,17 @@ import '../widgets/piece_input_row.dart';
 import 'result_screen.dart';
 
 /// 必要部材入力画面
-///
-/// カットしたい部材の長さと数量を入力し、最適化計算を実行する。
 class PiecesInputScreen extends ConsumerStatefulWidget {
   final WoodStock woodStock;
   final int stockLength;
+  final List<int>? stockLengths;
   final Project? existingProject;
 
   const PiecesInputScreen({
     super.key,
     required this.woodStock,
     required this.stockLength,
+    this.stockLengths,
     this.existingProject,
   });
 
@@ -32,6 +33,15 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
   final _formKey = GlobalKey<FormState>();
   late List<CutPiece> _pieces;
 
+  /// 実効素材長リスト
+  List<int> get _effectiveLengths =>
+      widget.stockLengths ??
+      widget.existingProject?.stockLengths ??
+      [widget.stockLength];
+
+  int get _maxStockLength =>
+      _effectiveLengths.reduce((a, b) => a > b ? a : b);
+
   @override
   void initState() {
     super.initState();
@@ -39,7 +49,6 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
         widget.existingProject!.pieces.isNotEmpty) {
       _pieces = List.from(widget.existingProject!.pieces);
     } else {
-      // 最低1行の空行を用意
       _pieces = [const CutPiece(length: 0, quantity: 1)];
     }
   }
@@ -48,20 +57,23 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final settings = ref.watch(settingsProvider);
+    final l10n = AppLocalizations.of(context);
+    final lengths = _effectiveLengths..sort();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.existingProject != null
             ? widget.existingProject!.name
-            : '部材を入力'),
+            : l10n.enterPieces),
         actions: [
-          // 素材情報チップ
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: Chip(
               avatar: const Icon(Icons.straighten, size: 16),
               label: Text(
-                '${widget.woodStock.name} ${widget.stockLength}mm',
+                lengths.length == 1
+                    ? '${widget.woodStock.name} ${lengths.first}mm'
+                    : '${widget.woodStock.name} ${lengths.map((l) => '${l}mm').join('+')}',
                 style: const TextStyle(fontSize: 12),
               ),
               visualDensity: VisualDensity.compact,
@@ -73,28 +85,25 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
         key: _formKey,
         child: Column(
           children: [
-            // 入力リスト
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  // ヘッダー
                   Text(
-                    '切り出したいサイズ',
+                    l10n.sizesToCut,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '鋸刃の幅: ${settings.kerfWidth.toStringAsFixed(1)} mm',
+                    l10n.kerfWidthLabel(settings.kerfWidth.toStringAsFixed(1)),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
                   ),
                   const SizedBox(height: 16),
 
-                  // 列ヘッダー
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Row(
@@ -102,7 +111,7 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
                         Expanded(
                           flex: 3,
                           child: Text(
-                            '長さ(mm)',
+                            l10n.columnLength,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
@@ -116,7 +125,7 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
                         Expanded(
                           flex: 2,
                           child: Text(
-                            '数量',
+                            l10n.columnQuantity,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
@@ -126,12 +135,11 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
                                 ),
                           ),
                         ),
-                        const SizedBox(width: 44), // 削除ボタン分のスペース
+                        const SizedBox(width: 44),
                       ],
                     ),
                   ),
 
-                  // 部材入力行
                   ...List.generate(_pieces.length, (index) {
                     return PieceInputRow(
                       key: ValueKey('piece_$index'),
@@ -153,11 +161,10 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
 
                   const SizedBox(height: 16),
 
-                  // 「+ サイズを追加」ボタン
                   OutlinedButton.icon(
                     onPressed: _addPiece,
                     icon: const Icon(Icons.add),
-                    label: const Text('サイズを追加'),
+                    label: Text(l10n.addSize),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
@@ -166,7 +173,6 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
               ),
             ),
 
-            // 計算ボタン（下部固定）
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -185,7 +191,7 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
                   child: FilledButton.icon(
                     onPressed: _onCalculate,
                     icon: const Icon(Icons.calculate),
-                    label: const Text('計算する'),
+                    label: Text(l10n.calculate),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       textStyle: const TextStyle(fontSize: 16),
@@ -200,16 +206,14 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
     );
   }
 
-  /// 行を追加
   void _addPiece() {
     setState(() {
       _pieces.add(const CutPiece(length: 0, quantity: 1));
     });
   }
 
-  /// 計算を実行
   void _onCalculate() {
-    // バリデーション
+    final l10n = AppLocalizations.of(context);
     final validPieces = <CutPiece>[];
     final errors = <String>[];
 
@@ -217,16 +221,18 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
       final piece = _pieces[i];
 
       if (piece.length <= 0) {
-        errors.add('${i + 1}行目: 長さを入力してください');
+        errors.add(l10n.errorLengthRequired(i + 1));
         continue;
       }
       if (piece.quantity <= 0) {
-        errors.add('${i + 1}行目: 数量を1以上にしてください');
+        errors.add(l10n.errorQuantityRequired(i + 1));
         continue;
       }
-      if (piece.length > widget.stockLength) {
-        errors.add(
-            '${i + 1}行目: 長さ(${piece.length.toStringAsFixed(0)}mm)が素材長(${widget.stockLength}mm)を超えています');
+      if (piece.length > _maxStockLength) {
+        errors.add(l10n.errorLengthExceeds(
+            i + 1,
+            piece.length.toStringAsFixed(0),
+            _maxStockLength.toString()));
         continue;
       }
       validPieces.add(piece);
@@ -238,15 +244,18 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
     }
 
     if (validPieces.isEmpty) {
-      _showErrorDialog(['部材を1つ以上入力してください']);
+      _showErrorDialog([l10n.errorNoPieces]);
       return;
     }
 
-    // 最適化計算を実行
     final settings = ref.read(settingsProvider);
+    final effectiveLengths = _effectiveLengths;
     try {
       final result = CutOptimizer.optimize(
-        stockLength: widget.stockLength.toDouble(),
+        stockLength: effectiveLengths.first.toDouble(),
+        stockLengths: effectiveLengths.length > 1
+            ? effectiveLengths.map((l) => l.toDouble()).toList()
+            : null,
         kerfWidth: settings.kerfWidth,
         pieces: validPieces,
       );
@@ -257,7 +266,8 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
           builder: (_) => ResultScreen(
             result: result,
             woodStock: widget.woodStock,
-            stockLength: widget.stockLength,
+            stockLength: effectiveLengths.first,
+            stockLengths: effectiveLengths.length > 1 ? effectiveLengths : null,
             pieces: validPieces,
             kerfWidth: settings.kerfWidth,
             existingProject: widget.existingProject,
@@ -269,12 +279,12 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
     }
   }
 
-  /// エラーダイアログ
   void _showErrorDialog(List<String> errors) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('入力エラー'),
+        title: Text(l10n.inputError),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,7 +309,7 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
         actions: [
           FilledButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text(l10n.ok),
           ),
         ],
       ),

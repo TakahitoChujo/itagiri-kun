@@ -16,7 +16,7 @@ class Project extends HiveObject {
   /// 使用する木材規格
   WoodStock woodStock;
 
-  /// 選択した素材の長さ (mm)
+  /// 選択した素材の長さ (mm) — 後方互換のため保持
   int stockLength;
 
   /// 必要な部材リスト
@@ -37,6 +37,9 @@ class Project extends HiveObject {
   /// 素材1本あたりの単価 (円)。null = 未設定
   double? unitPrice;
 
+  /// 複数の素材長リスト (mm)。null の場合は [stockLength] のみ使用
+  List<int>? stockLengths;
+
   Project({
     required this.id,
     required this.name,
@@ -46,10 +49,14 @@ class Project extends HiveObject {
     this.kerfWidth = 3.0,
     this.result,
     this.unitPrice,
+    this.stockLengths,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
+
+  /// 実効素材長リスト（後方互換を含む）
+  List<int> get effectiveStockLengths => stockLengths ?? [stockLength];
 
   /// 部材の合計数
   int get totalPieceCount =>
@@ -65,6 +72,8 @@ class Project extends HiveObject {
     return unitPrice! * result!.totalStock;
   }
 
+  static const _sentinel = Object();
+
   Project copyWith({
     String? id,
     String? name,
@@ -74,6 +83,7 @@ class Project extends HiveObject {
     double? kerfWidth,
     CutResult? result,
     double? unitPrice,
+    Object? stockLengths = _sentinel,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -86,6 +96,9 @@ class Project extends HiveObject {
       kerfWidth: kerfWidth ?? this.kerfWidth,
       result: result ?? this.result,
       unitPrice: unitPrice ?? this.unitPrice,
+      stockLengths: identical(stockLengths, _sentinel)
+          ? this.stockLengths
+          : stockLengths as List<int>?,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -122,13 +135,14 @@ class ProjectAdapter extends TypeAdapter<Project> {
       createdAt: fields[7] as DateTime,
       updatedAt: fields[8] as DateTime,
       unitPrice: fields[9] as double?,
+      stockLengths: (fields[10] as List?)?.cast<int>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Project obj) {
     writer
-      ..writeByte(10) // number of fields
+      ..writeByte(11) // number of fields
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -148,6 +162,8 @@ class ProjectAdapter extends TypeAdapter<Project> {
       ..writeByte(8)
       ..write(obj.updatedAt)
       ..writeByte(9)
-      ..write(obj.unitPrice);
+      ..write(obj.unitPrice)
+      ..writeByte(10)
+      ..write(obj.stockLengths);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../gen_l10n/app_localizations.dart';
 import '../models/sheet_models.dart';
 import '../widgets/sheet_cut_diagram.dart';
 
@@ -17,10 +18,11 @@ class SheetResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('計算結果 (2D)'),
+        title: Text(l10n.resultTitle2D),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -28,7 +30,7 @@ class SheetResultScreen extends StatelessWidget {
           _buildSummaryCard(context),
           const SizedBox(height: 24),
           Text(
-            'カット配置',
+            l10n.cutLayout,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -50,7 +52,7 @@ class SheetResultScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          '${index + 1}枚目',
+                          l10n.sheetNumber(index + 1),
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -60,7 +62,7 @@ class SheetResultScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '${bin.pieces.length}ピース / 端材: ${bin.wasteArea.toStringAsFixed(0)}mm²',
+                        l10n.piecesWaste2D(bin.pieces.length, bin.wasteArea.toStringAsFixed(0)),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: colorScheme.onSurfaceVariant,
                             ),
@@ -110,6 +112,7 @@ class SheetResultScreen extends StatelessWidget {
 
   Widget _buildSummaryCard(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Card(
       elevation: 2,
@@ -121,7 +124,7 @@ class SheetResultScreen extends StatelessWidget {
               children: [
                 Icon(Icons.shopping_cart, color: colorScheme.primary),
                 const SizedBox(width: 12),
-                Text('購入', style: Theme.of(context).textTheme.titleSmall),
+                Text(l10n.purchase, style: Theme.of(context).textTheme.titleSmall),
                 const Spacer(),
                 Text(
                   '${sheetStock.name} (${sheetStock.sizeLabel})',
@@ -152,7 +155,7 @@ class SheetResultScreen extends StatelessWidget {
               children: [
                 Icon(Icons.delete_outline, color: colorScheme.onSurfaceVariant),
                 const SizedBox(width: 12),
-                Text('端材合計', style: Theme.of(context).textTheme.titleSmall),
+                Text(l10n.totalWaste, style: Theme.of(context).textTheme.titleSmall),
                 const Spacer(),
                 Text(
                   '${result.totalWasteArea.toStringAsFixed(0)} mm²',
@@ -167,7 +170,7 @@ class SheetResultScreen extends StatelessWidget {
               children: [
                 Icon(Icons.pie_chart_outline, color: _utilizationColor(colorScheme)),
                 const SizedBox(width: 12),
-                Text('利用率', style: Theme.of(context).textTheme.titleSmall),
+                Text(l10n.utilizationRate, style: Theme.of(context).textTheme.titleSmall),
                 const Spacer(),
                 Text(
                   '${(result.utilizationRate * 100).toStringAsFixed(1)}%',

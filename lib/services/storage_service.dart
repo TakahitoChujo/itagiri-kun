@@ -3,12 +3,14 @@ import 'dart:math';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/wood_stock.dart';
 import '../models/cut_piece.dart';
 import '../models/cut_result.dart';
 import '../models/project.dart';
 import '../models/sheet_models.dart';
+import '../models/offcut.dart';
 
 /// Hive を使ったローカルストレージサービス
 ///
@@ -20,6 +22,12 @@ class StorageService {
   static const String _projectBoxName = 'projects';
   static const String _settingsBoxName = 'settings';
   static const String _premiumBoxName = 'premium';
+  static const String _offcutBoxName = 'offcuts';
+  static const String _onboardingKey = 'onboarding_done';
+
+  /// 初回起動フラグ（initStorage 後に参照可能）
+  static bool _isFirstLaunch = false;
+  static bool get isFirstLaunch => _isFirstLaunch;
 
   /// flutter_secure_storage に保存する暗号化キーのエイリアス
   static const String _encryptionKeyAlias = 'hive_enc_key_v1';
@@ -111,6 +119,21 @@ class StorageService {
       _premiumBoxName,
       encryptionCipher: cipher,
     );
+    await Hive.openBox<String>(
+      _offcutBoxName,
+      encryptionCipher: cipher,
+    );
+
+    // 初回起動フラグを確認
+    final settingsBox = Hive.box(_settingsBoxName);
+    _isFirstLaunch = !(settingsBox.get(_onboardingKey, defaultValue: false) as bool);
+  }
+
+  /// オンボーディング完了を記録する
+  static Future<void> markOnboardingDone() async {
+    final box = Hive.box(_settingsBoxName);
+    await box.put(_onboardingKey, true);
+    _isFirstLaunch = false;
   }
 
   // ---------------------------------------------------------------------------
@@ -164,5 +187,56 @@ class StorageService {
   /// Hive を閉じる。アプリ終了時に呼ぶ。
   static Future<void> close() async {
     await Hive.close();
+  }
+
+  // ---------------------------------------------------------------------------
+  // 端材 CRUD
+  // ---------------------------------------------------------------------------
+
+  static Box<String> get _offcutBox => Hive.box<String>(_offcutBoxName);
+
+  /// 端材を保存する
+  static Future<Offcut> saveOffcut({
+    required String woodStockName,
+    required double length,
+    String? sourceProjectId,
+  }) async {
+    final offcut = Offcut(
+      id: const Uuid().v4(),
+      woodStockName: woodStockName,
+      length: length,
+      sourceProjectId: sourceProjectId,
+      savedAt: DateTime.now(),
+    );
+    await _offcutBox.put(offcut.id, offcut.toJsonString());
+    return offcut;
+  }
+
+  /// 全端材を取得する（新しい順）
+  static List<Offcut> loadOffcuts() {
+    final offcuts = _offcutBox.values
+        .map((s) {
+          try {
+            return Offcut.fromJsonString(s);
+          } catch (_) {
+            return null;
+          }
+        })
+        .whereType<Offcut>()
+        .toList();
+    offcuts.sort((a, b) => b.savedAt.compareTo(a.savedAt));
+    return offcuts;
+  }
+
+  /// 特定の木材名の端材のみ取得する
+  static List<Offcut> loadOffcutsForWood(String woodStockName) {
+    return loadOffcuts()
+        .where((o) => o.woodStockName == woodStockName)
+        .toList();
+  }
+
+  /// 端材を削除する
+  static Future<void> deleteOffcut(String id) async {
+    await _offcutBox.delete(id);
   }
 }

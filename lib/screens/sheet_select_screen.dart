@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../data/wood_presets.dart';
+import '../gen_l10n/app_localizations.dart';
 import '../models/sheet_models.dart';
 import 'sheet_input_screen.dart';
 
@@ -32,19 +33,19 @@ class _SheetSelectScreenState extends State<SheetSelectScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('合板を選択')),
+      appBar: AppBar(title: Text(l10n.selectSheet)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('合板を選択',
+            Text(l10n.selectSheet,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
             const SizedBox(height: 12),
 
-            // 合板プリセットリスト
             ...sheetPresets.map((sheet) {
               final isSelected = !_isCustom && _selectedSheet == sheet;
               return Card(
@@ -59,7 +60,7 @@ class _SheetSelectScreenState extends State<SheetSelectScreen> {
                 color: isSelected ? colorScheme.primaryContainer.withValues(alpha: 0.3) : null,
                 child: ListTile(
                   title: Text(sheet.name, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: Text('${sheet.sizeLabel} / 厚さ ${sheet.thickness}mm'),
+                  subtitle: Text('${sheet.sizeLabel} / ${l10n.thicknessLabel(sheet.thickness.toStringAsFixed(0))}'),
                   trailing: sheet.price != null
                       ? Text('¥${sheet.price}', style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.w600))
                       : null,
@@ -74,7 +75,6 @@ class _SheetSelectScreenState extends State<SheetSelectScreen> {
               );
             }),
 
-            // カスタム
             Card(
               margin: const EdgeInsets.only(bottom: 8),
               shape: RoundedRectangleBorder(
@@ -86,7 +86,7 @@ class _SheetSelectScreenState extends State<SheetSelectScreen> {
               ),
               child: ListTile(
                 leading: const Icon(Icons.add),
-                title: const Text('カスタムサイズ'),
+                title: Text(l10n.customSheet),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 onTap: () => _showCustomDialog(context),
               ),
@@ -94,7 +94,6 @@ class _SheetSelectScreenState extends State<SheetSelectScreen> {
 
             const SizedBox(height: 24),
 
-            // 選択サマリー
             if (_currentSheet != null)
               Container(
                 padding: const EdgeInsets.all(16),
@@ -113,7 +112,7 @@ class _SheetSelectScreenState extends State<SheetSelectScreen> {
                         children: [
                           Text(_currentSheet!.name,
                               style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                          Text('${_currentSheet!.sizeLabel} / 厚さ ${_currentSheet!.thickness}mm',
+                          Text('${_currentSheet!.sizeLabel} / ${l10n.thicknessLabel(_currentSheet!.thickness.toStringAsFixed(0))}',
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
                         ],
                       ),
@@ -129,7 +128,7 @@ class _SheetSelectScreenState extends State<SheetSelectScreen> {
               child: FilledButton.icon(
                 onPressed: _currentSheet != null ? _onNext : null,
                 icon: const Icon(Icons.arrow_forward),
-                label: const Text('次へ'),
+                label: Text(l10n.onboardingNext),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   textStyle: const TextStyle(fontSize: 16),
@@ -166,43 +165,46 @@ class _SheetSelectScreenState extends State<SheetSelectScreen> {
 
     final result = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('カスタム合板'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(controller: nameCtl, decoration: const InputDecoration(labelText: '名前', border: OutlineInputBorder())),
-              const SizedBox(height: 16),
-              TextField(controller: widthCtl, keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(labelText: '幅 (mm)', border: OutlineInputBorder())),
-              const SizedBox(height: 16),
-              TextField(controller: heightCtl, keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(labelText: '高さ (mm)', border: OutlineInputBorder())),
-              const SizedBox(height: 16),
-              TextField(controller: thickCtl, keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
-                  decoration: const InputDecoration(labelText: '厚み (mm)', border: OutlineInputBorder())),
-            ],
+      builder: (context) {
+        final l10n = AppLocalizations.of(context);
+        return AlertDialog(
+          title: Text(l10n.customSheetSettings),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(controller: nameCtl, decoration: InputDecoration(labelText: l10n.materialName, border: const OutlineInputBorder())),
+                const SizedBox(height: 16),
+                TextField(controller: widthCtl, keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(labelText: '${l10n.width} (mm)', border: const OutlineInputBorder())),
+                const SizedBox(height: 16),
+                TextField(controller: heightCtl, keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(labelText: '${l10n.height} (mm)', border: const OutlineInputBorder())),
+                const SizedBox(height: 16),
+                TextField(controller: thickCtl, keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+                    decoration: InputDecoration(labelText: '${l10n.thickness} (mm)', border: const OutlineInputBorder())),
+              ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('キャンセル')),
-          FilledButton(
-            onPressed: () {
-              final w = double.tryParse(widthCtl.text);
-              final h = double.tryParse(heightCtl.text);
-              final t = double.tryParse(thickCtl.text);
-              if (w != null && w > 0 && h != null && h > 0 && t != null && t > 0) {
-                Navigator.pop(context, true);
-              }
-            },
-            child: const Text('決定'),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+            FilledButton(
+              onPressed: () {
+                final w = double.tryParse(widthCtl.text);
+                final h = double.tryParse(heightCtl.text);
+                final t = double.tryParse(thickCtl.text);
+                if (w != null && w > 0 && h != null && h > 0 && t != null && t > 0) {
+                  Navigator.pop(context, true);
+                }
+              },
+              child: Text(l10n.ok),
+            ),
+          ],
+        );
+      },
     );
 
     if (result == true) {

@@ -1,0 +1,295 @@
+{
+  "@@locale": "en",
+
+  "appName": "Wood Cut Planner",
+
+  "settings": "Settings",
+
+  "errorOccurred": "An error occurred",
+
+  "reload": "Reload",
+
+  "cancel": "Cancel",
+
+  "save": "Save",
+
+  "delete": "Delete",
+
+  "ok": "OK",
+
+  "duplicate": "Duplicate",
+
+  "close": "Close",
+
+  "importProject": "Import project",
+
+  "newProject": "New Project",
+
+  "emptyProjectTitle": "Create your first project",
+
+  "emptyProjectSubtitle": "Tap the \"New Project\" button\nto start calculating your wood cuts.",
+
+  "selectProjectType": "Select project type",
+
+  "cut1DTitle": "1D Cut (Lumber)",
+
+  "cut1DSubtitle": "Optimize cuts along the length",
+
+  "cut2DTitle": "2D Cut (Sheet)",
+
+  "cut2DSubtitle": "Optimize cuts on sheet area",
+
+  "duplicateProject": "Duplicate project",
+
+  "deleteProject": "Delete Project",
+
+  "deleteProjectConfirm": "Delete \"{name}\"?\nThis cannot be undone.",
+
+  "importFailed": "Failed to import file",
+
+  "importSuccess": "Imported \"{name}\"",
+
+  "duplicateCreated": "Created \"{name}\"",
+
+  "selectMaterial": "Select material",
+
+  "allCategories": "All",
+
+  "custom": "Custom",
+
+  "customSettings": "Custom settings",
+
+  "materialName": "Material name",
+
+  "width": "Width",
+
+  "height": "Height",
+
+  "length": "Length",
+
+  "startCutting": "Start Cutting",
+
+  "pleaseSelectMaterial": "Please select a material",
+
+  "pleaseEnterLength": "Please enter length",
+
+  "enterPieces": "Enter Pieces",
+
+  "sizesToCut": "Sizes to cut",
+
+  "sizesToCut2D": "Sizes to cut (2D)",
+
+  "kerfWidthLabel": "Blade kerf: {width} mm",
+
+  "columnLength": "Length(mm)",
+
+  "columnQuantity": "Qty",
+
+  "columnWidth": "Width(mm)",
+
+  "columnHeight": "Height(mm)",
+
+  "columnLabel": "Label",
+
+  "addSize": "Add size",
+
+  "calculate": "Calculate",
+
+  "inputError": "Input Error",
+
+  "errorLengthRequired": "Row {row}: Please enter a length",
+
+  "errorQuantityRequired": "Row {row}: Quantity must be at least 1",
+
+  "errorLengthExceeds": "Row {row}: Length ({length}mm) exceeds stock length ({stockLength}mm)",
+
+  "errorNoPieces": "Please enter at least one piece",
+
+  "resultTitle": "Results",
+
+  "resultTitle2D": "Results (2D)",
+
+  "checklistTooltip": "Cut checklist",
+
+  "exportTooltip": "Export",
+
+  "cutLayout": "Cut Layout",
+
+  "stockNumber": "Stock #{n}",
+
+  "sheetNumber": "Sheet #{n}",
+
+  "piecesWaste1D": "{pieces} pcs / Waste: {waste}mm",
+
+  "piecesWaste2D": "{pieces} pcs / Waste: {waste}mm²",
+
+  "purchase": "Buy",
+
+  "totalWaste": "Total waste",
+
+  "utilizationRate": "Utilization",
+
+  "costEstimate": "Cost Estimate",
+
+  "unitPriceLabel": "Price per piece:",
+
+  "totalCostLabel": "Total cost",
+
+  "costFormula": "{count} pcs × ¥{price} = ¥{total}",
+
+  "saveProject": "Save Project",
+
+  "projectUpdated": "Project updated",
+
+  "projectSaved": "Saved \"{name}\"",
+
+  "exportFailed": "Export failed: {error}",
+
+  "projectNameDialogTitle": "Project Name",
+
+  "projectNameHint": "e.g. Bookshelf cuts",
+
+  "defaultProjectName": "{woodName} cut plan",
+
+  "checklistTitle": "Cut Checklist",
+
+  "checklistComplete": "All cuts done!",
+
+  "checklistReset": "Reset",
+
+  "checklistProgress": "{done}/{total} done",
+
+  "selectSheet": "Select Sheet",
+
+  "customSheet": "Custom sheet",
+
+  "customSheetSettings": "Custom sheet settings",
+
+  "thickness": "Thickness",
+
+  "thicknessLabel": "Thickness {thickness}mm",
+
+  "enterPieces2D": "Enter Pieces (2D)",
+
+  "kerfWidthSetting": "Blade kerf width",
+
+  "kerfWidthDescription": "Wood lost per cut. A typical saw blade is about 3mm.",
+
+  "unitSystem": "Unit system",
+
+  "unitMm": "Millimeters (mm)",
+
+  "unitCm": "Centimeters (cm)",
+
+  "recommended": "Recommended",
+
+  "language": "Language",
+
+  "languageJa": "日本語",
+
+  "languageEn": "English",
+
+  "languageSystem": "System default",
+
+  "appInfo": "App Info",
+
+  "appInfoName": "App name",
+
+  "appInfoVersion": "Version",
+
+  "appInfoDescription": "Description",
+
+  "appInfoDescriptionValue": "DIY wood cut calculator\nAutomates optimal cut layouts to minimize waste.",
+
+  "privacyPolicy": "Privacy Policy",
+
+  "termsOfService": "Terms of Service",
+
+  "openSourceLicenses": "Open Source Licenses",
+
+  "urlOpenFailed": "Could not open URL",
+
+  "premiumTitle": "Wood Cut Planner Premium",
+
+  "premiumDescription": "No ads · PDF export · 2D sheet support",
+
+  "premiumPriceAppeal": "Unlimited use for the price of a piece of wood",
+
+  "premiumCta": "Learn more →",
+
+  "premiumComingSoon": "Premium purchase will be available in a future update",
+
+  "onboardingTitle1": "Smart Wood Cut\nOptimization",
+
+  "onboardingBody1": "Simply enter the sizes you need and the app automatically calculates the optimal cut layout to minimize waste.",
+
+  "onboardingTitle2": "1D & 2D Support",
+
+  "onboardingBody2": "Supports both length cuts for lumber (1D) and area cuts for plywood sheets (2D). Ready for any DIY project.",
+
+  "onboardingTitle3": "Cut Checklist\nKeeps You on Track",
+
+  "onboardingBody3": "Generate a cut checklist from your results. Check off each piece as you cut to avoid mistakes.",
+
+  "onboardingSkip": "Skip",
+
+  "onboardingNext": "Next",
+
+  "onboardingStart": "Get Started",
+
+  "commonLengths": "Common Lengths",
+
+  "selectionSummaryLength": "Length: {length} mm",
+
+  "selectionSummaryWithPrice": "Length: {length} mm / Ref. price: ¥{price}",
+
+  "themeSetting": "Theme",
+
+  "themeSystem": "System default",
+
+  "themeLight": "Light",
+
+  "themeDark": "Dark",
+
+  "searchProjects": "Search projects",
+
+  "searchNoResults": "No projects matching \"{query}\"",
+  "@searchNoResults": {
+    "description": "No search results message",
+    "placeholders": { "query": { "type": "String" } }
+  },
+
+  "multipleStockLengths": "Select multiple lengths (mix in optimization)",
+
+  "stockLengthSummary": "{count} lengths",
+  "@stockLengthSummary": {
+    "description": "Summary when multiple stock lengths selected",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "offcutSaved": "Offcut saved ({length}mm)",
+  "@offcutSaved": {
+    "description": "Offcut saved snackbar",
+    "placeholders": { "length": { "type": "String" } }
+  },
+
+  "saveOffcut": "Save offcut",
+
+  "savedOffcuts": "Saved offcuts",
+
+  "useOffcut": "Use offcut",
+
+  "offcutLength": "{length}mm offcut",
+  "@offcutLength": {
+    "description": "Offcut length label",
+    "placeholders": { "length": { "type": "String" } }
+  },
+
+  "noOffcuts": "No saved offcuts",
+
+  "offcutAdded": "Added {length}mm offcut",
+  "@offcutAdded": {
+    "description": "Offcut added to project message",
+    "placeholders": { "length": { "type": "String" } }
+  }
+}

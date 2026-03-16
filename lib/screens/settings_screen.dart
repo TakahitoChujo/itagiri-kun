@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../gen_l10n/app_localizations.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/premium_banner.dart';
 
@@ -48,10 +49,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('設定'),
+        title: Text(l10n.settings),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -68,7 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icon(Icons.content_cut, color: colorScheme.primary),
                       const SizedBox(width: 12),
                       Text(
-                        '鋸刃の幅（カーフ）',
+                        l10n.kerfWidthSetting,
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w600,
@@ -78,7 +80,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'カットごとに失われる木材の幅です。\n一般的な鋸刃は約3mmです。',
+                    l10n.kerfWidthDescription,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -112,7 +114,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      // よく使う値のクイック選択
                       Expanded(
                         child: Wrap(
                           spacing: 8,
@@ -156,7 +157,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icon(Icons.straighten, color: colorScheme.primary),
                       const SizedBox(width: 12),
                       Text(
-                        '単位系',
+                        l10n.unitSystem,
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w600,
@@ -171,32 +172,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         value: MeasurementUnit.mm,
                         groupValue: settings.unit,
                         onChanged: (value) {
-                          if (value != null) {
-                            notifier.setUnit(value);
-                          }
+                          if (value != null) notifier.setUnit(value);
                         },
-                        title: const Text('ミリメートル (mm)'),
-                        subtitle: const Text('推奨'),
+                        title: Text(l10n.unitMm),
+                        subtitle: Text(l10n.recommended),
                         dense: true,
                       ),
-                      IgnorePointer(
-                        child: RadioListTile<MeasurementUnit>(
-                          value: MeasurementUnit.cm,
-                          groupValue: settings.unit,
-                          onChanged: null,
-                          // v1.0ではmmのみ（IgnorePointerで無効化）
-                          title: Text(
-                            'センチメートル (cm)',
-                            style: TextStyle(
-                                color: colorScheme.onSurface.withValues(alpha: 0.4)),
-                          ),
-                          subtitle: Text(
-                            'v1.1で対応予定',
-                            style: TextStyle(
-                                color: colorScheme.onSurface.withValues(alpha: 0.3)),
-                          ),
-                          dense: true,
-                        ),
+                      RadioListTile<MeasurementUnit>(
+                        value: MeasurementUnit.cm,
+                        groupValue: settings.unit,
+                        onChanged: (value) {
+                          if (value != null) notifier.setUnit(value);
+                        },
+                        title: Text(l10n.unitCm),
+                        dense: true,
                       ),
                     ],
                   ),
@@ -207,7 +196,125 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           const SizedBox(height: 16),
 
-          // プレミアム導線バナー（プレミアムユーザーには非表示）
+          // 言語セクション
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.language, color: colorScheme.primary),
+                      const SizedBox(width: 12),
+                      Text(
+                        l10n.language,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Column(
+                    children: [
+                      RadioListTile<AppLanguage>(
+                        value: AppLanguage.system,
+                        groupValue: settings.language,
+                        onChanged: (value) {
+                          if (value != null) notifier.setLanguage(value);
+                        },
+                        title: Text(l10n.languageSystem),
+                        dense: true,
+                      ),
+                      RadioListTile<AppLanguage>(
+                        value: AppLanguage.ja,
+                        groupValue: settings.language,
+                        onChanged: (value) {
+                          if (value != null) notifier.setLanguage(value);
+                        },
+                        title: Text(l10n.languageJa),
+                        dense: true,
+                      ),
+                      RadioListTile<AppLanguage>(
+                        value: AppLanguage.en,
+                        groupValue: settings.language,
+                        onChanged: (value) {
+                          if (value != null) notifier.setLanguage(value);
+                        },
+                        title: Text(l10n.languageEn),
+                        dense: true,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // テーマセクション
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.dark_mode_outlined, color: colorScheme.primary),
+                      const SizedBox(width: 12),
+                      Text(
+                        l10n.themeSetting,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Column(
+                    children: [
+                      RadioListTile<AppTheme>(
+                        value: AppTheme.system,
+                        groupValue: settings.theme,
+                        onChanged: (value) {
+                          if (value != null) notifier.setTheme(value);
+                        },
+                        title: Text(l10n.themeSystem),
+                        dense: true,
+                      ),
+                      RadioListTile<AppTheme>(
+                        value: AppTheme.light,
+                        groupValue: settings.theme,
+                        onChanged: (value) {
+                          if (value != null) notifier.setTheme(value);
+                        },
+                        title: Text(l10n.themeLight),
+                        dense: true,
+                      ),
+                      RadioListTile<AppTheme>(
+                        value: AppTheme.dark,
+                        groupValue: settings.theme,
+                        onChanged: (value) {
+                          if (value != null) notifier.setTheme(value);
+                        },
+                        title: Text(l10n.themeDark),
+                        dense: true,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // プレミアム導線バナー
           const PremiumBanner(),
           const SizedBox(height: 16),
 
@@ -223,7 +330,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icon(Icons.info_outline, color: colorScheme.primary),
                       const SizedBox(width: 12),
                       Text(
-                        'アプリ情報',
+                        l10n.appInfo,
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w600,
@@ -232,12 +339,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  _buildInfoRow(context, 'アプリ名', '板取りくん'),
+                  _buildInfoRow(context, l10n.appInfoName, l10n.appName),
                   const SizedBox(height: 8),
-                  _buildInfoRow(context, 'バージョン', _version),
+                  _buildInfoRow(context, l10n.appInfoVersion, _version),
                   const SizedBox(height: 8),
-                  _buildInfoRow(context, '説明',
-                      'DIY木材カット計算アプリ\n端材を最小にする最適カット配置を自動計算します'),
+                  _buildInfoRow(context, l10n.appInfoDescription, l10n.appInfoDescriptionValue),
                 ],
               ),
             ),
@@ -252,7 +358,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ListTile(
                   leading:
                       Icon(Icons.privacy_tip_outlined, color: colorScheme.primary),
-                  title: const Text('プライバシーポリシー'),
+                  title: Text(l10n.privacyPolicy),
                   trailing: const Icon(Icons.open_in_new, size: 16),
                   onTap: () => _launchUrl(
                     'https://jyojorian.github.io/itagiri-kun/privacy-policy',
@@ -262,7 +368,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ListTile(
                   leading: Icon(Icons.description_outlined,
                       color: colorScheme.primary),
-                  title: const Text('利用規約'),
+                  title: Text(l10n.termsOfService),
                   trailing: const Icon(Icons.open_in_new, size: 16),
                   onTap: () => _launchUrl(
                     'https://jyojorian.github.io/itagiri-kun/terms-of-service',
@@ -272,11 +378,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ListTile(
                   leading:
                       Icon(Icons.source_outlined, color: colorScheme.primary),
-                  title: const Text('オープンソースライセンス'),
+                  title: Text(l10n.openSourceLicenses),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => showLicensePage(
                     context: context,
-                    applicationName: '板取りくん',
+                    applicationName: l10n.appName,
                     applicationVersion: _version,
                   ),
                 ),
@@ -291,11 +397,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _launchUrl(String url) async {
+    final l10n = AppLocalizations.of(context);
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('URLを開けませんでした')),
+          SnackBar(content: Text(l10n.urlOpenFailed)),
         );
       }
     }
