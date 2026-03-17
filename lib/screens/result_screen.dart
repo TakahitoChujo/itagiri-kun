@@ -434,9 +434,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         updatedAt: DateTime.now(),
       );
       await StorageService.saveProject(updated);
-      ref.invalidate(projectsProvider);
 
       if (context.mounted) {
+        ref.invalidate(projectsProvider);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.projectUpdated)));
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
@@ -459,10 +459,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     );
 
     await StorageService.saveProject(project);
-    ref.invalidate(projectsProvider);
 
     if (context.mounted) {
       final l10n = AppLocalizations.of(context);
+      ref.invalidate(projectsProvider);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.projectSaved(name))));
       Navigator.of(context).popUntil((route) => route.isFirst);
     }
@@ -470,27 +470,28 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
   Future<String?> _showNameDialog(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
-    final controller = TextEditingController(text: l10n.defaultProjectName(widget.woodStock.name));
-    final result = await showDialog<String>(
+    final defaultName = l10n.defaultProjectName(widget.woodStock.name);
+    String currentValue = defaultName;
+
+    return showDialog<String>(
       context: context,
       builder: (context) {
         final l10n = AppLocalizations.of(context);
         return AlertDialog(
           title: Text(l10n.projectNameDialogTitle),
-          content: TextField(
-            controller: controller,
+          content: TextFormField(
+            initialValue: defaultName,
             autofocus: true,
             decoration: InputDecoration(labelText: l10n.materialName, border: const OutlineInputBorder(), hintText: l10n.projectNameHint),
-            onSubmitted: (value) => Navigator.pop(context, value),
+            onChanged: (value) => currentValue = value,
+            onFieldSubmitted: (value) => Navigator.pop(context, value),
           ),
           actions: [
             TextButton(onPressed: () => Navigator.pop(context, null), child: Text(l10n.cancel)),
-            FilledButton(onPressed: () => Navigator.pop(context, controller.text), child: Text(l10n.save)),
+            FilledButton(onPressed: () => Navigator.pop(context, currentValue), child: Text(l10n.save)),
           ],
         );
       },
     );
-    controller.dispose();
-    return result;
   }
 }

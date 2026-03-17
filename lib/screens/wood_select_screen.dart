@@ -105,7 +105,7 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
                 crossAxisCount: context.gridColumnCount,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
-                childAspectRatio: 1.2,
+                mainAxisExtent: 88,
               ),
               itemCount: _filteredPresets.length + 1,
               itemBuilder: (context, index) {

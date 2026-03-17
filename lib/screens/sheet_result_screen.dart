@@ -126,11 +126,15 @@ class SheetResultScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Text(l10n.purchase, style: Theme.of(context).textTheme.titleSmall),
                 const Spacer(),
-                Text(
-                  '${sheetStock.name} (${sheetStock.sizeLabel})',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
+                Flexible(
+                  child: Text(
+                    '${sheetStock.name} (${sheetStock.sizeLabel})',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Container(
