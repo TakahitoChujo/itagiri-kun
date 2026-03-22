@@ -291,5 +291,60 @@
   "@offcutAdded": {
     "description": "Offcut added to project message",
     "placeholders": { "length": { "type": "String" } }
+  },
+
+  "undo": "Undo",
+
+  "redo": "Redo",
+
+  "fromOffcut": "From offcut",
+
+  "useAsTemplate": "Use as template",
+
+  "shareAsImage": "Share as image",
+
+  "dataManagement": "Data Management",
+
+  "dataManagementDescription": "Backup and restore all project and offcut data.\nUse iCloud Drive to transfer between devices.",
+
+  "exportBackup": "Backup",
+
+  "importBackup": "Restore",
+
+  "backupImportSuccess": "Restored: {projects} projects, {offcuts} offcuts",
+  "@backupImportSuccess": {
+    "description": "Backup import success message",
+    "placeholders": {
+      "projects": { "type": "int" },
+      "offcuts": { "type": "int" }
+    }
+  },
+
+  "backupImportFailed": "Failed to restore backup",
+
+  "backupNoData": "No data to backup",
+
+  "defaultSheetProjectName": "{sheetName} cut plan",
+  "@defaultSheetProjectName": {
+    "description": "Default sheet project name",
+    "placeholders": { "sheetName": { "type": "String" } }
+  },
+
+  "unitPriceLabelSheet": "Price per sheet:",
+
+  "costFormulaSheet": "{count} sheets × ¥{price} = ¥{total}",
+  "@costFormulaSheet": {
+    "description": "Cost formula for sheet",
+    "placeholders": {
+      "count": { "type": "int" },
+      "price": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+
+  "sheetsCount": "{count} sheets",
+  "@sheetsCount": {
+    "description": "Sheet count badge",
+    "placeholders": { "count": { "type": "int" } }
   }
 }

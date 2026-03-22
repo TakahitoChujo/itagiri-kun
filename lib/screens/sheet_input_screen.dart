@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen_l10n/app_localizations.dart';
 import '../models/sheet_models.dart';
+import '../models/sheet_project.dart';
 import '../providers/settings_provider.dart';
 import '../services/sheet_cut_optimizer.dart';
 import 'sheet_result_screen.dart';
@@ -11,10 +12,14 @@ import 'sheet_result_screen.dart';
 /// 2D 部材入力画面
 class SheetInputScreen extends ConsumerStatefulWidget {
   final SheetStock sheetStock;
+  final SheetProject? existingProject;
+  final List<SheetPiece>? templatePieces;
 
   const SheetInputScreen({
     super.key,
     required this.sheetStock,
+    this.existingProject,
+    this.templatePieces,
   });
 
   @override
@@ -22,7 +27,35 @@ class SheetInputScreen extends ConsumerStatefulWidget {
 }
 
 class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
-  List<SheetPiece> _pieces = [const SheetPiece(width: 0, height: 0, quantity: 1)];
+  late List<SheetPiece> _pieces;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingProject != null) {
+      _pieces = widget.existingProject!.pieces
+          .map((p) => SheetPiece(
+                width: p.width,
+                height: p.height,
+                quantity: p.quantity,
+                label: p.label,
+                canRotate: p.canRotate,
+              ))
+          .toList();
+    } else if (widget.templatePieces != null) {
+      _pieces = widget.templatePieces!
+          .map((p) => SheetPiece(
+                width: p.width,
+                height: p.height,
+                quantity: p.quantity,
+                label: p.label,
+                canRotate: p.canRotate,
+              ))
+          .toList();
+    } else {
+      _pieces = [SheetPiece(width: 0, height: 0, quantity: 1)];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +124,7 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
                 OutlinedButton.icon(
                   onPressed: () {
                     setState(() {
-                      _pieces.add(const SheetPiece(width: 0, height: 0, quantity: 1));
+                      _pieces.add(SheetPiece(width: 0, height: 0, quantity: 1));
                     });
                   },
                   icon: const Icon(Icons.add),
@@ -285,6 +318,9 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
           builder: (_) => SheetResultScreen(
             result: result,
             sheetStock: widget.sheetStock,
+            pieces: validPieces,
+            kerfWidth: settings.kerfWidth,
+            existingProject: widget.existingProject,
           ),
         ),
       );

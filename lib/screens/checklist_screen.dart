@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../gen_l10n/app_localizations.dart';
 import '../models/cut_result.dart';
 import '../models/wood_stock.dart';
+import '../services/storage_service.dart';
 
 /// カットチェックリスト画面
 class ChecklistScreen extends StatefulWidget {
@@ -10,6 +13,7 @@ class ChecklistScreen extends StatefulWidget {
   final WoodStock woodStock;
   final int stockLength;
   final String projectName;
+  final String? projectId;
 
   const ChecklistScreen({
     super.key,
@@ -17,6 +21,7 @@ class ChecklistScreen extends StatefulWidget {
     required this.woodStock,
     required this.stockLength,
     required this.projectName,
+    this.projectId,
   });
 
   @override
@@ -25,6 +30,12 @@ class ChecklistScreen extends StatefulWidget {
 
 class _ChecklistScreenState extends State<ChecklistScreen> {
   final Map<String, bool> _checkedItems = {};
+  Timer? _saveDebounce;
+
+  int get _resultHash =>
+      widget.result.bins.length.hashCode ^
+      widget.result.totalStock.hashCode ^
+      widget.result.totalWaste.hashCode;
 
   int get _totalPieces {
     int count = 0;
@@ -49,6 +60,47 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
       if (_checkedItems['${binIndex}_$i'] == true) count++;
     }
     return count;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadChecklist();
+  }
+
+  @override
+  void dispose() {
+    _saveDebounce?.cancel();
+    _saveChecklistNow();
+    super.dispose();
+  }
+
+  void _loadChecklist() {
+    if (widget.projectId == null) return;
+    final saved = StorageService.loadChecklist(widget.projectId!, _resultHash);
+    if (saved != null) {
+      _checkedItems.addAll(saved);
+    }
+  }
+
+  void _scheduleSave() {
+    if (widget.projectId == null) return;
+    _saveDebounce?.cancel();
+    _saveDebounce = Timer(const Duration(milliseconds: 300), _saveChecklistNow);
+  }
+
+  void _saveChecklistNow() {
+    if (widget.projectId == null) return;
+    // 全キーを初期化してから保存（未チェックの項目もfalseとして保存）
+    final allChecks = <String, bool>{};
+    for (int binIndex = 0; binIndex < widget.result.bins.length; binIndex++) {
+      final bin = widget.result.bins[binIndex];
+      for (int pieceIndex = 0; pieceIndex < bin.pieces.length; pieceIndex++) {
+        final key = '${binIndex}_$pieceIndex';
+        allChecks[key] = _checkedItems[key] ?? false;
+      }
+    }
+    StorageService.saveChecklist(widget.projectId!, allChecks, _resultHash);
   }
 
   void _checkCompletion() {
@@ -206,9 +258,12 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
               final piece = bin.pieces[pieceIndex];
               final key = '${binIndex}_$pieceIndex';
               final isChecked = _checkedItems[key] ?? false;
+              final seqPrefix = piece.sequenceOrder > 0
+                  ? '${piece.sequenceOrder}. '
+                  : '';
               final label = piece.label != null && piece.label!.isNotEmpty
-                  ? piece.label!
-                  : 'Piece ${pieceIndex + 1}';
+                  ? '$seqPrefix${piece.label!}'
+                  : '${seqPrefix}Piece ${pieceIndex + 1}';
 
               return CheckboxListTile(
                 value: isChecked,
@@ -216,6 +271,7 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                   setState(() {
                     _checkedItems[key] = value ?? false;
                   });
+                  _scheduleSave();
                   _checkCompletion();
                 },
                 title: Text(

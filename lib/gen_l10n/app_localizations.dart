@@ -913,6 +913,102 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'{length}mm の端材を追加しました'**
   String offcutAdded(String length);
+
+  /// Undo action
+  ///
+  /// In ja, this message translates to:
+  /// **'元に戻す'**
+  String get undo;
+
+  /// Redo action
+  ///
+  /// In ja, this message translates to:
+  /// **'やり直す'**
+  String get redo;
+
+  /// Label for bins made from saved offcuts
+  ///
+  /// In ja, this message translates to:
+  /// **'端材から'**
+  String get fromOffcut;
+
+  /// Use project as template action
+  ///
+  /// In ja, this message translates to:
+  /// **'テンプレとして使用'**
+  String get useAsTemplate;
+
+  /// Share as image menu option
+  ///
+  /// In ja, this message translates to:
+  /// **'画像として共有'**
+  String get shareAsImage;
+
+  /// Data management section title
+  ///
+  /// In ja, this message translates to:
+  /// **'データ管理'**
+  String get dataManagement;
+
+  /// Data management description
+  ///
+  /// In ja, this message translates to:
+  /// **'全プロジェクトと端材データをバックアップ・復元できます。\niCloud Drive経由でデバイス間の移行にも使えます。'**
+  String get dataManagementDescription;
+
+  /// Export backup button
+  ///
+  /// In ja, this message translates to:
+  /// **'バックアップ'**
+  String get exportBackup;
+
+  /// Import backup button
+  ///
+  /// In ja, this message translates to:
+  /// **'復元'**
+  String get importBackup;
+
+  /// Backup import success message
+  ///
+  /// In ja, this message translates to:
+  /// **'復元完了: プロジェクト{projects}件、端材{offcuts}件'**
+  String backupImportSuccess(int projects, int offcuts);
+
+  /// Backup import failed message
+  ///
+  /// In ja, this message translates to:
+  /// **'バックアップの読み込みに失敗しました'**
+  String get backupImportFailed;
+
+  /// No data to backup message
+  ///
+  /// In ja, this message translates to:
+  /// **'バックアップするデータがありません'**
+  String get backupNoData;
+
+  /// Default sheet project name
+  ///
+  /// In ja, this message translates to:
+  /// **'{sheetName} カットプラン'**
+  String defaultSheetProjectName(String sheetName);
+
+  /// Unit price label for sheet
+  ///
+  /// In ja, this message translates to:
+  /// **'合板1枚あたりの単価:'**
+  String get unitPriceLabelSheet;
+
+  /// Cost formula for sheet
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}枚 x ¥{price} = ¥{total}'**
+  String costFormulaSheet(int count, String price, String total);
+
+  /// Sheet count badge
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}枚'**
+  String sheetsCount(int count);
 }
 
 class _AppLocalizationsDelegate

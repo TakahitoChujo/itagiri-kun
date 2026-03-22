@@ -8,9 +8,13 @@ class CutPieceResult {
   /// ラベル（任意）
   final String? label;
 
+  /// 切断順序（1始まり）
+  final int sequenceOrder;
+
   const CutPieceResult({
     required this.length,
     this.label,
+    this.sequenceOrder = 0,
   });
 
   @override
@@ -25,7 +29,7 @@ class CutPieceResult {
   int get hashCode => length.hashCode ^ label.hashCode;
 
   @override
-  String toString() => 'CutPieceResult(length: $length, label: $label)';
+  String toString() => 'CutPieceResult(length: $length, label: $label, seq: $sequenceOrder)';
 }
 
 /// 1本の素材に対するカット配置
@@ -39,10 +43,18 @@ class CutBin {
   /// 素材の長さ (mm)
   final double stockLength;
 
+  /// 保存済み端材から作られたビンかどうか
+  final bool isFromOffcut;
+
+  /// 元の端材ID（端材ビンの場合）
+  final String? offcutId;
+
   const CutBin({
     required this.pieces,
     required this.waste,
     required this.stockLength,
+    this.isFromOffcut = false,
+    this.offcutId,
   });
 
   /// この素材の利用率 (0.0 ~ 1.0)
@@ -79,6 +91,12 @@ class CutResult {
     required this.utilizationRate,
   });
 
+  /// 新規購入が必要な素材の本数
+  int get newStockCount => bins.where((b) => !b.isFromOffcut).length;
+
+  /// 端材から再利用されたビンの数
+  int get offcutBinCount => bins.where((b) => b.isFromOffcut).length;
+
   @override
   String toString() =>
       'CutResult(totalStock: $totalStock, totalWaste: $totalWaste, '
@@ -104,17 +122,20 @@ class CutPieceResultAdapter extends TypeAdapter<CutPieceResult> {
     return CutPieceResult(
       length: fields[0] as double,
       label: fields[1] as String?,
+      sequenceOrder: numOfFields > 2 ? (fields[2] as int?) ?? 0 : 0,
     );
   }
 
   @override
   void write(BinaryWriter writer, CutPieceResult obj) {
     writer
-      ..writeByte(2) // number of fields
+      ..writeByte(3) // number of fields
       ..writeByte(0)
       ..write(obj.length)
       ..writeByte(1)
-      ..write(obj.label);
+      ..write(obj.label)
+      ..writeByte(2)
+      ..write(obj.sequenceOrder);
   }
 }
 
@@ -136,19 +157,25 @@ class CutBinAdapter extends TypeAdapter<CutBin> {
       pieces: (fields[0] as List).cast<CutPieceResult>(),
       waste: fields[1] as double,
       stockLength: fields[2] as double,
+      isFromOffcut: numOfFields > 3 ? (fields[3] as bool?) ?? false : false,
+      offcutId: numOfFields > 4 ? fields[4] as String? : null,
     );
   }
 
   @override
   void write(BinaryWriter writer, CutBin obj) {
     writer
-      ..writeByte(3) // number of fields
+      ..writeByte(5) // number of fields
       ..writeByte(0)
       ..write(obj.pieces)
       ..writeByte(1)
       ..write(obj.waste)
       ..writeByte(2)
-      ..write(obj.stockLength);
+      ..write(obj.stockLength)
+      ..writeByte(3)
+      ..write(obj.isFromOffcut)
+      ..writeByte(4)
+      ..write(obj.offcutId);
   }
 }
 

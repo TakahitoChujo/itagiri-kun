@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../models/sheet_models.dart';
 
 /// 2D カット最適化例外
@@ -9,10 +11,20 @@ class SheetCutOptimizerException implements Exception {
   String toString() => 'SheetCutOptimizerException: $message';
 }
 
+/// ソート戦略
+enum _SortStrategy {
+  areaDescending,
+  perimeterDescending,
+  maxSideDescending,
+  widthDescending,
+  heightDescending,
+}
+
 /// ギロチンカットによる 2D ビンパッキング最適化サービス
 ///
 /// 合板など板材のカットを最適化する。
-/// Best Area Fit + Guillotine Split アルゴリズムを使用。
+/// 複数のソート戦略を試行し、最良の結果を採用する。
+/// Best Short Side Fit (BSSF) + Guillotine Split アルゴリズムを使用。
 class SheetCutOptimizer {
   /// 2D カット最適化を実行する。
   static SheetCutResult optimize({
@@ -65,21 +77,75 @@ class SheetCutOptimizer {
       }
     }
 
-    // 面積の大きい順にソート
-    expanded.sort((a, b) => (b.width * b.height).compareTo(a.width * a.height));
+    // 複数の戦略で試行し、最良の結果を採用
+    SheetCutResult? bestResult;
 
-    // ビンパッキング
+    for (final strategy in _SortStrategy.values) {
+      final sorted = _sortPieces(expanded, strategy);
+      final result = _runGuillotine(sorted, sheetWidth, sheetHeight, kerfWidth);
+
+      if (bestResult == null ||
+          result.totalSheets < bestResult.totalSheets ||
+          (result.totalSheets == bestResult.totalSheets &&
+              result.totalWasteArea < bestResult.totalWasteArea)) {
+        bestResult = result;
+      }
+    }
+
+    return bestResult!;
+  }
+
+  /// ピースをソートする
+  static List<_ExpandedPiece> _sortPieces(
+    List<_ExpandedPiece> pieces,
+    _SortStrategy strategy,
+  ) {
+    final sorted = List<_ExpandedPiece>.from(pieces);
+    switch (strategy) {
+      case _SortStrategy.areaDescending:
+        sorted.sort((a, b) =>
+            (b.width * b.height).compareTo(a.width * a.height));
+      case _SortStrategy.perimeterDescending:
+        sorted.sort((a, b) =>
+            (b.width + b.height).compareTo(a.width + a.height));
+      case _SortStrategy.maxSideDescending:
+        sorted.sort((a, b) =>
+            math.max(b.width, b.height).compareTo(math.max(a.width, a.height)));
+      case _SortStrategy.widthDescending:
+        sorted.sort((a, b) => b.width.compareTo(a.width));
+      case _SortStrategy.heightDescending:
+        sorted.sort((a, b) => b.height.compareTo(a.height));
+    }
+    return sorted;
+  }
+
+  /// ギロチンカットの実行
+  static SheetCutResult _runGuillotine(
+    List<_ExpandedPiece> pieces,
+    double sheetWidth,
+    double sheetHeight,
+    double kerfWidth,
+  ) {
     final bins = <_WorkingSheet>[];
 
-    for (final piece in expanded) {
+    for (final piece in pieces) {
       var placed = false;
 
-      // 既存シートに配置を試みる
+      // 既存シートに配置を試みる（BSSF: Best Short Side Fit）
+      _WorkingSheet? bestSheet;
+      double bestScore = double.infinity;
+
       for (final sheet in bins) {
-        if (sheet.tryPlace(piece, kerfWidth)) {
-          placed = true;
-          break;
+        final score = sheet.scorePlacement(piece, kerfWidth);
+        if (score != null && score < bestScore) {
+          bestScore = score;
+          bestSheet = sheet;
         }
+      }
+
+      if (bestSheet != null) {
+        bestSheet.tryPlace(piece, kerfWidth);
+        placed = true;
       }
 
       // 新しいシートを追加
@@ -95,6 +161,11 @@ class SheetCutOptimizer {
         }
         bins.add(newSheet);
       }
+    }
+
+    // クロスシート最適化: 最後のシートのピースを前のシートに再配置試行
+    if (bins.length > 1) {
+      _crossSheetOptimize(bins, sheetWidth, sheetHeight, kerfWidth);
     }
 
     // 結果を構築
@@ -133,6 +204,45 @@ class SheetCutOptimizer {
       totalWasteArea: totalWaste,
       utilizationRate: utilizationRate,
     );
+  }
+
+  /// クロスシート最適化
+  ///
+  /// 最後のシートのピースを前のシートに再配置して、シート数の削減を試みる。
+  static void _crossSheetOptimize(
+    List<_WorkingSheet> bins,
+    double sheetWidth,
+    double sheetHeight,
+    double kerfWidth,
+  ) {
+    final lastSheet = bins.last;
+    final piecesToMove = List<_PlacedPiece>.from(lastSheet.placedPieces);
+    var allMoved = true;
+
+    for (final piece in piecesToMove) {
+      var moved = false;
+      final expandedPiece = _ExpandedPiece(
+        width: piece.rotated ? piece.height : piece.width,
+        height: piece.rotated ? piece.width : piece.height,
+        label: piece.label,
+        canRotate: true,
+      );
+
+      for (final targetSheet in bins.sublist(0, bins.length - 1)) {
+        if (targetSheet.tryPlace(expandedPiece, kerfWidth)) {
+          moved = true;
+          break;
+        }
+      }
+
+      if (!moved) {
+        allMoved = false;
+      }
+    }
+
+    if (allMoved) {
+      bins.removeLast();
+    }
   }
 }
 
@@ -183,8 +293,6 @@ class _FreeRect {
     required this.width,
     required this.height,
   });
-
-  double get area => width * height;
 }
 
 /// 内部用: 作業中のシート
@@ -198,6 +306,39 @@ class _WorkingSheet {
     freeRects.add(_FreeRect(x: 0, y: 0, width: width, height: height));
   }
 
+  /// 配置のBSSFスコアを返す（低いほど良い）。配置不可の場合は null。
+  double? scorePlacement(_ExpandedPiece piece, double kerf) {
+    double? bestScore;
+
+    for (final rect in freeRects) {
+      // 通常配置
+      if (piece.width <= rect.width && piece.height <= rect.height) {
+        final shortSide = math.min(
+          rect.width - piece.width,
+          rect.height - piece.height,
+        );
+        if (bestScore == null || shortSide < bestScore) {
+          bestScore = shortSide;
+        }
+      }
+
+      // 回転配置
+      if (piece.canRotate &&
+          piece.height <= rect.width &&
+          piece.width <= rect.height) {
+        final shortSide = math.min(
+          rect.width - piece.height,
+          rect.height - piece.width,
+        );
+        if (bestScore == null || shortSide < bestScore) {
+          bestScore = shortSide;
+        }
+      }
+    }
+
+    return bestScore;
+  }
+
   /// ピースの配置を試みる。成功したら true を返す。
   bool tryPlace(_ExpandedPiece piece, double kerf) {
     _FreeRect? bestRect;
@@ -208,9 +349,12 @@ class _WorkingSheet {
     for (var i = 0; i < freeRects.length; i++) {
       final rect = freeRects[i];
 
-      // 通常配置
+      // 通常配置（BSSF: Best Short Side Fit）
       if (piece.width <= rect.width && piece.height <= rect.height) {
-        final score = rect.area - piece.width * piece.height;
+        final score = math.min(
+          rect.width - piece.width,
+          rect.height - piece.height,
+        );
         if (score < bestScore) {
           bestScore = score;
           bestRect = rect;
@@ -223,7 +367,10 @@ class _WorkingSheet {
       if (piece.canRotate &&
           piece.height <= rect.width &&
           piece.width <= rect.height) {
-        final score = rect.area - piece.width * piece.height;
+        final score = math.min(
+          rect.width - piece.height,
+          rect.height - piece.width,
+        );
         if (score < bestScore) {
           bestScore = score;
           bestRect = rect;

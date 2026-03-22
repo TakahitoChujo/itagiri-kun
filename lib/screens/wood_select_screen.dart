@@ -447,22 +447,19 @@ class _WoodSelectScreenState extends State<WoodSelectScreen> {
     if (wood == null || _selectedLengths.isEmpty) return;
     final sortedLengths = _selectedLengths.toList()..sort();
 
-    // 選択された端材の長さを追加（整数化）
-    final offcutLengths = _availableOffcuts
+    // 選択された端材を別途渡す
+    final selectedOffcuts = _availableOffcuts
         .where((o) => _selectedOffcutIds.contains(o.id))
-        .map((o) => o.length.round())
         .toList();
-
-    final allLengths = [...sortedLengths, ...offcutLengths]..sort();
-    final uniqueLengths = allLengths.toSet().toList()..sort();
 
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => PiecesInputScreen(
           woodStock: wood,
-          stockLength: uniqueLengths.first,
-          stockLengths: uniqueLengths.length > 1 ? uniqueLengths : null,
+          stockLength: sortedLengths.first,
+          stockLengths: sortedLengths.length > 1 ? sortedLengths : null,
+          offcuts: selectedOffcuts.isNotEmpty ? selectedOffcuts : null,
         ),
       ),
     );

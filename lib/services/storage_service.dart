@@ -10,6 +10,7 @@ import '../models/cut_piece.dart';
 import '../models/cut_result.dart';
 import '../models/project.dart';
 import '../models/sheet_models.dart';
+import '../models/sheet_project.dart';
 import '../models/offcut.dart';
 
 /// Hive を使ったローカルストレージサービス
@@ -23,6 +24,8 @@ class StorageService {
   static const String _settingsBoxName = 'settings';
   static const String _premiumBoxName = 'premium';
   static const String _offcutBoxName = 'offcuts';
+  static const String _sheetProjectBoxName = 'sheet_projects';
+  static const String _checklistBoxName = 'checklists';
   static const String _onboardingKey = 'onboarding_done';
 
   /// 初回起動フラグ（initStorage 後に参照可能）
@@ -105,6 +108,12 @@ class StorageService {
     if (!Hive.isAdapterRegistered(9)) {
       Hive.registerAdapter(SheetCutResultAdapter());
     }
+    if (!Hive.isAdapterRegistered(10)) {
+      Hive.registerAdapter(SheetPieceAdapter());
+    }
+    if (!Hive.isAdapterRegistered(11)) {
+      Hive.registerAdapter(SheetProjectAdapter());
+    }
 
     // 全 Box を暗号化して開く
     await Hive.openBox<Project>(
@@ -121,6 +130,14 @@ class StorageService {
     );
     await Hive.openBox<String>(
       _offcutBoxName,
+      encryptionCipher: cipher,
+    );
+    await Hive.openBox<SheetProject>(
+      _sheetProjectBoxName,
+      encryptionCipher: cipher,
+    );
+    await Hive.openBox<String>(
+      _checklistBoxName,
       encryptionCipher: cipher,
     );
 
@@ -177,11 +194,46 @@ class StorageService {
   /// 全プロジェクト数を返す。
   static int get projectCount => _projectBox.length;
 
+  // ---------------------------------------------------------------------------
+  // 2D 合板プロジェクト CRUD
+  // ---------------------------------------------------------------------------
+
+  /// 合板プロジェクト用の Hive Box を取得する。
+  static Box<SheetProject> get _sheetProjectBox =>
+      Hive.box<SheetProject>(_sheetProjectBoxName);
+
+  /// 合板プロジェクトを保存する。
+  static Future<void> saveSheetProject(SheetProject project) async {
+    project.updatedAt = DateTime.now();
+    await _sheetProjectBox.put(project.id, project);
+  }
+
+  /// 全合板プロジェクトを取得する（更新日時降順）。
+  static List<SheetProject> loadSheetProjects() {
+    final projects = _sheetProjectBox.values.toList();
+    projects.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    return projects;
+  }
+
+  /// 指定した ID の合板プロジェクトを取得する。
+  static SheetProject? loadSheetProject(String id) {
+    return _sheetProjectBox.get(id);
+  }
+
+  /// 指定した ID の合板プロジェクトを削除する。
+  static Future<void> deleteSheetProject(String id) async {
+    await _sheetProjectBox.delete(id);
+  }
+
+  /// 全合板プロジェクト数を返す。
+  static int get sheetProjectCount => _sheetProjectBox.length;
+
   /// ストレージをクリーンアップする（全データ削除）。
   ///
   /// 主にデバッグ・テスト用。
   static Future<void> clearAll() async {
     await _projectBox.clear();
+    await _sheetProjectBox.clear();
   }
 
   /// Hive を閉じる。アプリ終了時に呼ぶ。
@@ -238,5 +290,76 @@ class StorageService {
   /// 端材を削除する
   static Future<void> deleteOffcut(String id) async {
     await _offcutBox.delete(id);
+  }
+
+  /// 端材をインポートする（既存IDを保持）
+  static Future<void> importOffcut(Offcut offcut) async {
+    await _offcutBox.put(offcut.id, offcut.toJsonString());
+  }
+
+  // ---------------------------------------------------------------------------
+  // チェックリスト CRUD
+  // ---------------------------------------------------------------------------
+
+  static Box<String> get _checklistBox =>
+      Hive.box<String>(_checklistBoxName);
+
+  /// チェックリストの状態を保存する
+  static Future<void> saveChecklist(
+    String projectId,
+    Map<String, bool> checks,
+    int resultHash,
+  ) async {
+    final data = jsonEncode({
+      'resultHash': resultHash,
+      'checks': checks,
+    });
+    await _checklistBox.put(projectId, data);
+  }
+
+  /// チェックリストの状態を読み込む
+  ///
+  /// resultHash が一致しない場合（再計算された場合）は null を返す。
+  static Map<String, bool>? loadChecklist(
+    String projectId,
+    int resultHash,
+  ) {
+    final raw = _checklistBox.get(projectId);
+    if (raw == null) return null;
+
+    try {
+      final data = jsonDecode(raw) as Map<String, dynamic>;
+      if (data['resultHash'] != resultHash) return null;
+
+      final checks = (data['checks'] as Map<String, dynamic>)
+          .map((k, v) => MapEntry(k, v as bool));
+      return checks;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// チェックリストの進捗を取得する (done, total)
+  ///
+  /// 保存されていない場合は null を返す。
+  static (int done, int total)? getChecklistProgress(String projectId) {
+    final raw = _checklistBox.get(projectId);
+    if (raw == null) return null;
+
+    try {
+      final data = jsonDecode(raw) as Map<String, dynamic>;
+      final checks = data['checks'] as Map<String, dynamic>;
+      final total = checks.length;
+      if (total == 0) return null;
+      final done = checks.values.where((v) => v == true).length;
+      return (done, total);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// チェックリストを削除する
+  static Future<void> deleteChecklist(String projectId) async {
+    await _checklistBox.delete(projectId);
   }
 }

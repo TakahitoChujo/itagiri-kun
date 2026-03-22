@@ -11,6 +11,7 @@ class PieceInputRow extends StatelessWidget {
   final CutPiece piece;
   final ValueChanged<CutPiece> onChanged;
   final VoidCallback onDelete;
+  final VoidCallback? onEditingComplete;
   final bool canDelete;
 
   const PieceInputRow({
@@ -19,6 +20,7 @@ class PieceInputRow extends StatelessWidget {
     required this.piece,
     required this.onChanged,
     required this.onDelete,
+    this.onEditingComplete,
     this.canDelete = true,
   });
 
@@ -58,6 +60,10 @@ class PieceInputRow extends StatelessWidget {
                 final length = double.tryParse(value) ?? 0;
                 onChanged(piece.copyWith(length: length));
               },
+              onEditingComplete: () {
+                onEditingComplete?.call();
+                FocusScope.of(context).nextFocus();
+              },
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return '入力してください';
@@ -95,6 +101,10 @@ class PieceInputRow extends StatelessWidget {
               onChanged: (value) {
                 final quantity = int.tryParse(value) ?? 0;
                 onChanged(piece.copyWith(quantity: quantity));
+              },
+              onEditingComplete: () {
+                onEditingComplete?.call();
+                FocusScope.of(context).nextFocus();
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {

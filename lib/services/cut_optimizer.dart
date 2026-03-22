@@ -1,5 +1,6 @@
 import '../models/cut_piece.dart';
 import '../models/cut_result.dart';
+import '../models/offcut.dart';
 
 /// カット最適化例外
 class CutOptimizerException implements Exception {
@@ -21,6 +22,7 @@ class CutOptimizer {
   /// [stockLengths] 利用可能な素材長リスト (mm)（複数長さの場合、優先）
   /// [kerfWidth] 鋸刃の幅 (mm)。各ピース間に加算される。
   /// [pieces] カットしたい部材リスト
+  /// [offcuts] 再利用する保存済み端材リスト（優先的に消化される）
   ///
   /// Returns [CutResult] 最適化されたカット配置結果
   ///
@@ -30,6 +32,7 @@ class CutOptimizer {
     List<double>? stockLengths,
     required double kerfWidth,
     required List<CutPiece> pieces,
+    List<Offcut>? offcuts,
   }) {
     // 実効素材長リストを決定（昇順ソート）
     final effectiveLengths = stockLengths != null && stockLengths.isNotEmpty
@@ -80,26 +83,45 @@ class CutOptimizer {
     // 2. 長い順にソート（降順） -- Decreasing
     expandedPieces.sort((a, b) => b.length.compareTo(a.length));
 
-    // 3. ビンパッキング
+    // 3. 端材ビンを事前にセット（短い順でBest Fitに有利）
     final bins = <_WorkingBin>[];
-
-    if (effectiveLengths.length == 1) {
-      // 単一長さ: First Fit Decreasing（従来の挙動）
-      _firstFitDecreasing(expandedPieces, effectiveLengths[0], kerfWidth, bins);
-    } else {
-      // 複数長さ: Best Fit Decreasing with heterogeneous bins
-      _bestFitDecreasingMulti(expandedPieces, effectiveLengths, kerfWidth, bins);
+    if (offcuts != null && offcuts.isNotEmpty) {
+      final sortedOffcuts = List<Offcut>.from(offcuts)
+        ..sort((a, b) => a.length.compareTo(b.length));
+      for (final offcut in sortedOffcuts) {
+        bins.add(_WorkingBin(
+          stockLength: offcut.length,
+          isFromOffcut: true,
+          offcutId: offcut.id,
+        ));
+      }
     }
 
-    // 4. 結果を構築
+    // 4. ビンパッキング（端材ビンも含めて Best Fit）
+    _bestFitDecreasingWithOffcuts(
+      expandedPieces, effectiveLengths, kerfWidth, bins,
+    );
+
+    // 5. 空の端材ビンを除去（使われなかった端材）
+    bins.removeWhere((bin) => bin.isFromOffcut && bin.pieces.isEmpty);
+
+    // 6. 結果を構築（切断順序番号を付与）
     final resultBins = bins.map((bin) {
       final resultPieces = bin.pieces
-          .map((p) => CutPieceResult(length: p.length, label: p.label))
+          .asMap()
+          .entries
+          .map((e) => CutPieceResult(
+                length: e.value.length,
+                label: e.value.label,
+                sequenceOrder: e.key + 1,
+              ))
           .toList();
       return CutBin(
         pieces: resultPieces,
         waste: bin.remainingLength,
         stockLength: bin.stockLength,
+        isFromOffcut: bin.isFromOffcut,
+        offcutId: bin.offcutId,
       );
     }).toList();
 
@@ -119,58 +141,47 @@ class CutOptimizer {
     );
   }
 
-  /// First Fit Decreasing（単一材料長）
-  static void _firstFitDecreasing(
-    List<_ExpandedPiece> pieces,
-    double stockLength,
-    double kerfWidth,
-    List<_WorkingBin> bins,
-  ) {
-    for (final piece in pieces) {
-      var placed = false;
-      for (final bin in bins) {
-        if (bin.canFit(piece.length, kerfWidth)) {
-          bin.addPiece(piece, kerfWidth);
-          placed = true;
-          break;
-        }
-      }
-      if (!placed) {
-        final newBin = _WorkingBin(stockLength: stockLength);
-        newBin.addPiece(piece, kerfWidth);
-        bins.add(newBin);
-      }
-    }
-  }
-
-  /// Best Fit Decreasing（複数材料長）
+  /// Best Fit Decreasing with offcut bins support
   ///
-  /// 各ピースを「残りスペースが最小で収まるビン」に配置する。
-  /// 既存ビンに入らない場合は、ピースが収まる最小の材料長で新規ビンを作成する。
-  static void _bestFitDecreasingMulti(
+  /// 端材ビン（既にリストに入っている）を含めて、Best Fitでピースを配置する。
+  /// 端材ビンに入る場合はそちらを優先する。
+  static void _bestFitDecreasingWithOffcuts(
     List<_ExpandedPiece> pieces,
-    List<double> sortedLengths, // 昇順ソート済み
+    List<double> sortedLengths,
     double kerfWidth,
     List<_WorkingBin> bins,
   ) {
     for (final piece in pieces) {
       // Best Fit: 残りスペースが最小で piece が入るビンを探す
-      _WorkingBin? bestBin;
-      double bestRemaining = double.infinity;
+      // 端材ビンを優先するため、端材ビンと新規ビンで別々に探す
+      _WorkingBin? bestOffcutBin;
+      double bestOffcutRemaining = double.infinity;
+      _WorkingBin? bestNewBin;
+      double bestNewRemaining = double.infinity;
 
       for (final bin in bins) {
         if (bin.canFit(piece.length, kerfWidth)) {
           final remaining = bin.remainingLength -
               (bin.pieces.isEmpty ? piece.length : kerfWidth + piece.length);
-          if (remaining < bestRemaining) {
-            bestRemaining = remaining;
-            bestBin = bin;
+          if (bin.isFromOffcut) {
+            if (remaining < bestOffcutRemaining) {
+              bestOffcutRemaining = remaining;
+              bestOffcutBin = bin;
+            }
+          } else {
+            if (remaining < bestNewRemaining) {
+              bestNewRemaining = remaining;
+              bestNewBin = bin;
+            }
           }
         }
       }
 
-      if (bestBin != null) {
-        bestBin.addPiece(piece, kerfWidth);
+      // 端材ビンを優先
+      if (bestOffcutBin != null) {
+        bestOffcutBin.addPiece(piece, kerfWidth);
+      } else if (bestNewBin != null) {
+        bestNewBin.addPiece(piece, kerfWidth);
       } else {
         // 新規ビン: ピースが収まる最小の材料長を選ぶ
         double? chosenLength;
@@ -205,12 +216,18 @@ class _ExpandedPiece {
 /// 内部用: 作業中のビン（1本の素材）
 class _WorkingBin {
   final double stockLength;
+  final bool isFromOffcut;
+  final String? offcutId;
   final List<_ExpandedPiece> pieces = [];
 
   /// 現在使用している長さ（ピース + カーフ）
   double _usedLength = 0;
 
-  _WorkingBin({required this.stockLength});
+  _WorkingBin({
+    required this.stockLength,
+    this.isFromOffcut = false,
+    this.offcutId,
+  });
 
   /// 残りの長さ (mm)
   double get remainingLength => stockLength - _usedLength;

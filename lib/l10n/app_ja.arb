@@ -499,5 +499,72 @@
   "@offcutAdded": {
     "description": "Offcut added to project message",
     "placeholders": { "length": { "type": "String" } }
+  },
+
+  "undo": "元に戻す",
+  "@undo": { "description": "Undo action" },
+
+  "redo": "やり直す",
+  "@redo": { "description": "Redo action" },
+
+  "fromOffcut": "端材から",
+  "@fromOffcut": { "description": "Label for bins made from saved offcuts" },
+
+  "useAsTemplate": "テンプレとして使用",
+  "@useAsTemplate": { "description": "Use project as template action" },
+
+  "shareAsImage": "画像として共有",
+  "@shareAsImage": { "description": "Share as image menu option" },
+
+  "dataManagement": "データ管理",
+  "@dataManagement": { "description": "Data management section title" },
+
+  "dataManagementDescription": "全プロジェクトと端材データをバックアップ・復元できます。\niCloud Drive経由でデバイス間の移行にも使えます。",
+  "@dataManagementDescription": { "description": "Data management description" },
+
+  "exportBackup": "バックアップ",
+  "@exportBackup": { "description": "Export backup button" },
+
+  "importBackup": "復元",
+  "@importBackup": { "description": "Import backup button" },
+
+  "backupImportSuccess": "復元完了: プロジェクト{projects}件、端材{offcuts}件",
+  "@backupImportSuccess": {
+    "description": "Backup import success message",
+    "placeholders": {
+      "projects": { "type": "int" },
+      "offcuts": { "type": "int" }
+    }
+  },
+
+  "backupImportFailed": "バックアップの読み込みに失敗しました",
+  "@backupImportFailed": { "description": "Backup import failed message" },
+
+  "backupNoData": "バックアップするデータがありません",
+  "@backupNoData": { "description": "No data to backup message" },
+
+  "defaultSheetProjectName": "{sheetName} カットプラン",
+  "@defaultSheetProjectName": {
+    "description": "Default sheet project name",
+    "placeholders": { "sheetName": { "type": "String" } }
+  },
+
+  "unitPriceLabelSheet": "合板1枚あたりの単価:",
+  "@unitPriceLabelSheet": { "description": "Unit price label for sheet" },
+
+  "costFormulaSheet": "{count}枚 x ¥{price} = ¥{total}",
+  "@costFormulaSheet": {
+    "description": "Cost formula for sheet",
+    "placeholders": {
+      "count": { "type": "int" },
+      "price": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+
+  "sheetsCount": "{count}枚",
+  "@sheetsCount": {
+    "description": "Sheet count badge",
+    "placeholders": { "count": { "type": "int" } }
   }
 }

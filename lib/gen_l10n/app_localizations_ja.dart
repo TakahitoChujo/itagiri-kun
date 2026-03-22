@@ -467,4 +467,61 @@ class AppLocalizationsJa extends AppLocalizations {
   String offcutAdded(String length) {
     return '${length}mm の端材を追加しました';
   }
+
+  @override
+  String get undo => '元に戻す';
+
+  @override
+  String get redo => 'やり直す';
+
+  @override
+  String get fromOffcut => '端材から';
+
+  @override
+  String get useAsTemplate => 'テンプレとして使用';
+
+  @override
+  String get shareAsImage => '画像として共有';
+
+  @override
+  String get dataManagement => 'データ管理';
+
+  @override
+  String get dataManagementDescription =>
+      '全プロジェクトと端材データをバックアップ・復元できます。\niCloud Drive経由でデバイス間の移行にも使えます。';
+
+  @override
+  String get exportBackup => 'バックアップ';
+
+  @override
+  String get importBackup => '復元';
+
+  @override
+  String backupImportSuccess(int projects, int offcuts) {
+    return '復元完了: プロジェクト$projects件、端材$offcuts件';
+  }
+
+  @override
+  String get backupImportFailed => 'バックアップの読み込みに失敗しました';
+
+  @override
+  String get backupNoData => 'バックアップするデータがありません';
+
+  @override
+  String defaultSheetProjectName(String sheetName) {
+    return '$sheetName カットプラン';
+  }
+
+  @override
+  String get unitPriceLabelSheet => '合板1枚あたりの単価:';
+
+  @override
+  String costFormulaSheet(int count, String price, String total) {
+    return '$count枚 x ¥$price = ¥$total';
+  }
+
+  @override
+  String sheetsCount(int count) {
+    return '$count枚';
+  }
 }

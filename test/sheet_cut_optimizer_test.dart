@@ -11,7 +11,7 @@ void main() {
           sheetHeight: 1820,
           kerfWidth: 3,
           pieces: [
-            const SheetPiece(width: 400, height: 400, quantity: 2),
+            SheetPiece(width: 400, height: 400, quantity: 2),
           ],
         );
 
@@ -28,7 +28,7 @@ void main() {
           sheetHeight: 1820,
           kerfWidth: 3,
           pieces: [
-            const SheetPiece(width: 800, height: 800, quantity: 4),
+            SheetPiece(width: 800, height: 800, quantity: 4),
           ],
         );
 
@@ -47,7 +47,7 @@ void main() {
           sheetHeight: 1000,
           kerfWidth: 0,
           pieces: [
-            const SheetPiece(width: 900, height: 400, quantity: 1, canRotate: true),
+            SheetPiece(width: 900, height: 400, quantity: 1, canRotate: true),
           ],
         );
 
@@ -66,7 +66,7 @@ void main() {
             sheetHeight: 500,
             kerfWidth: 0,
             pieces: [
-              const SheetPiece(width: 600, height: 600, quantity: 1, canRotate: false),
+              SheetPiece(width: 600, height: 600, quantity: 1, canRotate: false),
             ],
           ),
           throwsA(isA<SheetCutOptimizerException>()),
@@ -79,7 +79,7 @@ void main() {
             sheetWidth: 0,
             sheetHeight: 1000,
             kerfWidth: 0,
-            pieces: [const SheetPiece(width: 100, height: 100, quantity: 1)],
+            pieces: [SheetPiece(width: 100, height: 100, quantity: 1)],
           ),
           throwsA(isA<SheetCutOptimizerException>()),
         );
@@ -91,7 +91,7 @@ void main() {
             sheetWidth: 1000,
             sheetHeight: 1000,
             kerfWidth: -1,
-            pieces: [const SheetPiece(width: 100, height: 100, quantity: 1)],
+            pieces: [SheetPiece(width: 100, height: 100, quantity: 1)],
           ),
           throwsA(isA<SheetCutOptimizerException>()),
         );
@@ -116,7 +116,7 @@ void main() {
           sheetHeight: 1000,
           kerfWidth: 0,
           pieces: [
-            const SheetPiece(width: 500, height: 1000, quantity: 2),
+            SheetPiece(width: 500, height: 1000, quantity: 2),
           ],
         );
 
@@ -132,7 +132,7 @@ void main() {
           sheetHeight: 1000,
           kerfWidth: 0,
           pieces: [
-            const SheetPiece(width: 500, height: 500, quantity: 1),
+            SheetPiece(width: 500, height: 500, quantity: 1),
           ],
         );
 

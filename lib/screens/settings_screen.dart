@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,7 +6,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../gen_l10n/app_localizations.dart';
+import '../providers/project_provider.dart';
 import '../providers/settings_provider.dart';
+import '../services/export_service.dart';
+import '../services/storage_service.dart';
 import '../widgets/premium_banner.dart';
 
 /// 設定画面
@@ -314,6 +318,60 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           const SizedBox(height: 16),
 
+          // データ管理セクション
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.cloud_outlined, color: colorScheme.primary),
+                      const SizedBox(width: 12),
+                      Text(
+                        l10n.dataManagement,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.dataManagementDescription,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: _onExportBackup,
+                          icon: const Icon(Icons.upload, size: 18),
+                          label: Text(l10n.exportBackup),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: _onImportBackup,
+                          icon: const Icon(Icons.download, size: 18),
+                          label: Text(l10n.importBackup),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
           // プレミアム導線バナー
           const PremiumBanner(),
           const SizedBox(height: 16),
@@ -394,6 +452,59 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _onExportBackup() async {
+    final l10n = AppLocalizations.of(context);
+    if (StorageService.projectCount == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.backupNoData)),
+      );
+      return;
+    }
+
+    try {
+      final filePath = await ExportService.exportBackup();
+      await ExportService.shareFile(filePath);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.exportFailed(e.toString()))),
+        );
+      }
+    }
+  }
+
+  Future<void> _onImportBackup() async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+      if (result == null || result.files.isEmpty) return;
+
+      final filePath = result.files.first.path;
+      if (filePath == null) return;
+
+      final (projects, offcuts) =
+          await ExportService.importBackup(filePath);
+
+      if (mounted) {
+        ref.invalidate(projectsProvider);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text(l10n.backupImportSuccess(projects, offcuts))),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.backupImportFailed)),
+        );
+      }
+    }
   }
 
   Future<void> _launchUrl(String url) async {

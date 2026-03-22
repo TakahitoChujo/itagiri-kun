@@ -134,6 +134,21 @@ class _CutDiagramPainter extends CustomPainter {
       canvas.drawRect(pieceRect, pieceBorderPaint);
       canvas.restore();
 
+      // 切断順序番号（丸数字）
+      if (piece.sequenceOrder > 0 && pieceWidth > 16) {
+        final seqStr = '${piece.sequenceOrder}';
+        final seqSize = math.min(14.0, math.max(10.0, pieceWidth / 4));
+        final circlePaint = Paint()
+          ..color = Colors.white.withAlpha(230)
+          ..style = PaintingStyle.fill;
+        final circleCenter = Offset(currentX + seqSize * 0.8, barY + seqSize * 0.8);
+        canvas.save();
+        canvas.clipRRect(bgRect);
+        canvas.drawCircle(circleCenter, seqSize * 0.55, circlePaint);
+        canvas.restore();
+        _drawText(canvas, seqStr, circleCenter, seqSize * 0.65, color.withAlpha(230), seqSize);
+      }
+
       // ピースの長さテキスト
       final labelText = piece.label != null && piece.label!.isNotEmpty
           ? '${piece.label}\n${piece.length.toStringAsFixed(0)}'
@@ -143,7 +158,7 @@ class _CutDiagramPainter extends CustomPainter {
         _drawText(
           canvas,
           labelText,
-          Offset(currentX + pieceWidth / 2, barY + barHeight / 2),
+          Offset(currentX + pieceWidth / 2, barY + barHeight / 2 + 4),
           math.min(11, math.max(8, pieceWidth / 5)),
           Colors.white,
           pieceWidth - 4,

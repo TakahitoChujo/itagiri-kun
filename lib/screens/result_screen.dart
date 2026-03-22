@@ -1,4 +1,7 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -13,6 +16,7 @@ import '../services/storage_service.dart';
 import '../services/export_service.dart';
 import '../widgets/cut_diagram.dart';
 import '../widgets/ad_banner.dart';
+import '../widgets/shareable_result_view.dart';
 import 'checklist_screen.dart';
 
 /// 計算結果画面
@@ -87,6 +91,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     woodStock: widget.woodStock,
                     stockLength: widget.stockLength,
                     projectName: widget.existingProject?.name ?? l10n.defaultProjectName(widget.woodStock.name),
+                    projectId: widget.existingProject?.id,
                   ),
                 ),
               );
@@ -97,6 +102,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             tooltip: l10n.exportTooltip,
             onSelected: _onExport,
             itemBuilder: (context) => [
+              PopupMenuItem(value: 'image', child: ListTile(leading: const Icon(Icons.image), title: Text(l10n.shareAsImage), dense: true)),
               const PopupMenuItem(value: 'pdf', child: ListTile(leading: Icon(Icons.picture_as_pdf), title: Text('PDF'), dense: true)),
               const PopupMenuItem(value: 'csv', child: ListTile(leading: Icon(Icons.table_chart), title: Text('CSV'), dense: true)),
               const PopupMenuItem(value: 'json', child: ListTile(leading: Icon(Icons.code), title: Text('JSON'), dense: true)),
@@ -126,18 +132,39 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer,
+                          color: bin.isFromOffcut
+                              ? colorScheme.tertiaryContainer
+                              : colorScheme.primaryContainer,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Text(l10n.stockNumber(index + 1),
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colorScheme.onPrimaryContainer)),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (bin.isFromOffcut) ...[
+                              Icon(Icons.recycling, size: 14,
+                                  color: colorScheme.onTertiaryContainer),
+                              const SizedBox(width: 4),
+                            ],
+                            Text(l10n.stockNumber(index + 1),
+                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
+                                    color: bin.isFromOffcut
+                                        ? colorScheme.onTertiaryContainer
+                                        : colorScheme.onPrimaryContainer)),
+                          ],
+                        ),
                       ),
+                      if (bin.isFromOffcut) ...[
+                        const SizedBox(width: 4),
+                        Text(l10n.fromOffcut,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: colorScheme.tertiary, fontWeight: FontWeight.w600)),
+                      ],
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(l10n.piecesWaste1D(bin.pieces.length, bin.waste.toStringAsFixed(0)),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
                       ),
-                      if (bin.waste >= 50)
+                      if (bin.waste >= 50 && !bin.isFromOffcut)
                         TextButton.icon(
                           onPressed: () => _onSaveOffcut(context, bin.waste),
                           icon: const Icon(Icons.save_alt, size: 14),
@@ -155,7 +182,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     margin: EdgeInsets.zero,
                     child: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: CutDiagram(bin: bin, stockLength: widget.stockLength.toDouble(), kerfWidth: widget.kerfWidth),
+                      child: CutDiagram(bin: bin, stockLength: bin.stockLength, kerfWidth: widget.kerfWidth),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -164,11 +191,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     child: Wrap(
                       spacing: 6, runSpacing: 4,
                       children: bin.pieces.map((piece) {
+                        final seqPrefix = piece.sequenceOrder > 0
+                            ? '${piece.sequenceOrder}. '
+                            : '';
                         return Chip(
                           label: Text(
                             piece.label != null && piece.label!.isNotEmpty
-                                ? '${piece.label}: ${piece.length.toStringAsFixed(0)}mm'
-                                : '${piece.length.toStringAsFixed(0)}mm',
+                                ? '$seqPrefix${piece.label}: ${piece.length.toStringAsFixed(0)}mm'
+                                : '$seqPrefix${piece.length.toStringAsFixed(0)}mm',
                             style: const TextStyle(fontSize: 11),
                           ),
                           visualDensity: VisualDensity.compact,
@@ -221,10 +251,29 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 Text(_stockLengthLabel,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
                 const SizedBox(width: 8),
+                if (widget.result.offcutBinCount > 0) ...[
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: colorScheme.tertiaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.recycling, size: 12, color: colorScheme.onTertiaryContainer),
+                        const SizedBox(width: 3),
+                        Text('${widget.result.offcutBinCount}',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colorScheme.onTertiaryContainer)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                ],
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(color: colorScheme.primaryContainer, borderRadius: BorderRadius.circular(20)),
-                  child: Text('${widget.result.totalStock}本',
+                  child: Text('${widget.result.newStockCount}本',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onPrimaryContainer)),
                 ),
               ],
@@ -271,7 +320,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   Widget _buildCostCard(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
-    final totalCost = _unitPrice != null ? _unitPrice! * widget.result.totalStock : null;
+    final totalCost = _unitPrice != null ? _unitPrice! * widget.result.newStockCount : null;
 
     return Card(
       child: Padding(
@@ -334,7 +383,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                l10n.costFormula(widget.result.totalStock, _unitPrice!.toStringAsFixed(0), totalCost.toStringAsFixed(0)),
+                l10n.costFormula(widget.result.newStockCount, _unitPrice!.toStringAsFixed(0), totalCost.toStringAsFixed(0)),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
               ),
             ],
@@ -366,6 +415,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     setState(() => _exporting = true);
 
     try {
+      if (format == 'image') {
+        final filePath = await _captureImage();
+        await ExportService.shareFile(filePath);
+        return;
+      }
+
       final project = Project(
         id: widget.existingProject?.id ?? const Uuid().v4(),
         name: widget.existingProject?.name ?? l10n.defaultProjectName(widget.woodStock.name),
@@ -406,6 +461,54 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     }
   }
 
+  Future<String> _captureImage() async {
+    final l10n = AppLocalizations.of(context);
+    final key = GlobalKey();
+    final overlay = Overlay.of(context);
+
+    final entry = OverlayEntry(
+      builder: (_) => Positioned(
+        left: -10000,
+        top: -10000,
+        child: RepaintBoundary(
+          key: key,
+          child: MediaQuery(
+            data: const MediaQueryData(),
+            child: ShareableResultView(
+              result: widget.result,
+              woodStock: widget.woodStock,
+              stockLength: widget.stockLength,
+              stockLengths: widget.stockLengths,
+              kerfWidth: widget.kerfWidth,
+              projectName: widget.existingProject?.name ??
+                  l10n.defaultProjectName(widget.woodStock.name),
+              l10n: l10n,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(entry);
+
+    try {
+      await Future.delayed(const Duration(milliseconds: 150));
+
+      final boundary =
+          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      final pngBytes = byteData!.buffer.asUint8List();
+
+      final projectName = widget.existingProject?.name ??
+          l10n.defaultProjectName(widget.woodStock.name);
+      return ExportService.exportToImage(pngBytes, projectName);
+    } finally {
+      entry.remove();
+    }
+  }
+
   Future<void> _onSaveOffcut(BuildContext context, double wasteLength) async {
     final l10n = AppLocalizations.of(context);
     await StorageService.saveOffcut(
@@ -434,6 +537,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         updatedAt: DateTime.now(),
       );
       await StorageService.saveProject(updated);
+      await StorageService.deleteChecklist(updated.id);
 
       if (context.mounted) {
         ref.invalidate(projectsProvider);

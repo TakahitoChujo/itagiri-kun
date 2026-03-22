@@ -4,9 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen_l10n/app_localizations.dart';
 import '../models/wood_stock.dart';
 import '../models/cut_piece.dart';
+import '../models/offcut.dart';
 import '../models/project.dart';
 import '../providers/settings_provider.dart';
 import '../services/cut_optimizer.dart';
+import '../utils/undo_redo_stack.dart';
 import '../widgets/piece_input_row.dart';
 import 'result_screen.dart';
 
@@ -15,6 +17,8 @@ class PiecesInputScreen extends ConsumerStatefulWidget {
   final WoodStock woodStock;
   final int stockLength;
   final List<int>? stockLengths;
+  final List<Offcut>? offcuts;
+  final List<CutPiece>? templatePieces;
   final Project? existingProject;
 
   const PiecesInputScreen({
@@ -22,6 +26,8 @@ class PiecesInputScreen extends ConsumerStatefulWidget {
     required this.woodStock,
     required this.stockLength,
     this.stockLengths,
+    this.offcuts,
+    this.templatePieces,
     this.existingProject,
   });
 
@@ -32,6 +38,7 @@ class PiecesInputScreen extends ConsumerStatefulWidget {
 class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
   final _formKey = GlobalKey<FormState>();
   late List<CutPiece> _pieces;
+  late UndoRedoStack<List<CutPiece>> _history;
 
   /// 実効素材長リスト
   List<int> get _effectiveLengths =>
@@ -48,9 +55,31 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
     if (widget.existingProject != null &&
         widget.existingProject!.pieces.isNotEmpty) {
       _pieces = List.from(widget.existingProject!.pieces);
+    } else if (widget.templatePieces != null &&
+        widget.templatePieces!.isNotEmpty) {
+      _pieces = List.from(widget.templatePieces!);
     } else {
       _pieces = [const CutPiece(length: 0, quantity: 1)];
     }
+    _history = UndoRedoStack(List<CutPiece>.from(_pieces));
+  }
+
+  void _pushHistory() {
+    _history.push(List<CutPiece>.from(_pieces));
+  }
+
+  void _onUndo() {
+    if (!_history.canUndo) return;
+    setState(() {
+      _pieces = List<CutPiece>.from(_history.undo());
+    });
+  }
+
+  void _onRedo() {
+    if (!_history.canRedo) return;
+    setState(() {
+      _pieces = List<CutPiece>.from(_history.redo());
+    });
   }
 
   @override
@@ -66,6 +95,16 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
             ? widget.existingProject!.name
             : l10n.enterPieces),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.undo),
+            tooltip: l10n.undo,
+            onPressed: _history.canUndo ? _onUndo : null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.redo),
+            tooltip: l10n.redo,
+            onPressed: _history.canRedo ? _onRedo : null,
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: Chip(
@@ -151,10 +190,14 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
                           _pieces[index] = updated;
                         });
                       },
+                      onEditingComplete: () {
+                        _pushHistory();
+                      },
                       onDelete: () {
                         setState(() {
                           _pieces.removeAt(index);
                         });
+                        _pushHistory();
                       },
                     );
                   }),
@@ -210,6 +253,7 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
     setState(() {
       _pieces.add(const CutPiece(length: 0, quantity: 1));
     });
+    _pushHistory();
   }
 
   void _onCalculate() {
@@ -258,6 +302,7 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
             : null,
         kerfWidth: settings.kerfWidth,
         pieces: validPieces,
+        offcuts: widget.offcuts,
       );
 
       Navigator.push(

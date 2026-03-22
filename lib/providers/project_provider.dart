@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/project.dart';
+import '../models/sheet_project.dart';
 import '../services/storage_service.dart';
 
 /// プロジェクト一覧プロバイダー
@@ -9,6 +10,11 @@ import '../services/storage_service.dart';
 /// ref.invalidate(projectsProvider) で再読み込み可能。
 final projectsProvider = FutureProvider<List<Project>>((ref) async {
   return StorageService.loadProjects();
+});
+
+/// 2D 合板プロジェクト一覧プロバイダー
+final sheetProjectsProvider = FutureProvider<List<SheetProject>>((ref) async {
+  return StorageService.loadSheetProjects();
 });
 
 /// 現在選択中のプロジェクト

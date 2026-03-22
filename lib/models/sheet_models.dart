@@ -54,14 +54,14 @@ class SheetStock extends HiveObject {
 }
 
 /// 2D カット用入力ピース
-class SheetPiece {
-  final double width;
-  final double height;
-  final int quantity;
-  final String? label;
-  final bool canRotate;
+class SheetPiece extends HiveObject {
+  double width;
+  double height;
+  int quantity;
+  String? label;
+  bool canRotate;
 
-  const SheetPiece({
+  SheetPiece({
     required this.width,
     required this.height,
     required this.quantity,
@@ -297,6 +297,45 @@ class SheetCutBinAdapter extends TypeAdapter<SheetCutBin> {
       ..write(obj.sheetWidth)
       ..writeByte(3)
       ..write(obj.sheetHeight);
+  }
+}
+
+class SheetPieceAdapter extends TypeAdapter<SheetPiece> {
+  @override
+  final int typeId = 10;
+
+  @override
+  SheetPiece read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{};
+    for (var i = 0; i < numOfFields; i++) {
+      final key = reader.readByte();
+      final value = reader.read();
+      fields[key] = value;
+    }
+    return SheetPiece(
+      width: fields[0] as double,
+      height: fields[1] as double,
+      quantity: fields[2] as int,
+      label: fields[3] as String?,
+      canRotate: fields[4] as bool,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, SheetPiece obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.width)
+      ..writeByte(1)
+      ..write(obj.height)
+      ..writeByte(2)
+      ..write(obj.quantity)
+      ..writeByte(3)
+      ..write(obj.label)
+      ..writeByte(4)
+      ..write(obj.canRotate);
   }
 }
 

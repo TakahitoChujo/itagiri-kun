@@ -472,4 +472,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String offcutAdded(String length) {
     return 'Added ${length}mm offcut';
   }
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get redo => 'Redo';
+
+  @override
+  String get fromOffcut => 'From offcut';
+
+  @override
+  String get useAsTemplate => 'Use as template';
+
+  @override
+  String get shareAsImage => 'Share as image';
+
+  @override
+  String get dataManagement => 'Data Management';
+
+  @override
+  String get dataManagementDescription =>
+      'Backup and restore all project and offcut data.\nUse iCloud Drive to transfer between devices.';
+
+  @override
+  String get exportBackup => 'Backup';
+
+  @override
+  String get importBackup => 'Restore';
+
+  @override
+  String backupImportSuccess(int projects, int offcuts) {
+    return 'Restored: $projects projects, $offcuts offcuts';
+  }
+
+  @override
+  String get backupImportFailed => 'Failed to restore backup';
+
+  @override
+  String get backupNoData => 'No data to backup';
+
+  @override
+  String defaultSheetProjectName(String sheetName) {
+    return '$sheetName cut plan';
+  }
+
+  @override
+  String get unitPriceLabelSheet => 'Price per sheet:';
+
+  @override
+  String costFormulaSheet(int count, String price, String total) {
+    return '$count sheets × ¥$price = ¥$total';
+  }
+
+  @override
+  String sheetsCount(int count) {
+    return '$count sheets';
+  }
 }
