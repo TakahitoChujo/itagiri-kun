@@ -203,6 +203,166 @@ class CutOptimizer {
       }
     }
   }
+
+  /// 複数の最適化戦略で実行して結果を比較する（Feature 5）
+  ///
+  /// FFD, BFD, FF の3戦略で最適化を実行し、結果をリストで返す。
+  static List<ComparisonResult> compareStrategies({
+    required double stockLength,
+    List<double>? stockLengths,
+    required double kerfWidth,
+    required List<CutPiece> pieces,
+    List<Offcut>? offcuts,
+  }) {
+    final results = <ComparisonResult>[];
+
+    // FFD (First Fit Decreasing) = default BFD with decreasing sort
+    try {
+      final ffd = optimize(
+        stockLength: stockLength,
+        stockLengths: stockLengths,
+        kerfWidth: kerfWidth,
+        pieces: pieces,
+        offcuts: offcuts,
+      );
+      results.add(ComparisonResult(strategy: CutStrategy.ffd, result: ffd));
+    } catch (_) {}
+
+    // BFD variant: try without offcut priority
+    try {
+      final bfd = optimize(
+        stockLength: stockLength,
+        stockLengths: stockLengths,
+        kerfWidth: kerfWidth,
+        pieces: pieces,
+      );
+      results.add(ComparisonResult(strategy: CutStrategy.bfd, result: bfd));
+    } catch (_) {}
+
+    // FF (First Fit) - no sorting
+    try {
+      final ff = _optimizeFirstFit(
+        stockLength: stockLength,
+        stockLengths: stockLengths,
+        kerfWidth: kerfWidth,
+        pieces: pieces,
+      );
+      results.add(ComparisonResult(strategy: CutStrategy.ff, result: ff));
+    } catch (_) {}
+
+    // Sort by utilization rate (best first)
+    results.sort((a, b) =>
+        b.result.utilizationRate.compareTo(a.result.utilizationRate));
+
+    return results;
+  }
+
+  /// First Fit (入力順) 戦略
+  static CutResult _optimizeFirstFit({
+    required double stockLength,
+    List<double>? stockLengths,
+    required double kerfWidth,
+    required List<CutPiece> pieces,
+  }) {
+    final effectiveLengths = stockLengths != null && stockLengths.isNotEmpty
+        ? (List<double>.from(stockLengths)..sort())
+        : [stockLength];
+
+    if (pieces.isEmpty) {
+      return const CutResult(
+        bins: [],
+        totalStock: 0,
+        totalWaste: 0,
+        utilizationRate: 1.0,
+      );
+    }
+
+    final expandedPieces = <_ExpandedPiece>[];
+    for (final piece in pieces) {
+      for (var i = 0; i < piece.quantity; i++) {
+        expandedPieces.add(_ExpandedPiece(
+          length: piece.length,
+          label: piece.label,
+        ));
+      }
+    }
+
+    // First Fit: 入力順のまま（ソートしない）
+    final bins = <_WorkingBin>[];
+
+    for (final piece in expandedPieces) {
+      _WorkingBin? bestBin;
+      for (final bin in bins) {
+        if (bin.canFit(piece.length, kerfWidth)) {
+          bestBin = bin;
+          break; // First Fit: 最初に見つかったビンを使う
+        }
+      }
+
+      if (bestBin != null) {
+        bestBin.addPiece(piece, kerfWidth);
+      } else {
+        double? chosenLength;
+        for (final len in effectiveLengths) {
+          if (piece.length <= len) {
+            chosenLength = len;
+            break;
+          }
+        }
+        chosenLength ??= effectiveLengths.last;
+        final newBin = _WorkingBin(stockLength: chosenLength);
+        newBin.addPiece(piece, kerfWidth);
+        bins.add(newBin);
+      }
+    }
+
+    final resultBins = bins.map((bin) {
+      final resultPieces = bin.pieces
+          .asMap()
+          .entries
+          .map((e) => CutPieceResult(
+                length: e.value.length,
+                label: e.value.label,
+                sequenceOrder: e.key + 1,
+              ))
+          .toList();
+      return CutBin(
+        pieces: resultPieces,
+        waste: bin.remainingLength,
+        stockLength: bin.stockLength,
+      );
+    }).toList();
+
+    final totalStock = resultBins.length;
+    final totalWaste = resultBins.fold(0.0, (sum, bin) => sum + bin.waste);
+    final totalStockLength =
+        resultBins.fold(0.0, (sum, bin) => sum + bin.stockLength);
+    final utilizationRate = totalStockLength > 0
+        ? (totalStockLength - totalWaste) / totalStockLength
+        : 0.0;
+
+    return CutResult(
+      bins: resultBins,
+      totalStock: totalStock,
+      totalWaste: totalWaste,
+      utilizationRate: utilizationRate,
+    );
+  }
+}
+
+/// 最適化戦略の種類
+enum CutStrategy {
+  ffd, // First Fit Decreasing (最大ピース優先)
+  bfd, // Best Fit Decreasing (最適充填優先)
+  ff,  // First Fit (先着順)
+}
+
+/// 比較結果
+class ComparisonResult {
+  final CutStrategy strategy;
+  final CutResult result;
+
+  const ComparisonResult({required this.strategy, required this.result});
 }
 
 /// 内部用: 展開されたピース

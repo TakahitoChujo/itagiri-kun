@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../gen_l10n/app_localizations.dart';
@@ -46,8 +49,10 @@ class ResultScreen extends ConsumerStatefulWidget {
 
 class _ResultScreenState extends ConsumerState<ResultScreen> {
   final _priceController = TextEditingController();
+  final _notesController = TextEditingController();
   double? _unitPrice;
   bool _exporting = false;
+  String? _photoPath;
 
   @override
   void initState() {
@@ -62,11 +67,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         _priceController.text = presetPrice.toString();
       }
     }
+    _notesController.text = widget.existingProject?.notes ?? '';
+    _photoPath = widget.existingProject?.photoPath;
   }
 
   @override
   void dispose() {
     _priceController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 
@@ -116,6 +124,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           _buildSummaryCard(context),
           const SizedBox(height: 16),
           _buildCostCard(context),
+          const SizedBox(height: 16),
+          _buildNotesCard(context),
+          const SizedBox(height: 16),
+          _buildPhotoCard(context),
           const SizedBox(height: 24),
           Text(l10n.cutLayout,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
@@ -393,6 +405,144 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     );
   }
 
+  Widget _buildNotesCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.note_alt_outlined,
+                    color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 12),
+                Text(l10n.projectNotes,
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _notesController,
+              maxLines: 3,
+              decoration: InputDecoration(
+                hintText: l10n.projectNotesHint,
+                border: const OutlineInputBorder(),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPhotoCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.photo_camera_outlined, color: colorScheme.primary),
+                const SizedBox(width: 12),
+                Text(l10n.attachPhoto,
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600)),
+                const Spacer(),
+                if (_photoPath != null)
+                  TextButton.icon(
+                    onPressed: _onRemovePhoto,
+                    icon: const Icon(Icons.close, size: 16),
+                    label: Text(l10n.removePhoto,
+                        style: const TextStyle(fontSize: 12)),
+                    style: TextButton.styleFrom(
+                      foregroundColor: colorScheme.error,
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (_photoPath != null && File(_photoPath!).existsSync())
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.file(
+                  File(_photoPath!),
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              )
+            else
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _onPickPhoto(ImageSource.camera),
+                      icon: const Icon(Icons.camera_alt, size: 18),
+                      label: Text(l10n.takePhoto),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _onPickPhoto(ImageSource.gallery),
+                      icon: const Icon(Icons.photo_library, size: 18),
+                      label: Text(l10n.chooseFromGallery),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPickPhoto(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final image = await picker.pickImage(
+        source: source,
+        maxWidth: 1200,
+        maxHeight: 1200,
+        imageQuality: 85,
+      );
+      if (image == null) return;
+
+      // アプリのドキュメントディレクトリに保存
+      final appDir = await getApplicationDocumentsDirectory();
+      final photoDir = Directory('${appDir.path}/photos');
+      if (!photoDir.existsSync()) {
+        photoDir.createSync(recursive: true);
+      }
+
+      final fileName = '${const Uuid().v4()}.jpg';
+      final savedPath = '${photoDir.path}/$fileName';
+      await File(image.path).copy(savedPath);
+
+      setState(() {
+        _photoPath = savedPath;
+      });
+    } catch (_) {
+      // 写真選択失敗は無視
+    }
+  }
+
+  void _onRemovePhoto() {
+    setState(() {
+      _photoPath = null;
+    });
+  }
+
   /// AppBar・サマリーカード用の長さラベル
   String get _stockLengthLabel {
     final lengths = widget.stockLengths;
@@ -525,6 +675,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
   Future<void> _onSave(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
+    final notes = _notesController.text.trim().isEmpty ? null : _notesController.text.trim();
+
     if (widget.existingProject != null) {
       final updated = widget.existingProject!.copyWith(
         woodStock: widget.woodStock,
@@ -534,6 +686,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         kerfWidth: widget.kerfWidth,
         result: widget.result,
         unitPrice: _unitPrice,
+        notes: notes,
+        photoPath: _photoPath,
         updatedAt: DateTime.now(),
       );
       await StorageService.saveProject(updated);
@@ -560,6 +714,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       kerfWidth: widget.kerfWidth,
       result: widget.result,
       unitPrice: _unitPrice,
+      notes: notes,
+      photoPath: _photoPath,
     );
 
     await StorageService.saveProject(project);

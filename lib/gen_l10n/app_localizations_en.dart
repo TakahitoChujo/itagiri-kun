@@ -529,4 +529,220 @@ class AppLocalizationsEn extends AppLocalizations {
   String sheetsCount(int count) {
     return '$count sheets';
   }
+
+  @override
+  String get customPresets => 'Custom Presets';
+
+  @override
+  String get addCustomPreset => 'Add custom preset';
+
+  @override
+  String get editCustomPreset => 'Edit Preset';
+
+  @override
+  String get deletePreset => 'Delete Preset';
+
+  @override
+  String deletePresetConfirm(String name) {
+    return 'Delete \"$name\"?';
+  }
+
+  @override
+  String presetSaved(String name) {
+    return 'Preset \"$name\" saved';
+  }
+
+  @override
+  String get presetNameHint => 'e.g. 2x4 SPF';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get frequentSizes => 'Frequent Sizes';
+
+  @override
+  String get frequentLabels => 'Frequent Labels';
+
+  @override
+  String usedNTimes(int count) {
+    return 'Used $count times';
+  }
+
+  @override
+  String get projectNotes => 'Notes';
+
+  @override
+  String get projectNotesHint => 'Enter notes...';
+
+  @override
+  String get attachPhoto => 'Attach Photo';
+
+  @override
+  String get removePhoto => 'Remove Photo';
+
+  @override
+  String get takePhoto => 'Take Photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get offcutInventory => 'Offcut Inventory';
+
+  @override
+  String get offcutInventoryEmpty => 'No offcuts in inventory';
+
+  @override
+  String get offcutInventorySubtitle => 'Save offcuts from project results';
+
+  @override
+  String get addOffcutManually => 'Add offcut manually';
+
+  @override
+  String get offcutWoodName => 'Wood name';
+
+  @override
+  String offcutCount(int count) {
+    return 'Offcuts: $count';
+  }
+
+  @override
+  String get compareLayouts => 'Compare Layouts';
+
+  @override
+  String get comparisonResults => 'Comparison Results';
+
+  @override
+  String get strategyFFD => 'Largest First (FFD)';
+
+  @override
+  String get strategyBFD => 'Best Fit (BFD)';
+
+  @override
+  String get strategyFF => 'First Fit (FF)';
+
+  @override
+  String get bestResult => 'Best';
+
+  @override
+  String get stocksUsed => 'Stocks used';
+
+  @override
+  String get wasteAmount => 'Waste';
+
+  @override
+  String get useThisLayout => 'Use this layout';
+
+  @override
+  String get costDashboard => 'Cost Analysis';
+
+  @override
+  String get totalSpent => 'Total Cost';
+
+  @override
+  String get averageUtilization => 'Avg. Utilization';
+
+  @override
+  String get totalProjects => 'Projects';
+
+  @override
+  String get costByProject => 'Cost by Project';
+
+  @override
+  String get utilizationTrend => 'Utilization Trend';
+
+  @override
+  String get wasteByMaterial => 'Waste by Material';
+
+  @override
+  String get noDataForChart => 'No data to display';
+
+  @override
+  String get unitConverter => 'Unit Converter';
+
+  @override
+  String get convertFrom => 'From';
+
+  @override
+  String get convertTo => 'To';
+
+  @override
+  String get conversionResult => 'Result';
+
+  @override
+  String get allUnits => 'All Units';
+
+  @override
+  String get batchExport => 'Batch Export';
+
+  @override
+  String get batchExportTitle => 'Batch Export';
+
+  @override
+  String get selectProjects => 'Select Projects';
+
+  @override
+  String get selectAll => 'Select All';
+
+  @override
+  String get deselectAll => 'Deselect All';
+
+  @override
+  String get exportFormat => 'Export Format';
+
+  @override
+  String get exportAsPdf => 'PDF';
+
+  @override
+  String get exportAsCsv => 'CSV';
+
+  @override
+  String exportSelectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get exportStarted => 'Export started';
+
+  @override
+  String get noProjectsSelected => 'Please select projects';
+
+  @override
+  String get tools => 'Tools';
+
+  @override
+  String get grainDirection => 'Grain';
+
+  @override
+  String get grainNone => 'None';
+
+  @override
+  String get grainHorizontal => 'Horiz.';
+
+  @override
+  String get grainVertical => 'Vert.';
+
+  @override
+  String get csvImport => 'Import CSV';
+
+  @override
+  String get csvImportEmpty => 'No parts found in the file';
+
+  @override
+  String csvImportSuccess(int count) {
+    return 'Imported $count parts';
+  }
+
+  @override
+  String get csvImportFailed => 'Failed to read CSV file';
+
+  @override
+  String get fractionModeOn => 'Enable fraction input';
+
+  @override
+  String get fractionModeOff => 'Switch to numeric input';
+
+  @override
+  String get fractionHint => 'e.g. 1/2, 3 1/4';
 }

@@ -40,6 +40,12 @@ class Project extends HiveObject {
   /// 複数の素材長リスト (mm)。null の場合は [stockLength] のみ使用
   List<int>? stockLengths;
 
+  /// プロジェクトメモ（任意）
+  String? notes;
+
+  /// 添付写真のパス（任意）
+  String? photoPath;
+
   Project({
     required this.id,
     required this.name,
@@ -50,6 +56,8 @@ class Project extends HiveObject {
     this.result,
     this.unitPrice,
     this.stockLengths,
+    this.notes,
+    this.photoPath,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -84,6 +92,8 @@ class Project extends HiveObject {
     CutResult? result,
     double? unitPrice,
     Object? stockLengths = _sentinel,
+    Object? notes = _sentinel,
+    Object? photoPath = _sentinel,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -99,6 +109,12 @@ class Project extends HiveObject {
       stockLengths: identical(stockLengths, _sentinel)
           ? this.stockLengths
           : stockLengths as List<int>?,
+      notes: identical(notes, _sentinel)
+          ? this.notes
+          : notes as String?,
+      photoPath: identical(photoPath, _sentinel)
+          ? this.photoPath
+          : photoPath as String?,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -136,13 +152,15 @@ class ProjectAdapter extends TypeAdapter<Project> {
       updatedAt: fields[8] as DateTime,
       unitPrice: fields[9] as double?,
       stockLengths: (fields[10] as List?)?.cast<int>(),
+      notes: numOfFields > 11 ? fields[11] as String? : null,
+      photoPath: numOfFields > 12 ? fields[12] as String? : null,
     );
   }
 
   @override
   void write(BinaryWriter writer, Project obj) {
     writer
-      ..writeByte(11) // number of fields
+      ..writeByte(13) // number of fields
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -164,6 +182,10 @@ class ProjectAdapter extends TypeAdapter<Project> {
       ..writeByte(9)
       ..write(obj.unitPrice)
       ..writeByte(10)
-      ..write(obj.stockLengths);
+      ..write(obj.stockLengths)
+      ..writeByte(11)
+      ..write(obj.notes)
+      ..writeByte(12)
+      ..write(obj.photoPath);
   }
 }

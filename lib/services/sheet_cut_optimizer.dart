@@ -57,7 +57,7 @@ class SheetCutOptimizer {
           width: piece.width,
           height: piece.height,
           label: piece.label,
-          canRotate: piece.canRotate,
+          canRotate: piece.effectiveCanRotate,
         ));
       }
     }

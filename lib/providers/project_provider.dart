@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/project.dart';
 import '../models/sheet_project.dart';
+import '../models/custom_preset.dart';
+import '../models/offcut.dart';
 import '../services/storage_service.dart';
 
 /// プロジェクト一覧プロバイダー
@@ -20,4 +22,19 @@ final sheetProjectsProvider = FutureProvider<List<SheetProject>>((ref) async {
 /// 現在選択中のプロジェクト
 final currentProjectProvider = StateProvider<Project?>((ref) {
   return null;
+});
+
+/// カスタム木材プリセット一覧プロバイダー
+final customWoodPresetsProvider = FutureProvider<List<CustomWoodPreset>>((ref) async {
+  return StorageService.loadCustomWoodPresets();
+});
+
+/// カスタム合板プリセット一覧プロバイダー
+final customSheetPresetsProvider = FutureProvider<List<CustomSheetPreset>>((ref) async {
+  return StorageService.loadCustomSheetPresets();
+});
+
+/// 端材一覧プロバイダー
+final offcutsProvider = FutureProvider<List<Offcut>>((ref) async {
+  return StorageService.loadOffcuts();
 });

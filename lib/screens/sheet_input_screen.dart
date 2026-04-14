@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:file_picker/file_picker.dart';
 
 import '../gen_l10n/app_localizations.dart';
 import '../models/sheet_models.dart';
 import '../models/sheet_project.dart';
 import '../providers/settings_provider.dart';
+import '../services/csv_import_service.dart';
 import '../services/sheet_cut_optimizer.dart';
 import 'sheet_result_screen.dart';
 
@@ -67,6 +69,11 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
       appBar: AppBar(
         title: Text(l10n.enterPieces2D),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.file_upload_outlined),
+            tooltip: l10n.csvImport,
+            onPressed: _onCsvImport,
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: Chip(
@@ -183,88 +190,182 @@ class _SheetInputScreenState extends ConsumerState<SheetInputScreen> {
 
   Widget _buildInputRow(int index) {
     final piece = _pieces[index];
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            flex: 2,
-            child: TextFormField(
-              initialValue: piece.width > 0 ? piece.width.toStringAsFixed(0) : '',
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(5)],
-              decoration: const InputDecoration(
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                border: OutlineInputBorder(),
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: TextFormField(
+                  initialValue: piece.width > 0 ? piece.width.toStringAsFixed(0) : '',
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(5)],
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    final w = double.tryParse(value) ?? 0;
+                    setState(() {
+                      _pieces[index] = piece.copyWith(width: w);
+                    });
+                  },
+                ),
               ),
-              onChanged: (value) {
-                final w = double.tryParse(value) ?? 0;
-                setState(() {
-                  _pieces[index] = piece.copyWith(width: w);
-                });
-              },
-            ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            flex: 2,
-            child: TextFormField(
-              initialValue: piece.height > 0 ? piece.height.toStringAsFixed(0) : '',
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(5)],
-              decoration: const InputDecoration(
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                border: OutlineInputBorder(),
+              const SizedBox(width: 6),
+              Expanded(
+                flex: 2,
+                child: TextFormField(
+                  initialValue: piece.height > 0 ? piece.height.toStringAsFixed(0) : '',
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(5)],
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    final h = double.tryParse(value) ?? 0;
+                    setState(() {
+                      _pieces[index] = piece.copyWith(height: h);
+                    });
+                  },
+                ),
               ),
-              onChanged: (value) {
-                final h = double.tryParse(value) ?? 0;
-                setState(() {
-                  _pieces[index] = piece.copyWith(height: h);
-                });
-              },
-            ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            flex: 1,
-            child: TextFormField(
-              initialValue: piece.quantity.toString(),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(3)],
-              decoration: const InputDecoration(
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                border: OutlineInputBorder(),
+              const SizedBox(width: 6),
+              Expanded(
+                flex: 1,
+                child: TextFormField(
+                  initialValue: piece.quantity.toString(),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(3)],
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    final q = int.tryParse(value) ?? 1;
+                    setState(() {
+                      _pieces[index] = piece.copyWith(quantity: q);
+                    });
+                  },
+                ),
               ),
-              onChanged: (value) {
-                final q = int.tryParse(value) ?? 1;
-                setState(() {
-                  _pieces[index] = piece.copyWith(quantity: q);
-                });
-              },
-            ),
+              const SizedBox(width: 4),
+              SizedBox(
+                width: 40,
+                child: _pieces.length > 1
+                    ? IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        onPressed: () {
+                          setState(() {
+                            _pieces.removeAt(index);
+                          });
+                        },
+                        padding: EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
           ),
-          const SizedBox(width: 4),
-          SizedBox(
-            width: 40,
-            child: _pieces.length > 1
-                ? IconButton(
-                    icon: const Icon(Icons.close, size: 20),
-                    onPressed: () {
-                      setState(() {
-                        _pieces.removeAt(index);
-                      });
-                    },
-                    padding: EdgeInsets.zero,
-                    visualDensity: VisualDensity.compact,
-                  )
-                : const SizedBox.shrink(),
+          // 木目方向選択
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 4),
+            child: Row(
+              children: [
+                Icon(Icons.grain, size: 14,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                const SizedBox(width: 4),
+                Text(l10n.grainDirection,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        )),
+                const SizedBox(width: 8),
+                ...GrainDirection.values.map((dir) {
+                  final selected = piece.grainDirection == dir;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: ChoiceChip(
+                      label: Text(
+                        _grainLabel(dir, l10n),
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                      selected: selected,
+                      onSelected: (_) {
+                        setState(() {
+                          _pieces[index] = piece.copyWith(grainDirection: dir);
+                        });
+                      },
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                    ),
+                  );
+                }),
+              ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  String _grainLabel(GrainDirection dir, AppLocalizations l10n) {
+    switch (dir) {
+      case GrainDirection.none:
+        return l10n.grainNone;
+      case GrainDirection.horizontal:
+        return l10n.grainHorizontal;
+      case GrainDirection.vertical:
+        return l10n.grainVertical;
+    }
+  }
+
+  Future<void> _onCsvImport() async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['csv', 'txt', 'tsv'],
+      );
+      if (result == null || result.files.single.path == null) return;
+
+      final pieces =
+          await CsvImportService.import2DFromCsv(result.files.single.path!);
+
+      if (pieces.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.csvImportEmpty)),
+          );
+        }
+        return;
+      }
+
+      setState(() {
+        _pieces.addAll(pieces);
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.csvImportSuccess(pieces.length)),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.csvImportFailed)),
+        );
+      }
+    }
   }
 
   void _onCalculate() {

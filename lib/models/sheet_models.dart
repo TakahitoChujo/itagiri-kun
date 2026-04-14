@@ -1,5 +1,15 @@
 import 'package:hive/hive.dart';
 
+/// 木目方向の制約
+enum GrainDirection {
+  /// 木目制約なし（自由に回転可能）
+  none,
+  /// 木目が幅方向に走る（回転不可）
+  horizontal,
+  /// 木目が高さ方向に走る（回転不可）
+  vertical,
+}
+
 /// 板材（合板）規格モデル
 class SheetStock extends HiveObject {
   String name;
@@ -60,6 +70,7 @@ class SheetPiece extends HiveObject {
   int quantity;
   String? label;
   bool canRotate;
+  GrainDirection grainDirection;
 
   SheetPiece({
     required this.width,
@@ -67,9 +78,14 @@ class SheetPiece extends HiveObject {
     required this.quantity,
     this.label,
     this.canRotate = true,
+    this.grainDirection = GrainDirection.none,
   });
 
   double get area => width * height;
+
+  /// 木目方向を考慮した実効的な回転可否
+  bool get effectiveCanRotate =>
+      canRotate && grainDirection == GrainDirection.none;
 
   SheetPiece copyWith({
     double? width,
@@ -77,6 +93,7 @@ class SheetPiece extends HiveObject {
     int? quantity,
     String? label,
     bool? canRotate,
+    GrainDirection? grainDirection,
   }) {
     return SheetPiece(
       width: width ?? this.width,
@@ -84,6 +101,7 @@ class SheetPiece extends HiveObject {
       quantity: quantity ?? this.quantity,
       label: label ?? this.label,
       canRotate: canRotate ?? this.canRotate,
+      grainDirection: grainDirection ?? this.grainDirection,
     );
   }
 
@@ -319,13 +337,16 @@ class SheetPieceAdapter extends TypeAdapter<SheetPiece> {
       quantity: fields[2] as int,
       label: fields[3] as String?,
       canRotate: fields[4] as bool,
+      grainDirection: numOfFields > 5
+          ? GrainDirection.values[(fields[5] as int?) ?? 0]
+          : GrainDirection.none,
     );
   }
 
   @override
   void write(BinaryWriter writer, SheetPiece obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.width)
       ..writeByte(1)
@@ -335,7 +356,9 @@ class SheetPieceAdapter extends TypeAdapter<SheetPiece> {
       ..writeByte(3)
       ..write(obj.label)
       ..writeByte(4)
-      ..write(obj.canRotate);
+      ..write(obj.canRotate)
+      ..writeByte(5)
+      ..write(obj.grainDirection.index);
   }
 }
 

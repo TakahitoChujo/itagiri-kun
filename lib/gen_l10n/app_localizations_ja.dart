@@ -524,4 +524,220 @@ class AppLocalizationsJa extends AppLocalizations {
   String sheetsCount(int count) {
     return '$count枚';
   }
+
+  @override
+  String get customPresets => 'カスタムプリセット';
+
+  @override
+  String get addCustomPreset => 'カスタムプリセットを追加';
+
+  @override
+  String get editCustomPreset => 'プリセットを編集';
+
+  @override
+  String get deletePreset => 'プリセットを削除';
+
+  @override
+  String deletePresetConfirm(String name) {
+    return '「$name」を削除しますか？';
+  }
+
+  @override
+  String presetSaved(String name) {
+    return 'プリセット「$name」を保存しました';
+  }
+
+  @override
+  String get presetNameHint => '例: ツーバイフォー SPF';
+
+  @override
+  String get price => '価格';
+
+  @override
+  String get frequentSizes => 'よく使うサイズ';
+
+  @override
+  String get frequentLabels => 'よく使うラベル';
+
+  @override
+  String usedNTimes(int count) {
+    return '$count回使用';
+  }
+
+  @override
+  String get projectNotes => 'メモ';
+
+  @override
+  String get projectNotesHint => 'メモを入力...';
+
+  @override
+  String get attachPhoto => '写真を添付';
+
+  @override
+  String get removePhoto => '写真を削除';
+
+  @override
+  String get takePhoto => 'カメラで撮影';
+
+  @override
+  String get chooseFromGallery => 'ギャラリーから選択';
+
+  @override
+  String get offcutInventory => '端材在庫';
+
+  @override
+  String get offcutInventoryEmpty => '端材在庫はありません';
+
+  @override
+  String get offcutInventorySubtitle => 'プロジェクトの計算結果から端材を保存できます';
+
+  @override
+  String get addOffcutManually => '端材を手動追加';
+
+  @override
+  String get offcutWoodName => '木材名';
+
+  @override
+  String offcutCount(int count) {
+    return '端材: $count件';
+  }
+
+  @override
+  String get compareLayouts => 'レイアウト比較';
+
+  @override
+  String get comparisonResults => '比較結果';
+
+  @override
+  String get strategyFFD => '最大ピース優先 (FFD)';
+
+  @override
+  String get strategyBFD => '最適充填優先 (BFD)';
+
+  @override
+  String get strategyFF => '先着順 (FF)';
+
+  @override
+  String get bestResult => '最良';
+
+  @override
+  String get stocksUsed => '素材使用数';
+
+  @override
+  String get wasteAmount => '端材量';
+
+  @override
+  String get useThisLayout => 'このレイアウトを使用';
+
+  @override
+  String get costDashboard => 'コスト分析';
+
+  @override
+  String get totalSpent => '総材料費';
+
+  @override
+  String get averageUtilization => '平均利用率';
+
+  @override
+  String get totalProjects => 'プロジェクト数';
+
+  @override
+  String get costByProject => 'プロジェクト別コスト';
+
+  @override
+  String get utilizationTrend => '利用率推移';
+
+  @override
+  String get wasteByMaterial => '素材別端材量';
+
+  @override
+  String get noDataForChart => 'グラフを表示するデータがありません';
+
+  @override
+  String get unitConverter => '単位換算';
+
+  @override
+  String get convertFrom => '変換元';
+
+  @override
+  String get convertTo => '変換先';
+
+  @override
+  String get conversionResult => '変換結果';
+
+  @override
+  String get allUnits => '全単位一覧';
+
+  @override
+  String get batchExport => '一括エクスポート';
+
+  @override
+  String get batchExportTitle => '一括エクスポート';
+
+  @override
+  String get selectProjects => 'プロジェクトを選択';
+
+  @override
+  String get selectAll => 'すべて選択';
+
+  @override
+  String get deselectAll => 'すべて解除';
+
+  @override
+  String get exportFormat => 'エクスポート形式';
+
+  @override
+  String get exportAsPdf => 'PDF';
+
+  @override
+  String get exportAsCsv => 'CSV';
+
+  @override
+  String exportSelectedCount(int count) {
+    return '$count件を選択中';
+  }
+
+  @override
+  String get exportStarted => 'エクスポートを開始しました';
+
+  @override
+  String get noProjectsSelected => 'プロジェクトを選択してください';
+
+  @override
+  String get tools => 'ツール';
+
+  @override
+  String get grainDirection => '木目';
+
+  @override
+  String get grainNone => 'なし';
+
+  @override
+  String get grainHorizontal => '横目';
+
+  @override
+  String get grainVertical => '縦目';
+
+  @override
+  String get csvImport => 'CSVインポート';
+
+  @override
+  String get csvImportEmpty => 'インポートできる部品が見つかりませんでした';
+
+  @override
+  String csvImportSuccess(int count) {
+    return '$count件の部品をインポートしました';
+  }
+
+  @override
+  String get csvImportFailed => 'CSVファイルの読み込みに失敗しました';
+
+  @override
+  String get fractionModeOn => '分数入力モードを有効にする';
+
+  @override
+  String get fractionModeOff => '通常入力モードに戻す';
+
+  @override
+  String get fractionHint => '例: 1/2, 3 1/4';
 }

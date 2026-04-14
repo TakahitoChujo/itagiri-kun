@@ -346,5 +346,94 @@
   "@sheetsCount": {
     "description": "Sheet count badge",
     "placeholders": { "count": { "type": "int" } }
-  }
+  },
+
+  "customPresets": "Custom Presets",
+  "addCustomPreset": "Add custom preset",
+  "editCustomPreset": "Edit Preset",
+  "deletePreset": "Delete Preset",
+  "deletePresetConfirm": "Delete \"{name}\"?",
+  "presetSaved": "Preset \"{name}\" saved",
+  "presetNameHint": "e.g. 2x4 SPF",
+  "price": "Price",
+
+  "frequentSizes": "Frequent Sizes",
+  "frequentLabels": "Frequent Labels",
+  "usedNTimes": "Used {count} times",
+
+  "projectNotes": "Notes",
+  "projectNotesHint": "Enter notes...",
+  "attachPhoto": "Attach Photo",
+  "removePhoto": "Remove Photo",
+  "takePhoto": "Take Photo",
+  "chooseFromGallery": "Choose from Gallery",
+
+  "offcutInventory": "Offcut Inventory",
+  "offcutInventoryEmpty": "No offcuts in inventory",
+  "offcutInventorySubtitle": "Save offcuts from project results",
+  "addOffcutManually": "Add offcut manually",
+  "offcutWoodName": "Wood name",
+  "offcutCount": "Offcuts: {count}",
+  "@offcutCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "compareLayouts": "Compare Layouts",
+  "comparisonResults": "Comparison Results",
+  "strategyFFD": "Largest First (FFD)",
+  "strategyBFD": "Best Fit (BFD)",
+  "strategyFF": "First Fit (FF)",
+  "bestResult": "Best",
+  "stocksUsed": "Stocks used",
+  "wasteAmount": "Waste",
+  "useThisLayout": "Use this layout",
+
+  "costDashboard": "Cost Analysis",
+  "totalSpent": "Total Cost",
+  "averageUtilization": "Avg. Utilization",
+  "totalProjects": "Projects",
+  "costByProject": "Cost by Project",
+  "utilizationTrend": "Utilization Trend",
+  "wasteByMaterial": "Waste by Material",
+  "noDataForChart": "No data to display",
+
+  "unitConverter": "Unit Converter",
+  "convertFrom": "From",
+  "convertTo": "To",
+  "conversionResult": "Result",
+  "allUnits": "All Units",
+
+  "batchExport": "Batch Export",
+  "batchExportTitle": "Batch Export",
+  "selectProjects": "Select Projects",
+  "selectAll": "Select All",
+  "deselectAll": "Deselect All",
+  "exportFormat": "Export Format",
+  "exportAsPdf": "PDF",
+  "exportAsCsv": "CSV",
+  "exportSelectedCount": "{count} selected",
+  "@exportSelectedCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "exportStarted": "Export started",
+  "noProjectsSelected": "Please select projects",
+
+  "tools": "Tools",
+
+  "grainDirection": "Grain",
+  "grainNone": "None",
+  "grainHorizontal": "Horiz.",
+  "grainVertical": "Vert.",
+
+  "csvImport": "Import CSV",
+  "csvImportEmpty": "No parts found in the file",
+  "csvImportSuccess": "Imported {count} parts",
+  "@csvImportSuccess": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "csvImportFailed": "Failed to read CSV file",
+
+  "fractionModeOn": "Enable fraction input",
+  "fractionModeOff": "Switch to numeric input",
+  "fractionHint": "e.g. 1/2, 3 1/4"
 }

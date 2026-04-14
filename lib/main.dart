@@ -8,6 +8,7 @@ import 'gen_l10n/app_localizations.dart';
 import 'providers/settings_provider.dart';
 import 'services/storage_service.dart';
 import 'services/analytics_service.dart';
+import 'services/widget_service.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 
@@ -19,6 +20,9 @@ void main() async {
 
   // Analytics の初期化（Phase 0: スタブ）
   await AnalyticsService.init();
+
+  // ウィジェットサービスの初期化
+  await WidgetService.init();
 
   runApp(
     const ProviderScope(

@@ -12,6 +12,7 @@ import '../models/project.dart';
 import '../models/sheet_models.dart';
 import '../models/sheet_project.dart';
 import '../models/offcut.dart';
+import '../models/custom_preset.dart';
 
 /// Hive を使ったローカルストレージサービス
 ///
@@ -26,6 +27,8 @@ class StorageService {
   static const String _offcutBoxName = 'offcuts';
   static const String _sheetProjectBoxName = 'sheet_projects';
   static const String _checklistBoxName = 'checklists';
+  static const String _customWoodPresetBoxName = 'custom_wood_presets';
+  static const String _customSheetPresetBoxName = 'custom_sheet_presets';
   static const String _onboardingKey = 'onboarding_done';
 
   /// 初回起動フラグ（initStorage 後に参照可能）
@@ -114,6 +117,12 @@ class StorageService {
     if (!Hive.isAdapterRegistered(11)) {
       Hive.registerAdapter(SheetProjectAdapter());
     }
+    if (!Hive.isAdapterRegistered(12)) {
+      Hive.registerAdapter(CustomWoodPresetAdapter());
+    }
+    if (!Hive.isAdapterRegistered(13)) {
+      Hive.registerAdapter(CustomSheetPresetAdapter());
+    }
 
     // 全 Box を暗号化して開く
     await Hive.openBox<Project>(
@@ -138,6 +147,14 @@ class StorageService {
     );
     await Hive.openBox<String>(
       _checklistBoxName,
+      encryptionCipher: cipher,
+    );
+    await Hive.openBox<CustomWoodPreset>(
+      _customWoodPresetBoxName,
+      encryptionCipher: cipher,
+    );
+    await Hive.openBox<CustomSheetPreset>(
+      _customSheetPresetBoxName,
       encryptionCipher: cipher,
     );
 
@@ -361,5 +378,53 @@ class StorageService {
   /// チェックリストを削除する
   static Future<void> deleteChecklist(String projectId) async {
     await _checklistBox.delete(projectId);
+  }
+
+  // ---------------------------------------------------------------------------
+  // カスタム木材プリセット CRUD
+  // ---------------------------------------------------------------------------
+
+  static Box<CustomWoodPreset> get _customWoodPresetBox =>
+      Hive.box<CustomWoodPreset>(_customWoodPresetBoxName);
+
+  /// カスタム木材プリセットを保存する
+  static Future<void> saveCustomWoodPreset(CustomWoodPreset preset) async {
+    await _customWoodPresetBox.put(preset.id, preset);
+  }
+
+  /// 全カスタム木材プリセットを取得する（作成日時降順）
+  static List<CustomWoodPreset> loadCustomWoodPresets() {
+    final presets = _customWoodPresetBox.values.toList();
+    presets.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return presets;
+  }
+
+  /// カスタム木材プリセットを削除する
+  static Future<void> deleteCustomWoodPreset(String id) async {
+    await _customWoodPresetBox.delete(id);
+  }
+
+  // ---------------------------------------------------------------------------
+  // カスタム合板プリセット CRUD
+  // ---------------------------------------------------------------------------
+
+  static Box<CustomSheetPreset> get _customSheetPresetBox =>
+      Hive.box<CustomSheetPreset>(_customSheetPresetBoxName);
+
+  /// カスタム合板プリセットを保存する
+  static Future<void> saveCustomSheetPreset(CustomSheetPreset preset) async {
+    await _customSheetPresetBox.put(preset.id, preset);
+  }
+
+  /// 全カスタム合板プリセットを取得する（作成日時降順）
+  static List<CustomSheetPreset> loadCustomSheetPresets() {
+    final presets = _customSheetPresetBox.values.toList();
+    presets.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return presets;
+  }
+
+  /// カスタム合板プリセットを削除する
+  static Future<void> deleteCustomSheetPreset(String id) async {
+    await _customSheetPresetBox.delete(id);
   }
 }

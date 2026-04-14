@@ -581,6 +581,98 @@ class ExportService {
   }
 
   // ---------------------------------------------------------------------------
+  // バッチエクスポート (Feature 8)
+  // ---------------------------------------------------------------------------
+
+  /// 複数の1Dプロジェクトを一括PDF出力
+  static Future<String> batchExportToPdf(List<Project> projects) async {
+    final pdf = pw.Document();
+
+    for (final project in projects) {
+      final result = project.result;
+      pdf.addPage(
+        pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(32),
+          build: (pw.Context context) {
+            final children = <pw.Widget>[];
+            children.add(pw.Header(level: 0, text: project.name));
+
+            final summaryData = <List<String>>[
+              ['Wood Type', project.woodStock.name],
+              ['Stock Length (mm)', project.stockLength.toString()],
+              ['Total Pieces', project.totalPieceCount.toString()],
+            ];
+            if (result != null) {
+              summaryData.addAll([
+                ['Stocks Required', result.totalStock.toString()],
+                ['Utilization', '${(result.utilizationRate * 100).toStringAsFixed(1)}%'],
+              ]);
+            }
+            children.add(pw.TableHelper.fromTextArray(
+              headerCount: 0,
+              data: summaryData,
+              cellPadding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            ));
+
+            if (result != null) {
+              children.add(pw.SizedBox(height: 12));
+              for (var i = 0; i < result.bins.length; i++) {
+                final bin = result.bins[i];
+                children.add(pw.Text(
+                  'Bin #${i + 1} - ${bin.pieces.length} pcs, Waste: ${bin.waste.toStringAsFixed(1)}mm',
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
+                ));
+              }
+            }
+            return children;
+          },
+        ),
+      );
+    }
+
+    final dir = await getTemporaryDirectory();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final filePath = '${dir.path}/batch_export_$timestamp.pdf';
+    final file = File(filePath);
+    await file.writeAsBytes(await pdf.save());
+    return filePath;
+  }
+
+  /// 複数の1DプロジェクトをCSV一括出力
+  static Future<String> batchExportToCsv(List<Project> projects) async {
+    final buffer = StringBuffer();
+    buffer.write('\uFEFF');
+    buffer.writeln('プロジェクト名,ビン番号,ピース番号,ラベル,長さ(mm),端材(mm)');
+
+    for (final project in projects) {
+      final result = project.result;
+      if (result == null) continue;
+      final projName = _escapeCsvField(project.name);
+      for (var bi = 0; bi < result.bins.length; bi++) {
+        final bin = result.bins[bi];
+        for (var pi = 0; pi < bin.pieces.length; pi++) {
+          final piece = bin.pieces[pi];
+          final label = _escapeCsvField(piece.label ?? '');
+          final waste = pi == bin.pieces.length - 1
+              ? bin.waste.toStringAsFixed(1)
+              : '';
+          buffer.writeln(
+            '$projName,${bi + 1},${pi + 1},$label,${piece.length.toStringAsFixed(1)},$waste',
+          );
+        }
+      }
+    }
+
+    final dir = await getTemporaryDirectory();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final filePath = '${dir.path}/batch_export_$timestamp.csv';
+    final file = File(filePath);
+    await file.writeAsString(buffer.toString(), encoding: utf8);
+    return filePath;
+  }
+
+  // ---------------------------------------------------------------------------
   // Private: シリアライズ / デシリアライズ
   // ---------------------------------------------------------------------------
 
@@ -738,6 +830,7 @@ class ExportService {
                 'quantity': p.quantity,
                 'label': p.label,
                 'canRotate': p.canRotate,
+                'grainDirection': p.grainDirection.index,
               })
           .toList(),
       'kerfWidth': project.kerfWidth,
@@ -834,12 +927,14 @@ class ExportService {
       ),
       pieces: piecesList.map((pMap) {
         if (pMap is! Map<String, dynamic>) throw const FormatException('invalid piece');
+        final grainIndex = pMap['grainDirection'] is int ? pMap['grainDirection'] as int : 0;
         return SheetPiece(
           width: _positiveNum(pMap['width']),
           height: _positiveNum(pMap['height']),
           quantity: _positiveInt(pMap['quantity']),
           label: pMap['label'] is String ? pMap['label'] as String : null,
           canRotate: pMap['canRotate'] != false,
+          grainDirection: GrainDirection.values[grainIndex.clamp(0, 2)],
         );
       }).toList(),
       kerfWidth: _positiveNum(map['kerfWidth']),

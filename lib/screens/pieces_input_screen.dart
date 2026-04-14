@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:file_picker/file_picker.dart';
 
 import '../gen_l10n/app_localizations.dart';
 import '../models/wood_stock.dart';
@@ -7,10 +8,15 @@ import '../models/cut_piece.dart';
 import '../models/offcut.dart';
 import '../models/project.dart';
 import '../providers/settings_provider.dart';
+import '../models/cut_result.dart';
 import '../services/cut_optimizer.dart';
+import '../services/csv_import_service.dart';
+import '../services/frequency_service.dart';
+import '../utils/fraction_parser.dart';
 import '../utils/undo_redo_stack.dart';
 import '../widgets/piece_input_row.dart';
 import 'result_screen.dart';
+import 'compare_results_screen.dart';
 
 /// 必要部材入力画面
 class PiecesInputScreen extends ConsumerStatefulWidget {
@@ -39,6 +45,7 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
   final _formKey = GlobalKey<FormState>();
   late List<CutPiece> _pieces;
   late UndoRedoStack<List<CutPiece>> _history;
+  bool _fractionMode = false;
 
   /// 実効素材長リスト
   List<int> get _effectiveLengths =>
@@ -96,6 +103,21 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
             : l10n.enterPieces),
         actions: [
           IconButton(
+            icon: const Icon(Icons.file_upload_outlined),
+            tooltip: l10n.csvImport,
+            onPressed: _onCsvImport,
+          ),
+          IconButton(
+            icon: Icon(_fractionMode ? Icons.looks_one : Icons.pin,
+                color: _fractionMode ? colorScheme.primary : null),
+            tooltip: _fractionMode ? l10n.fractionModeOff : l10n.fractionModeOn,
+            onPressed: () {
+              setState(() {
+                _fractionMode = !_fractionMode;
+              });
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.undo),
             tooltip: l10n.undo,
             onPressed: _history.canUndo ? _onUndo : null,
@@ -141,7 +163,12 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
                           color: colorScheme.onSurfaceVariant,
                         ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
+
+                  // Frequency suggestions (Feature 2)
+                  _buildFrequencySuggestions(context, l10n),
+
+                  const SizedBox(height: 12),
 
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
@@ -181,10 +208,11 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
 
                   ...List.generate(_pieces.length, (index) {
                     return PieceInputRow(
-                      key: ValueKey('piece_$index'),
+                      key: ValueKey('piece_${index}_$_fractionMode'),
                       index: index,
                       piece: _pieces[index],
                       canDelete: _pieces.length > 1,
+                      fractionMode: _fractionMode,
                       onChanged: (updated) {
                         setState(() {
                           _pieces[index] = updated;
@@ -229,17 +257,29 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
                 ],
               ),
               child: SafeArea(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: _onCalculate,
-                    icon: const Icon(Icons.calculate),
-                    label: Text(l10n.calculate),
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      textStyle: const TextStyle(fontSize: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: _onCalculate,
+                        icon: const Icon(Icons.calculate),
+                        label: Text(l10n.calculate),
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          textStyle: const TextStyle(fontSize: 16),
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    IconButton.filledTonal(
+                      onPressed: _onCompare,
+                      icon: const Icon(Icons.compare_arrows),
+                      tooltip: l10n.compareLayouts,
+                      style: IconButton.styleFrom(
+                        minimumSize: const Size(52, 52),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -247,6 +287,125 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildFrequencySuggestions(BuildContext context, AppLocalizations l10n) {
+    final frequentSizes = FrequencyService.getFrequentLengths(
+      limit: 5,
+      woodStockName: widget.woodStock.name,
+    );
+    if (frequentSizes.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.frequentSizes,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600)),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 6,
+          runSpacing: 4,
+          children: frequentSizes.map((freq) {
+            return ActionChip(
+              label: Text('${freq.length.toStringAsFixed(0)}mm',
+                  style: const TextStyle(fontSize: 12)),
+              avatar: Text('${freq.count}x',
+                  style: TextStyle(fontSize: 10,
+                      color: Theme.of(context).colorScheme.primary)),
+              visualDensity: VisualDensity.compact,
+              onPressed: () {
+                setState(() {
+                  _pieces.add(CutPiece(length: freq.length, quantity: 1));
+                });
+                _pushHistory();
+              },
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  void _onCompare() {
+    final validPieces = _getValidPieces();
+    if (validPieces == null) return;
+
+    final settings = ref.read(settingsProvider);
+    final effectiveLengths = _effectiveLengths;
+
+    final results = CutOptimizer.compareStrategies(
+      stockLength: effectiveLengths.first.toDouble(),
+      stockLengths: effectiveLengths.length > 1
+          ? effectiveLengths.map((l) => l.toDouble()).toList()
+          : null,
+      kerfWidth: settings.kerfWidth,
+      pieces: validPieces,
+      offcuts: widget.offcuts,
+    );
+
+    if (results.isEmpty) return;
+
+    Navigator.push<CutResult>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CompareResultsScreen(results: results),
+      ),
+    ).then((selectedResult) {
+      if (selectedResult != null) {
+        final effectiveLengths = _effectiveLengths;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ResultScreen(
+              result: selectedResult,
+              woodStock: widget.woodStock,
+              stockLength: effectiveLengths.first,
+              stockLengths:
+                  effectiveLengths.length > 1 ? effectiveLengths : null,
+              pieces: validPieces,
+              kerfWidth: settings.kerfWidth,
+              existingProject: widget.existingProject,
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  List<CutPiece>? _getValidPieces() {
+    final l10n = AppLocalizations.of(context);
+    final validPieces = <CutPiece>[];
+    final errors = <String>[];
+
+    for (var i = 0; i < _pieces.length; i++) {
+      final piece = _pieces[i];
+      if (piece.length <= 0) {
+        errors.add(l10n.errorLengthRequired(i + 1));
+        continue;
+      }
+      if (piece.quantity <= 0) {
+        errors.add(l10n.errorQuantityRequired(i + 1));
+        continue;
+      }
+      if (piece.length > _maxStockLength) {
+        errors.add(l10n.errorLengthExceeds(
+            i + 1, piece.length.toStringAsFixed(0), _maxStockLength.toString()));
+        continue;
+      }
+      validPieces.add(piece);
+    }
+
+    if (errors.isNotEmpty) {
+      _showErrorDialog(errors);
+      return null;
+    }
+    if (validPieces.isEmpty) {
+      _showErrorDialog([l10n.errorNoPieces]);
+      return null;
+    }
+    return validPieces;
   }
 
   void _addPiece() {
@@ -321,6 +480,48 @@ class _PiecesInputScreenState extends ConsumerState<PiecesInputScreen> {
       );
     } on CutOptimizerException catch (e) {
       _showErrorDialog([e.message]);
+    }
+  }
+
+  Future<void> _onCsvImport() async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['csv', 'txt', 'tsv'],
+      );
+      if (result == null || result.files.single.path == null) return;
+
+      final pieces =
+          await CsvImportService.import1DFromCsv(result.files.single.path!);
+
+      if (pieces.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.csvImportEmpty)),
+          );
+        }
+        return;
+      }
+
+      setState(() {
+        _pieces.addAll(pieces);
+      });
+      _pushHistory();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.csvImportSuccess(pieces.length)),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.csvImportFailed)),
+        );
+      }
     }
   }
 

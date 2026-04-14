@@ -566,5 +566,227 @@
   "@sheetsCount": {
     "description": "Sheet count badge",
     "placeholders": { "count": { "type": "int" } }
-  }
+  },
+
+  "customPresets": "カスタムプリセット",
+  "@customPresets": { "description": "Custom presets section" },
+
+  "addCustomPreset": "カスタムプリセットを追加",
+  "@addCustomPreset": { "description": "Add custom preset button" },
+
+  "editCustomPreset": "プリセットを編集",
+  "@editCustomPreset": { "description": "Edit custom preset dialog title" },
+
+  "deletePreset": "プリセットを削除",
+  "@deletePreset": { "description": "Delete preset action" },
+
+  "deletePresetConfirm": "「{name}」を削除しますか？",
+  "@deletePresetConfirm": {
+    "description": "Delete preset confirmation",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "presetSaved": "プリセット「{name}」を保存しました",
+  "@presetSaved": {
+    "description": "Preset saved message",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "presetNameHint": "例: ツーバイフォー SPF",
+  "@presetNameHint": { "description": "Custom preset name hint" },
+
+  "price": "価格",
+  "@price": { "description": "Price label" },
+
+  "frequentSizes": "よく使うサイズ",
+  "@frequentSizes": { "description": "Frequent sizes section" },
+
+  "frequentLabels": "よく使うラベル",
+  "@frequentLabels": { "description": "Frequent labels section" },
+
+  "usedNTimes": "{count}回使用",
+  "@usedNTimes": {
+    "description": "Usage count label",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "projectNotes": "メモ",
+  "@projectNotes": { "description": "Project notes field label" },
+
+  "projectNotesHint": "メモを入力...",
+  "@projectNotesHint": { "description": "Project notes hint" },
+
+  "attachPhoto": "写真を添付",
+  "@attachPhoto": { "description": "Attach photo button" },
+
+  "removePhoto": "写真を削除",
+  "@removePhoto": { "description": "Remove photo button" },
+
+  "takePhoto": "カメラで撮影",
+  "@takePhoto": { "description": "Take photo option" },
+
+  "chooseFromGallery": "ギャラリーから選択",
+  "@chooseFromGallery": { "description": "Choose from gallery option" },
+
+  "offcutInventory": "端材在庫",
+  "@offcutInventory": { "description": "Offcut inventory screen title" },
+
+  "offcutInventoryEmpty": "端材在庫はありません",
+  "@offcutInventoryEmpty": { "description": "Empty offcut inventory message" },
+
+  "offcutInventorySubtitle": "プロジェクトの計算結果から端材を保存できます",
+  "@offcutInventorySubtitle": { "description": "Empty offcut inventory subtitle" },
+
+  "addOffcutManually": "端材を手動追加",
+  "@addOffcutManually": { "description": "Add offcut manually button" },
+
+  "offcutWoodName": "木材名",
+  "@offcutWoodName": { "description": "Offcut wood name label" },
+
+  "offcutCount": "端材: {count}件",
+  "@offcutCount": {
+    "description": "Offcut count label",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "compareLayouts": "レイアウト比較",
+  "@compareLayouts": { "description": "Compare layouts button" },
+
+  "comparisonResults": "比較結果",
+  "@comparisonResults": { "description": "Comparison results screen title" },
+
+  "strategyFFD": "最大ピース優先 (FFD)",
+  "@strategyFFD": { "description": "FFD strategy name" },
+
+  "strategyBFD": "最適充填優先 (BFD)",
+  "@strategyBFD": { "description": "BFD strategy name" },
+
+  "strategyFF": "先着順 (FF)",
+  "@strategyFF": { "description": "First Fit strategy name" },
+
+  "bestResult": "最良",
+  "@bestResult": { "description": "Best result badge" },
+
+  "stocksUsed": "素材使用数",
+  "@stocksUsed": { "description": "Stocks used label" },
+
+  "wasteAmount": "端材量",
+  "@wasteAmount": { "description": "Waste amount label" },
+
+  "useThisLayout": "このレイアウトを使用",
+  "@useThisLayout": { "description": "Use this layout button" },
+
+  "costDashboard": "コスト分析",
+  "@costDashboard": { "description": "Cost dashboard screen title" },
+
+  "totalSpent": "総材料費",
+  "@totalSpent": { "description": "Total spent label" },
+
+  "averageUtilization": "平均利用率",
+  "@averageUtilization": { "description": "Average utilization label" },
+
+  "totalProjects": "プロジェクト数",
+  "@totalProjects": { "description": "Total projects label" },
+
+  "costByProject": "プロジェクト別コスト",
+  "@costByProject": { "description": "Cost by project chart title" },
+
+  "utilizationTrend": "利用率推移",
+  "@utilizationTrend": { "description": "Utilization trend chart title" },
+
+  "wasteByMaterial": "素材別端材量",
+  "@wasteByMaterial": { "description": "Waste by material chart title" },
+
+  "noDataForChart": "グラフを表示するデータがありません",
+  "@noDataForChart": { "description": "No data for chart message" },
+
+  "unitConverter": "単位換算",
+  "@unitConverter": { "description": "Unit converter screen title" },
+
+  "convertFrom": "変換元",
+  "@convertFrom": { "description": "Convert from label" },
+
+  "convertTo": "変換先",
+  "@convertTo": { "description": "Convert to label" },
+
+  "conversionResult": "変換結果",
+  "@conversionResult": { "description": "Conversion result label" },
+
+  "allUnits": "全単位一覧",
+  "@allUnits": { "description": "All units list header" },
+
+  "batchExport": "一括エクスポート",
+  "@batchExport": { "description": "Batch export button" },
+
+  "batchExportTitle": "一括エクスポート",
+  "@batchExportTitle": { "description": "Batch export screen title" },
+
+  "selectProjects": "プロジェクトを選択",
+  "@selectProjects": { "description": "Select projects header" },
+
+  "selectAll": "すべて選択",
+  "@selectAll": { "description": "Select all button" },
+
+  "deselectAll": "すべて解除",
+  "@deselectAll": { "description": "Deselect all button" },
+
+  "exportFormat": "エクスポート形式",
+  "@exportFormat": { "description": "Export format label" },
+
+  "exportAsPdf": "PDF",
+  "@exportAsPdf": { "description": "Export as PDF option" },
+
+  "exportAsCsv": "CSV",
+  "@exportAsCsv": { "description": "Export as CSV option" },
+
+  "exportSelectedCount": "{count}件を選択中",
+  "@exportSelectedCount": {
+    "description": "Selected projects count",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "exportStarted": "エクスポートを開始しました",
+  "@exportStarted": { "description": "Export started message" },
+
+  "noProjectsSelected": "プロジェクトを選択してください",
+  "@noProjectsSelected": { "description": "No projects selected warning" },
+
+  "tools": "ツール",
+  "@tools": { "description": "Tools section title on home/settings" },
+
+  "grainDirection": "木目",
+  "@grainDirection": { "description": "Grain direction label" },
+
+  "grainNone": "なし",
+  "@grainNone": { "description": "No grain constraint" },
+
+  "grainHorizontal": "横目",
+  "@grainHorizontal": { "description": "Horizontal grain direction" },
+
+  "grainVertical": "縦目",
+  "@grainVertical": { "description": "Vertical grain direction" },
+
+  "csvImport": "CSVインポート",
+  "@csvImport": { "description": "CSV import button tooltip" },
+
+  "csvImportEmpty": "インポートできる部品が見つかりませんでした",
+  "@csvImportEmpty": { "description": "CSV import empty result" },
+
+  "csvImportSuccess": "{count}件の部品をインポートしました",
+  "@csvImportSuccess": {
+    "description": "CSV import success message",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "csvImportFailed": "CSVファイルの読み込みに失敗しました",
+  "@csvImportFailed": { "description": "CSV import failed message" },
+
+  "fractionModeOn": "分数入力モードを有効にする",
+  "@fractionModeOn": { "description": "Enable fraction input mode tooltip" },
+
+  "fractionModeOff": "通常入力モードに戻す",
+  "@fractionModeOff": { "description": "Disable fraction input mode tooltip" },
+
+  "fractionHint": "例: 1/2, 3 1/4",
+  "@fractionHint": { "description": "Fraction input hint" }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../models/cut_piece.dart';
+import '../utils/fraction_parser.dart';
 
 /// 部材入力行ウィジェット
 ///
@@ -13,6 +14,7 @@ class PieceInputRow extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback? onEditingComplete;
   final bool canDelete;
+  final bool fractionMode;
 
   const PieceInputRow({
     super.key,
@@ -22,6 +24,7 @@ class PieceInputRow extends StatelessWidget {
     required this.onDelete,
     this.onEditingComplete,
     this.canDelete = true,
+    this.fractionMode = false,
   });
 
   @override
@@ -39,14 +42,15 @@ class PieceInputRow extends StatelessWidget {
             child: TextFormField(
               initialValue:
                   piece.length > 0 ? piece.length.toStringAsFixed(0) : '',
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: false),
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ],
+              keyboardType: fractionMode
+                  ? TextInputType.text
+                  : const TextInputType.numberWithOptions(decimal: false),
+              inputFormatters: fractionMode
+                  ? [FilteringTextInputFormatter.allow(RegExp(r'[\d\s/\-\.]'))]
+                  : [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 labelText: '長さ(mm)',
-                hintText: '例: 500',
+                hintText: fractionMode ? '例: 1 1/2' : '例: 500',
                 isDense: true,
                 border: const OutlineInputBorder(),
                 contentPadding:
@@ -57,7 +61,9 @@ class PieceInputRow extends StatelessWidget {
                 ),
               ),
               onChanged: (value) {
-                final length = double.tryParse(value) ?? 0;
+                final length = fractionMode
+                    ? (FractionParser.parse(value) ?? 0)
+                    : (double.tryParse(value) ?? 0);
                 onChanged(piece.copyWith(length: length));
               },
               onEditingComplete: () {
@@ -68,7 +74,9 @@ class PieceInputRow extends StatelessWidget {
                 if (value == null || value.isEmpty) {
                   return '入力してください';
                 }
-                final length = double.tryParse(value);
+                final length = fractionMode
+                    ? FractionParser.parse(value)
+                    : double.tryParse(value);
                 if (length == null || length <= 0) {
                   return '正の値を入力';
                 }

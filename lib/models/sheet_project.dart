@@ -27,6 +27,12 @@ class SheetProject extends HiveObject {
   /// 合板1枚あたりの単価 (円)。null = 未設定
   double? unitPrice;
 
+  /// プロジェクトメモ（任意）
+  String? notes;
+
+  /// 添付写真のパス（任意）
+  String? photoPath;
+
   /// 作成日時
   DateTime createdAt;
 
@@ -41,6 +47,8 @@ class SheetProject extends HiveObject {
     this.kerfWidth = 3.0,
     this.result,
     this.unitPrice,
+    this.notes,
+    this.photoPath,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -60,6 +68,8 @@ class SheetProject extends HiveObject {
     return unitPrice! * result!.totalSheets;
   }
 
+  static const _sentinel = Object();
+
   SheetProject copyWith({
     String? id,
     String? name,
@@ -68,6 +78,8 @@ class SheetProject extends HiveObject {
     double? kerfWidth,
     SheetCutResult? result,
     double? unitPrice,
+    Object? notes = _sentinel,
+    Object? photoPath = _sentinel,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -79,6 +91,8 @@ class SheetProject extends HiveObject {
       kerfWidth: kerfWidth ?? this.kerfWidth,
       result: result ?? this.result,
       unitPrice: unitPrice ?? this.unitPrice,
+      notes: identical(notes, _sentinel) ? this.notes : notes as String?,
+      photoPath: identical(photoPath, _sentinel) ? this.photoPath : photoPath as String?,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -114,13 +128,15 @@ class SheetProjectAdapter extends TypeAdapter<SheetProject> {
       createdAt: fields[6] as DateTime,
       updatedAt: fields[7] as DateTime,
       unitPrice: fields[8] as double?,
+      notes: numOfFields > 9 ? fields[9] as String? : null,
+      photoPath: numOfFields > 10 ? fields[10] as String? : null,
     );
   }
 
   @override
   void write(BinaryWriter writer, SheetProject obj) {
     writer
-      ..writeByte(9) // number of fields
+      ..writeByte(11) // number of fields
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -138,6 +154,10 @@ class SheetProjectAdapter extends TypeAdapter<SheetProject> {
       ..writeByte(7)
       ..write(obj.updatedAt)
       ..writeByte(8)
-      ..write(obj.unitPrice);
+      ..write(obj.unitPrice)
+      ..writeByte(9)
+      ..write(obj.notes)
+      ..writeByte(10)
+      ..write(obj.photoPath);
   }
 }

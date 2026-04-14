@@ -1009,6 +1009,414 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'{count}枚'**
   String sheetsCount(int count);
+
+  /// Custom presets section
+  ///
+  /// In ja, this message translates to:
+  /// **'カスタムプリセット'**
+  String get customPresets;
+
+  /// Add custom preset button
+  ///
+  /// In ja, this message translates to:
+  /// **'カスタムプリセットを追加'**
+  String get addCustomPreset;
+
+  /// Edit custom preset dialog title
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセットを編集'**
+  String get editCustomPreset;
+
+  /// Delete preset action
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセットを削除'**
+  String get deletePreset;
+
+  /// Delete preset confirmation
+  ///
+  /// In ja, this message translates to:
+  /// **'「{name}」を削除しますか？'**
+  String deletePresetConfirm(String name);
+
+  /// Preset saved message
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセット「{name}」を保存しました'**
+  String presetSaved(String name);
+
+  /// Custom preset name hint
+  ///
+  /// In ja, this message translates to:
+  /// **'例: ツーバイフォー SPF'**
+  String get presetNameHint;
+
+  /// Price label
+  ///
+  /// In ja, this message translates to:
+  /// **'価格'**
+  String get price;
+
+  /// Frequent sizes section
+  ///
+  /// In ja, this message translates to:
+  /// **'よく使うサイズ'**
+  String get frequentSizes;
+
+  /// Frequent labels section
+  ///
+  /// In ja, this message translates to:
+  /// **'よく使うラベル'**
+  String get frequentLabels;
+
+  /// Usage count label
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}回使用'**
+  String usedNTimes(int count);
+
+  /// Project notes field label
+  ///
+  /// In ja, this message translates to:
+  /// **'メモ'**
+  String get projectNotes;
+
+  /// Project notes hint
+  ///
+  /// In ja, this message translates to:
+  /// **'メモを入力...'**
+  String get projectNotesHint;
+
+  /// Attach photo button
+  ///
+  /// In ja, this message translates to:
+  /// **'写真を添付'**
+  String get attachPhoto;
+
+  /// Remove photo button
+  ///
+  /// In ja, this message translates to:
+  /// **'写真を削除'**
+  String get removePhoto;
+
+  /// Take photo option
+  ///
+  /// In ja, this message translates to:
+  /// **'カメラで撮影'**
+  String get takePhoto;
+
+  /// Choose from gallery option
+  ///
+  /// In ja, this message translates to:
+  /// **'ギャラリーから選択'**
+  String get chooseFromGallery;
+
+  /// Offcut inventory screen title
+  ///
+  /// In ja, this message translates to:
+  /// **'端材在庫'**
+  String get offcutInventory;
+
+  /// Empty offcut inventory message
+  ///
+  /// In ja, this message translates to:
+  /// **'端材在庫はありません'**
+  String get offcutInventoryEmpty;
+
+  /// Empty offcut inventory subtitle
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクトの計算結果から端材を保存できます'**
+  String get offcutInventorySubtitle;
+
+  /// Add offcut manually button
+  ///
+  /// In ja, this message translates to:
+  /// **'端材を手動追加'**
+  String get addOffcutManually;
+
+  /// Offcut wood name label
+  ///
+  /// In ja, this message translates to:
+  /// **'木材名'**
+  String get offcutWoodName;
+
+  /// Offcut count label
+  ///
+  /// In ja, this message translates to:
+  /// **'端材: {count}件'**
+  String offcutCount(int count);
+
+  /// Compare layouts button
+  ///
+  /// In ja, this message translates to:
+  /// **'レイアウト比較'**
+  String get compareLayouts;
+
+  /// Comparison results screen title
+  ///
+  /// In ja, this message translates to:
+  /// **'比較結果'**
+  String get comparisonResults;
+
+  /// FFD strategy name
+  ///
+  /// In ja, this message translates to:
+  /// **'最大ピース優先 (FFD)'**
+  String get strategyFFD;
+
+  /// BFD strategy name
+  ///
+  /// In ja, this message translates to:
+  /// **'最適充填優先 (BFD)'**
+  String get strategyBFD;
+
+  /// First Fit strategy name
+  ///
+  /// In ja, this message translates to:
+  /// **'先着順 (FF)'**
+  String get strategyFF;
+
+  /// Best result badge
+  ///
+  /// In ja, this message translates to:
+  /// **'最良'**
+  String get bestResult;
+
+  /// Stocks used label
+  ///
+  /// In ja, this message translates to:
+  /// **'素材使用数'**
+  String get stocksUsed;
+
+  /// Waste amount label
+  ///
+  /// In ja, this message translates to:
+  /// **'端材量'**
+  String get wasteAmount;
+
+  /// Use this layout button
+  ///
+  /// In ja, this message translates to:
+  /// **'このレイアウトを使用'**
+  String get useThisLayout;
+
+  /// Cost dashboard screen title
+  ///
+  /// In ja, this message translates to:
+  /// **'コスト分析'**
+  String get costDashboard;
+
+  /// Total spent label
+  ///
+  /// In ja, this message translates to:
+  /// **'総材料費'**
+  String get totalSpent;
+
+  /// Average utilization label
+  ///
+  /// In ja, this message translates to:
+  /// **'平均利用率'**
+  String get averageUtilization;
+
+  /// Total projects label
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクト数'**
+  String get totalProjects;
+
+  /// Cost by project chart title
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクト別コスト'**
+  String get costByProject;
+
+  /// Utilization trend chart title
+  ///
+  /// In ja, this message translates to:
+  /// **'利用率推移'**
+  String get utilizationTrend;
+
+  /// Waste by material chart title
+  ///
+  /// In ja, this message translates to:
+  /// **'素材別端材量'**
+  String get wasteByMaterial;
+
+  /// No data for chart message
+  ///
+  /// In ja, this message translates to:
+  /// **'グラフを表示するデータがありません'**
+  String get noDataForChart;
+
+  /// Unit converter screen title
+  ///
+  /// In ja, this message translates to:
+  /// **'単位換算'**
+  String get unitConverter;
+
+  /// Convert from label
+  ///
+  /// In ja, this message translates to:
+  /// **'変換元'**
+  String get convertFrom;
+
+  /// Convert to label
+  ///
+  /// In ja, this message translates to:
+  /// **'変換先'**
+  String get convertTo;
+
+  /// Conversion result label
+  ///
+  /// In ja, this message translates to:
+  /// **'変換結果'**
+  String get conversionResult;
+
+  /// All units list header
+  ///
+  /// In ja, this message translates to:
+  /// **'全単位一覧'**
+  String get allUnits;
+
+  /// Batch export button
+  ///
+  /// In ja, this message translates to:
+  /// **'一括エクスポート'**
+  String get batchExport;
+
+  /// Batch export screen title
+  ///
+  /// In ja, this message translates to:
+  /// **'一括エクスポート'**
+  String get batchExportTitle;
+
+  /// Select projects header
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクトを選択'**
+  String get selectProjects;
+
+  /// Select all button
+  ///
+  /// In ja, this message translates to:
+  /// **'すべて選択'**
+  String get selectAll;
+
+  /// Deselect all button
+  ///
+  /// In ja, this message translates to:
+  /// **'すべて解除'**
+  String get deselectAll;
+
+  /// Export format label
+  ///
+  /// In ja, this message translates to:
+  /// **'エクスポート形式'**
+  String get exportFormat;
+
+  /// Export as PDF option
+  ///
+  /// In ja, this message translates to:
+  /// **'PDF'**
+  String get exportAsPdf;
+
+  /// Export as CSV option
+  ///
+  /// In ja, this message translates to:
+  /// **'CSV'**
+  String get exportAsCsv;
+
+  /// Selected projects count
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}件を選択中'**
+  String exportSelectedCount(int count);
+
+  /// Export started message
+  ///
+  /// In ja, this message translates to:
+  /// **'エクスポートを開始しました'**
+  String get exportStarted;
+
+  /// No projects selected warning
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクトを選択してください'**
+  String get noProjectsSelected;
+
+  /// Tools section title on home/settings
+  ///
+  /// In ja, this message translates to:
+  /// **'ツール'**
+  String get tools;
+
+  /// Grain direction label
+  ///
+  /// In ja, this message translates to:
+  /// **'木目'**
+  String get grainDirection;
+
+  /// No grain constraint
+  ///
+  /// In ja, this message translates to:
+  /// **'なし'**
+  String get grainNone;
+
+  /// Horizontal grain direction
+  ///
+  /// In ja, this message translates to:
+  /// **'横目'**
+  String get grainHorizontal;
+
+  /// Vertical grain direction
+  ///
+  /// In ja, this message translates to:
+  /// **'縦目'**
+  String get grainVertical;
+
+  /// CSV import button tooltip
+  ///
+  /// In ja, this message translates to:
+  /// **'CSVインポート'**
+  String get csvImport;
+
+  /// CSV import empty result
+  ///
+  /// In ja, this message translates to:
+  /// **'インポートできる部品が見つかりませんでした'**
+  String get csvImportEmpty;
+
+  /// CSV import success message
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}件の部品をインポートしました'**
+  String csvImportSuccess(int count);
+
+  /// CSV import failed message
+  ///
+  /// In ja, this message translates to:
+  /// **'CSVファイルの読み込みに失敗しました'**
+  String get csvImportFailed;
+
+  /// Enable fraction input mode tooltip
+  ///
+  /// In ja, this message translates to:
+  /// **'分数入力モードを有効にする'**
+  String get fractionModeOn;
+
+  /// Disable fraction input mode tooltip
+  ///
+  /// In ja, this message translates to:
+  /// **'通常入力モードに戻す'**
+  String get fractionModeOff;
+
+  /// Fraction input hint
+  ///
+  /// In ja, this message translates to:
+  /// **'例: 1/2, 3 1/4'**
+  String get fractionHint;
 }
 
 class _AppLocalizationsDelegate

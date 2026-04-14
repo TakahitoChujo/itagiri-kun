@@ -17,6 +17,10 @@ import 'wood_select_screen.dart';
 import 'pieces_input_screen.dart';
 import 'sheet_select_screen.dart';
 import 'sheet_input_screen.dart';
+import 'offcut_inventory_screen.dart';
+import 'cost_dashboard_screen.dart';
+import 'unit_converter_screen.dart';
+import 'batch_export_screen.dart';
 
 /// ホーム画面（プロジェクト一覧）
 class HomeScreen extends ConsumerStatefulWidget {
@@ -52,6 +56,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             icon: const Icon(Icons.file_upload_outlined),
             tooltip: l10n.importProject,
             onPressed: () => _onImportJson(context, ref),
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.build_outlined),
+            tooltip: l10n.tools,
+            onSelected: (value) => _onToolSelected(context, ref, value),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 'inventory', child: ListTile(leading: const Icon(Icons.inventory_2), title: Text(l10n.offcutInventory), dense: true)),
+              PopupMenuItem(value: 'dashboard', child: ListTile(leading: const Icon(Icons.analytics), title: Text(l10n.costDashboard), dense: true)),
+              PopupMenuItem(value: 'converter', child: ListTile(leading: const Icon(Icons.swap_horiz), title: Text(l10n.unitConverter), dense: true)),
+              PopupMenuItem(value: 'batch', child: ListTile(leading: const Icon(Icons.file_download), title: Text(l10n.batchExport), dense: true)),
+            ],
           ),
           IconButton(
             icon: const Icon(Icons.settings),
@@ -333,6 +348,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void _onToolSelected(BuildContext context, WidgetRef ref, String tool) {
+    Widget screen;
+    switch (tool) {
+      case 'inventory':
+        screen = const OffcutInventoryScreen();
+        break;
+      case 'dashboard':
+        screen = const CostDashboardScreen();
+        break;
+      case 'converter':
+        screen = const UnitConverterScreen();
+        break;
+      case 'batch':
+        screen = const BatchExportScreen();
+        break;
+      default:
+        return;
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
   }
 
   Future<void> _onImportJson(BuildContext context, WidgetRef ref) async {
