@@ -806,6 +806,42 @@ abstract class AppLocalizations {
   /// **'はじめる'**
   String get onboardingStart;
 
+  /// Onboarding page 4 title
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクトの\n始め方'**
+  String get onboardingTitle4;
+
+  /// Onboarding page 4 body
+  ///
+  /// In ja, this message translates to:
+  /// **'「新規プロジェクト」から素材を選び、切り出したいサイズを入力して「計算する」をタップ。最適なカット配置が自動で表示されます。'**
+  String get onboardingBody4;
+
+  /// Onboarding page 5 title
+  ///
+  /// In ja, this message translates to:
+  /// **'保存＆エクスポート'**
+  String get onboardingTitle5;
+
+  /// Onboarding page 5 body
+  ///
+  /// In ja, this message translates to:
+  /// **'計算結果をプロジェクトとして保存し、いつでも確認できます。PDF・CSVでのエクスポートやバックアップ・復元にも対応しています。'**
+  String get onboardingBody5;
+
+  /// Onboarding page 6 title
+  ///
+  /// In ja, this message translates to:
+  /// **'便利ツール'**
+  String get onboardingTitle6;
+
+  /// Onboarding page 6 body
+  ///
+  /// In ja, this message translates to:
+  /// **'端材を在庫として管理し、次のプロジェクトで再利用できます。単位換算ツールも搭載し、mm・cm・インチの変換もかんたんです。'**
+  String get onboardingBody6;
+
   /// Common lengths quick-select label
   ///
   /// In ja, this message translates to:

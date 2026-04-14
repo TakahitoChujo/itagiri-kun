@@ -405,6 +405,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingStart => 'Get Started';
 
   @override
+  String get onboardingTitle4 => 'How to\nGet Started';
+
+  @override
+  String get onboardingBody4 =>
+      'Tap \"New Project\", select your material, enter the sizes you need, and tap \"Calculate\". The optimal cut layout appears automatically.';
+
+  @override
+  String get onboardingTitle5 => 'Save & Export';
+
+  @override
+  String get onboardingBody5 =>
+      'Save your results as a project to revisit anytime. Export as PDF or CSV, and use backup & restore to keep your data safe.';
+
+  @override
+  String get onboardingTitle6 => 'Handy Tools';
+
+  @override
+  String get onboardingBody6 =>
+      'Manage leftover offcuts in your inventory and reuse them in future projects. The built-in unit converter handles mm, cm, and inches with ease.';
+
+  @override
   String get commonLengths => 'Common Lengths';
 
   @override

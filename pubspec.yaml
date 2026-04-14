@@ -1,7 +1,7 @@
 name: itagiri_kun
 description: DIY木材カット計算アプリ - 端材を最小にする最適カット配置を自動計算
 publish_to: 'none'
-version: 1.4.0+4
+version: 1.5.0+5
 
 environment:
   sdk: '>=3.2.0 <4.0.0'

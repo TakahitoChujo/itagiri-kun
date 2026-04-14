@@ -237,6 +237,18 @@
 
   "onboardingStart": "Get Started",
 
+  "onboardingTitle4": "How to\nGet Started",
+
+  "onboardingBody4": "Tap \"New Project\", select your material, enter the sizes you need, and tap \"Calculate\". The optimal cut layout appears automatically.",
+
+  "onboardingTitle5": "Save & Export",
+
+  "onboardingBody5": "Save your results as a project to revisit anytime. Export as PDF or CSV, and use backup & restore to keep your data safe.",
+
+  "onboardingTitle6": "Handy Tools",
+
+  "onboardingBody6": "Manage leftover offcuts in your inventory and reuse them in future projects. The built-in unit converter handles mm, cm, and inches with ease.",
+
   "commonLengths": "Common Lengths",
 
   "selectionSummaryLength": "Length: {length} mm",

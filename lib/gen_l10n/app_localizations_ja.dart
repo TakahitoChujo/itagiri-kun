@@ -401,6 +401,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingStart => 'はじめる';
 
   @override
+  String get onboardingTitle4 => 'プロジェクトの\n始め方';
+
+  @override
+  String get onboardingBody4 =>
+      '「新規プロジェクト」から素材を選び、切り出したいサイズを入力して「計算する」をタップ。最適なカット配置が自動で表示されます。';
+
+  @override
+  String get onboardingTitle5 => '保存＆エクスポート';
+
+  @override
+  String get onboardingBody5 =>
+      '計算結果をプロジェクトとして保存し、いつでも確認できます。PDF・CSVでのエクスポートやバックアップ・復元にも対応しています。';
+
+  @override
+  String get onboardingTitle6 => '便利ツール';
+
+  @override
+  String get onboardingBody6 =>
+      '端材を在庫として管理し、次のプロジェクトで再利用できます。単位換算ツールも搭載し、mm・cm・インチの変換もかんたんです。';
+
+  @override
   String get commonLengths => 'よく使う長さ';
 
   @override

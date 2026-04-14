@@ -59,6 +59,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         title: l10n.onboardingTitle3,
         body: l10n.onboardingBody3,
       ),
+      _OnboardingPage(
+        icon: Icons.route,
+        title: l10n.onboardingTitle4,
+        body: l10n.onboardingBody4,
+      ),
+      _OnboardingPage(
+        icon: Icons.save_alt,
+        title: l10n.onboardingTitle5,
+        body: l10n.onboardingBody5,
+      ),
+      _OnboardingPage(
+        icon: Icons.build_outlined,
+        title: l10n.onboardingTitle6,
+        body: l10n.onboardingBody6,
+      ),
     ];
 
     final isLast = _currentPage == pages.length - 1;
